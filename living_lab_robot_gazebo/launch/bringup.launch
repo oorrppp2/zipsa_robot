@@ -1,0 +1,10 @@
+<launch>
+    <include file="$(find living_lab_robot_description)/launch/bringup.launch"/>
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="use_sim_time" value="true" />
+        <arg name="verbose" value="true"/>
+    </include>
+
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+            args="-urdf -model livin_lab_robot -param robot_description"/>
+</launch>
