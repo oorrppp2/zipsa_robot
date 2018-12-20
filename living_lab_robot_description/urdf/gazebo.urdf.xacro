@@ -17,6 +17,11 @@
         </plugin>
     </gazebo>
 
+    <gazebo reference="base_link">
+        <mu1 value="0.0"/>
+        <mu2 value="0.0"/>
+    </gazebo>
+
     <xacro:macro name="insert_hokuyo_sensor" params="name">
         <gazebo reference="${name}_hokuyo_link">
             <sensor type="ray" name="${name}_hokuyo_sensor">
