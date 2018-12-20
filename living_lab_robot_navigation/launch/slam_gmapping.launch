@@ -1,0 +1,4 @@
+<launch>
+    <include file="$(find living_lab_robot_bringup)/launch/bringup.launch"/>
+    <node name="slam_gmapping" type="slam_gmapping" pkg="gmapping" output="screen"/>
+</launch>

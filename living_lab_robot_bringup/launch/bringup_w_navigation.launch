@@ -1,0 +1,6 @@
+<launch>
+    <include file="$(find living_lab_robot_gazebo)/launch/bringup.launch"/>
+    <include file="$(find living_lab_robot_control)/launch/bringup.launch"/>
+
+    <include file="$(find living_lab_robot_navigation)/launch/navigation.launch"/>
+</launch>
