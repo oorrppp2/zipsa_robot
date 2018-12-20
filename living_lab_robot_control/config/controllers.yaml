@@ -2,20 +2,31 @@ joint_state_controller:
   type: joint_state_controller/JointStateController
   publish_rate: 50
 
-elv_arm_controller:
+arm_controller:
   type: position_controllers/JointTrajectoryController
   joints:
-    - elv_base_rotate_joint
-    - elv_base_trans_joint
+    - body_rotate_joint
+    - elv_frame_updown_joint
+    - arm_base_joint
     - arm_joint1
     - arm_joint2
     - arm_joint3
     - arm_joint4
     - arm_joint5
-    - end_effector_joint
+    - arm_joint6
 
-project_pantilt_controller:
-  type: position_controllers/JointTrajectoryController
-  joints:
-    - projector_pan_joint
-    - projector_tilt_joint
+head1_pan_controller:
+  type: position_controllers/JointPositionController
+  joint: head1_pan_joint
+
+head2_pan_controller:
+  type: position_controllers/JointPositionController
+  joint: head2_pan_joint
+
+head2_d435_tilt_controller:
+  type: position_controllers/JointPositionController
+  joint: head2_d435_tilt_joint
+
+
+
+

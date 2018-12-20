@@ -1,11 +1,12 @@
 controller_list:
-  - name: fake_elv_arm_controller
+  - name: fake_arm_controller
     joints:
-      - elv_base_rotate_joint
-      - elv_base_trans_joint
+      - body_rotate_joint
+      - elv_frame_updown_joint
+      - arm_base_joint
       - arm_joint1
       - arm_joint2
       - arm_joint3
       - arm_joint4
       - arm_joint5
-      - end_effector_joint
+      - arm_joint6

@@ -1,6 +1,10 @@
 <launch>
+
+    <env name="GAZEBO_RESOURCE_PATH" value="$(find living_lab_robot_gazebo)"/>
+
     <include file="$(find living_lab_robot_description)/launch/bringup.launch"/>
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="worlds/living_lab.world"/>
         <arg name="use_sim_time" value="true" />
         <arg name="verbose" value="true"/>
     </include>

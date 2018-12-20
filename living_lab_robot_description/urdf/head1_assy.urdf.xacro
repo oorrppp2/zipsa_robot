@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <link name="head1_assy">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://living_lab_robot_description/meshes/c3_head1_assy.dae" scale="1 1 1"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://living_lab_robot_description/meshes/c3_head1_assy.dae" scale="1 1 1"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="1.0"/>
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+        </inertial>
+    </link>
+
+    <joint name="head1_pan_joint" type="revolute">
+        <parent link="body_assy"/>
+        <child link="head1_assy"/>
+        <origin xyz="0 0 0.660" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="${-90/180*pi}" upper="${90/180*pi}" velocity="1.0" effort="1000"/>
+    </joint>
+    <xacro:insert_position_transmission name="head1_pan_joint" />
+
+</robot>

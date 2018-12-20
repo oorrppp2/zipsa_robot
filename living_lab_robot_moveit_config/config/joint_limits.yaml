@@ -2,6 +2,11 @@
 # Specific joint properties can be changed with the keys [max_position, min_position, max_velocity, max_acceleration]
 # Joint limits can be turned off with [has_velocity_limits, has_acceleration_limits]
 joint_limits:
+  arm_base_joint:
+    has_velocity_limits: true
+    max_velocity: 1
+    has_acceleration_limits: false
+    max_acceleration: 0
   arm_joint1:
     has_velocity_limits: true
     max_velocity: 1
@@ -27,17 +32,17 @@ joint_limits:
     max_velocity: 1
     has_acceleration_limits: false
     max_acceleration: 0
-  elv_base_rotate_joint:
+  arm_joint6:
     has_velocity_limits: true
     max_velocity: 1
     has_acceleration_limits: false
     max_acceleration: 0
-  elv_base_trans_joint:
+  body_rotate_joint:
     has_velocity_limits: true
     max_velocity: 1
     has_acceleration_limits: false
     max_acceleration: 0
-  end_effector_joint:
+  elv_frame_updown_joint:
     has_velocity_limits: true
     max_velocity: 1
     has_acceleration_limits: false
