@@ -1,9 +1,4 @@
 <launch>
     <include file="$(find living_lab_robot_gazebo)/launch/bringup.launch"/>
     <include file="$(find living_lab_robot_control)/launch/bringup.launch"/>
-
-    <!-- <include file="$(find living_lab_robot_moveit_config)/launch/move_group.launch"/>
-    <include file="$(find living_lab_robot_moveit_config)/launch/moveit_rviz.launch">
-        <arg name="config" value="true"/>
-    </include> -->
 </launch>
