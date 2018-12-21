@@ -7,4 +7,6 @@
                           head2_pan_controller
                           head2_d435_tilt_controller
                             " />
+
+    <node name="head_pan_controller" type="head_pan_controller.py" pkg="living_lab_robot_control" output="screen"/>
 </launch>

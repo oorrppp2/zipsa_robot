@@ -26,7 +26,7 @@
         <child link="head1_assy"/>
         <origin xyz="0 0 0.660" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
-        <limit lower="${-90/180*pi}" upper="${90/180*pi}" velocity="1.0" effort="1000"/>
+        <limit lower="${-270/180*pi}" upper="${270/180*pi}" velocity="2.0" effort="1000"/>
     </joint>
     <xacro:insert_position_transmission name="head1_pan_joint" />
 

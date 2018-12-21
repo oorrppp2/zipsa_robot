@@ -26,7 +26,7 @@
         <child link="head2_assy"/>
         <origin xyz="0 0 0.9383" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
-        <limit lower="${-90/180*pi}" upper="${90/180*pi}" velocity="1.0" effort="1000"/>
+        <limit lower="${-270/180*pi}" upper="${270/180*pi}" velocity="2.0" effort="1000"/>
     </joint>
     <xacro:insert_position_transmission name="head2_pan_joint" />
 
@@ -51,13 +51,27 @@
     </link>
     <xacro:insert_rgbd_camera_sensor name="head2_d435"/>
 
+    <link name="gaze_link">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="1.0"/>
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+        </inertial>
+    </link>
+
     <joint name="head2_d435_tilt_joint" type="revolute">
         <parent link="head2_assy"/>
         <child link="head2_d435_link"/>
         <origin xyz="0.126 0 0.07" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
-        <limit lower="${-10/180*pi}" upper="${40/180*pi}" velocity="1.0" effort="1000"/>
+        <limit lower="${-10/180*pi}" upper="${45/180*pi}" velocity="2.0" effort="1000"/>
     </joint>
     <xacro:insert_position_transmission name="head2_d435_tilt_joint" />
+
+    <joint name="gaze_fixed_joint" type="fixed">
+        <parent link="head2_assy"/>
+        <child link="gaze_link"/>
+        <origin xyz="0.126 0 0.07" rpy="0 0 0"/>
+    </joint>
 
 </robot>
