@@ -14,18 +14,18 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://living_lab_robot_description/meshes/c3_mobile_assy.dae" scale="1 1 1"/>
+                <mesh filename="package://living_lab_robot_description/meshes/c4_mobile_assy.dae" scale="1 1 1"/>
             </geometry>
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://living_lab_robot_description/meshes/c3_mobile_assy.dae" scale="1 1 1"/>
+                <mesh filename="package://living_lab_robot_description/meshes/c4_mobile_assy.dae" scale="1 1 1"/>
             </geometry>
         </collision>
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="1.0"/>
+            <mass value="30.0"/>
             <inertia ixx="10.0" ixy="0.0" ixz="0.0" iyy="10.0" iyz="0.0" izz="10.0"/>
         </inertial>
     </link>
@@ -66,4 +66,87 @@
         <origin xyz="-0.27 0 0.175" rpy="0 0 ${pi}"/>
     </joint>
 
+    <link name="omni_wheel_1">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://living_lab_robot_description/meshes/omni_wheel.dae" scale="1 1 1"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://living_lab_robot_description/meshes/omni_wheel.dae" scale="1 1 1"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="1.0"/>
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+        </inertial>
+    </link>
+
+    <joint name="omni_wheel_1_joint" type="continuous">
+        <parent link="base_link"/>
+        <child link="omni_wheel_1"/>
+        <origin xyz="${0.282 * cos(pi/3)}  ${0.282 * sin(pi/3)} 0" rpy="0 0 ${-pi/6}"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+    <xacro:insert_velocity_transmission name="omni_wheel_1_joint" />
+
+    <link name="omni_wheel_2">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://living_lab_robot_description/meshes/omni_wheel.dae" scale="1 1 1"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://living_lab_robot_description/meshes/omni_wheel.dae" scale="1 1 1"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="1.0"/>
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+        </inertial>
+    </link>
+
+    <joint name="omni_wheel_2_joint" type="continuous">
+        <parent link="base_link"/>
+        <child link="omni_wheel_2"/>
+        <origin xyz="${0.282 * cos(pi/3)}  ${0.282 * sin(-pi/3)} 0" rpy="0 0 ${-5*pi/6}"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+    <xacro:insert_velocity_transmission name="omni_wheel_2_joint" />
+
+    <link name="omni_wheel_3">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://living_lab_robot_description/meshes/omni_wheel.dae" scale="1 1 1"/>
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://living_lab_robot_description/meshes/omni_wheel.dae" scale="1 1 1"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="1.0"/>
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+        </inertial>
+    </link>
+
+    <joint name="omni_wheel_3_joint" type="continuous">
+        <parent link="base_link"/>
+        <child link="omni_wheel_3"/>
+        <origin xyz="-0.282 0 0" rpy="0 0 ${pi/2}"/>
+        <axis xyz="0 1 0"/>
+    </joint>
+    <xacro:insert_velocity_transmission name="omni_wheel_3_joint" />
 </robot>

@@ -11,6 +11,7 @@
   <url type="repository">https://github.com/byeongkyu/living_lab_robot_v2</url>
 
   <buildtool_depend>catkin</buildtool_depend>
+  <depend>rgbd_launch</depend>
   <depend>xacro</depend>
 
   <export>

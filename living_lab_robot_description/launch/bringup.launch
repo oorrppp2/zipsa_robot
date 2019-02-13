@@ -1,6 +1,6 @@
 <launch>
     <arg name="use_joint_state_publisher" default="false"/>
-    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find living_lab_robot_description)/urdf/robot.urdf.xacro" />
+    <param name="robot_description" command="$(find xacro)/xacro $(find living_lab_robot_description)/urdf/robot.urdf.xacro" />
     <node pkg="robot_state_publisher" type="state_publisher" name="robot_state_publisher" />
 
     <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher" if="$(arg use_joint_state_publisher)">
@@ -8,6 +8,6 @@
     </node>
 
     <include file="$(find rgbd_launch)/launch/kinect_frames.launch">
-        <arg name="camera" value="head2_d435"/>
+        <arg name="camera" value="head_d435"/>
     </include>
 </launch>
