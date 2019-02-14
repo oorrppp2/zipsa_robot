@@ -2,11 +2,14 @@
     <rosparam file="$(find living_lab_robot_control)/config/controllers.yaml" command="load"/>
     <node name="joint_controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
 		output="screen" args="joint_state_controller
+                          omni_wheel_1_controller
+                          omni_wheel_2_controller
+                          omni_wheel_3_controller
                           arm_controller
-                          head1_pan_controller
-                          head2_pan_controller
-                          head2_d435_tilt_controller
-                            " />
+                          head_pan_controller
+                          head_screen_tilt_controller
+                          head_tilt_unit_controller
+                          " />
 
     <node name="head_pan_controller" type="head_pan_controller.py" pkg="living_lab_robot_control" output="screen"/>
 </launch>

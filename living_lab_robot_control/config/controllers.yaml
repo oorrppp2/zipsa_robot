@@ -2,11 +2,23 @@ joint_state_controller:
   type: joint_state_controller/JointStateController
   publish_rate: 50
 
+omni_wheel_1_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: omni_wheel_1_joint
+
+omni_wheel_2_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: omni_wheel_2_joint
+
+omni_wheel_3_controller:
+  type: velocity_controllers/JointVelocityController
+  joint: omni_wheel_3_joint
+
 arm_controller:
   type: position_controllers/JointTrajectoryController
   joints:
     - body_rotate_joint
-    - elv_frame_updown_joint
+    - trans_module_elv_joint
     - arm_base_joint
     - arm_joint1
     - arm_joint2
@@ -15,17 +27,17 @@ arm_controller:
     - arm_joint5
     - arm_joint6
 
-head1_pan_controller:
+head_pan_controller:
   type: position_controllers/JointPositionController
-  joint: head1_pan_joint
+  joint: head_pan_joint
 
-head2_pan_controller:
+head_screen_tilt_controller:
   type: position_controllers/JointPositionController
-  joint: head2_pan_joint
+  joint: head_screen_tilt_joint
 
-head2_d435_tilt_controller:
+head_tilt_unit_controller:
   type: position_controllers/JointPositionController
-  joint: head2_d435_tilt_joint
+  joint: head_tilt_unit_joint
 
 
 
