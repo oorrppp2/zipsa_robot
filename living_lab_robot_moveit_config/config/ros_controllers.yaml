@@ -10,7 +10,10 @@ generic_hw_control_loop:
 hardware_interface:
   joints:
     - body_rotate_joint
-    - elv_frame_updown_joint
+    - head_pan_joint
+    - head_screen_tilt_joint
+    - head_tilt_unit_joint
+    - trans_module_elv_joint
     - arm_base_joint
     - arm_joint1
     - arm_joint2
@@ -18,9 +21,9 @@ hardware_interface:
     - arm_joint4
     - arm_joint5
     - arm_joint6
-    - head1_pan_joint
-    - head2_pan_joint
-    - head2_d435_tilt_joint
+    - omni_wheel_1_joint
+    - omni_wheel_2_joint
+    - omni_wheel_3_joint
   sim_control_mode: 1  # 0: position, 1: velocity
 # Publish all joint states
 # Creates the /joint_states topic necessary in ROS

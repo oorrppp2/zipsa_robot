@@ -42,7 +42,7 @@ joint_limits:
     max_velocity: 1
     has_acceleration_limits: false
     max_acceleration: 0
-  elv_frame_updown_joint:
+  trans_module_elv_joint:
     has_velocity_limits: true
     max_velocity: 1
     has_acceleration_limits: false

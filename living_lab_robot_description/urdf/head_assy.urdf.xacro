@@ -107,7 +107,7 @@
             <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
         </inertial>
     </link>
-    <xacro:insert_rgbd_camera_sensor name="head2_d435"/>
+    <xacro:insert_rgbd_camera_sensor name="head_d435"/>
 
     <joint name="head_d435_mount_joint" type="fixed">
         <parent link="head_tilt_unit"/>
