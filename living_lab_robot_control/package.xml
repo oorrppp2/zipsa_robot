@@ -16,7 +16,7 @@
   <depend>velocity_controllers</depend>
   <depend>position_controllers</depend>
   <depend>effort_controllers</depend>
-  <depend>joint_trajectory_controllers</depend>
+  <depend>joint_trajectory_controller</depend>
   <depend>ros_controllers</depend>
 
   <export>
