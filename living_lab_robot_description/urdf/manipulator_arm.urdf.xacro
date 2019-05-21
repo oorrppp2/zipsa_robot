@@ -50,24 +50,24 @@
         </inertial>
     </link>
 
-    <joint name="arm_joint1" type="revolute">
+    <joint name="arm1_joint" type="revolute">
         <parent link="manipulator_base"/>
         <child link="manipulator_link1"/>
         <origin xyz="0.15612 0 -0.051215" rpy="0 0 0"/>
         <axis xyz="1 0 0"/>
         <limit lower="${-90/180*pi}" upper="${90/180*pi}" velocity="1.0" effort="1000"/>
     </joint>
-    <xacro:insert_position_transmission name="arm_joint1" />
+    <xacro:insert_position_transmission name="arm1_joint" />
 
     <link name="manipulator_link2">
         <visual>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 ${-90/180*pi} 0"/>
             <geometry>
                 <mesh filename="package://living_lab_robot_description/meshes/manipulator_link2.dae" scale="1 1 1"/>
             </geometry>
         </visual>
         <collision>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 ${-90/180*pi} 0"/>
             <geometry>
                 <mesh filename="package://living_lab_robot_description/meshes/manipulator_link2.dae" scale="1 1 1"/>
             </geometry>
@@ -79,24 +79,24 @@
         </inertial>
     </link>
 
-    <joint name="arm_joint2" type="revolute">
+    <joint name="arm2_joint" type="revolute">
         <parent link="manipulator_link1"/>
         <child link="manipulator_link2"/>
         <origin xyz="0.033 0 0" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
         <limit lower="${-190/180*pi}" upper="${10/180*pi}" velocity="1.0" effort="1000"/>
     </joint>
-    <xacro:insert_position_transmission name="arm_joint2" />
+    <xacro:insert_position_transmission name="arm2_joint" />
 
     <link name="manipulator_link3">
         <visual>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 ${90/180*pi} 0"/>
             <geometry>
                 <mesh filename="package://living_lab_robot_description/meshes/manipulator_link3.dae" scale="1 1 1"/>
             </geometry>
         </visual>
         <collision>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 ${90/180*pi} 0"/>
             <geometry>
                 <mesh filename="package://living_lab_robot_description/meshes/manipulator_link3.dae" scale="1 1 1"/>
             </geometry>
@@ -108,14 +108,14 @@
         </inertial>
     </link>
 
-    <joint name="arm_joint3" type="revolute">
+    <joint name="arm3_joint" type="revolute">
         <parent link="manipulator_link2"/>
         <child link="manipulator_link3"/>
-        <origin xyz="0.030 0 -0.264" rpy="0 0 0"/>
+        <origin xyz="0.264 0 0.030" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
         <limit lower="${0/180*pi}" upper="${240/180*pi}" velocity="1.0" effort="1000"/>
     </joint>
-    <xacro:insert_position_transmission name="arm_joint3" />
+    <xacro:insert_position_transmission name="arm3_joint" />
 
     <link name="manipulator_link4">
         <visual>
@@ -137,14 +137,14 @@
         </inertial>
     </link>
 
-    <joint name="arm_joint4" type="revolute">
+    <joint name="arm4_joint" type="revolute">
         <parent link="manipulator_link3"/>
         <child link="manipulator_link4"/>
-        <origin xyz="0.042 0 0.231" rpy="0 0 0"/>
+        <origin xyz="0.231 0 0.042" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
         <limit lower="${-180/180*pi}" upper="${180/180*pi}" velocity="1.0" effort="1000"/>
     </joint>
-    <xacro:insert_position_transmission name="arm_joint4" />
+    <xacro:insert_position_transmission name="arm4_joint" />
 
     <link name="manipulator_link5">
         <visual>
@@ -166,14 +166,14 @@
         </inertial>
     </link>
 
-    <joint name="arm_joint5" type="revolute">
+    <joint name="arm5_joint" type="revolute">
         <parent link="manipulator_link4"/>
         <child link="manipulator_link5"/>
         <origin xyz="0 0 0.027" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
         <limit lower="${-180/180*pi}" upper="${180/180*pi}" velocity="1.0" effort="1000"/>
     </joint>
-    <xacro:insert_position_transmission name="arm_joint5" />
+    <xacro:insert_position_transmission name="arm5_joint" />
 
     <link name="manipulator_link6">
         <inertial>
@@ -183,13 +183,13 @@
         </inertial>
     </link>
 
-    <joint name="arm_joint6" type="revolute">
+    <joint name="arm6_joint" type="revolute">
         <parent link="manipulator_link5"/>
         <child link="manipulator_link6"/>
         <origin xyz="0 0 0.123" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
         <limit lower="${-180/180*pi}" upper="${180/180*pi}" velocity="1.0" effort="1000"/>
     </joint>
-    <xacro:insert_position_transmission name="arm_joint6" />
+    <xacro:insert_position_transmission name="arm6_joint" />
 
 </robot>
