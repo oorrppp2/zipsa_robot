@@ -79,14 +79,14 @@
         </inertial>
     </link>
 
-    <joint name="head_tilt_unit_joint" type="revolute">
+    <joint name="head_tilt_joint" type="revolute">
         <parent link="head_assy"/>
         <child link="head_tilt_unit"/>
         <origin xyz="0.098 0 -0.016" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
         <limit lower="${0/180*pi}" upper="${25/180*pi}" velocity="0.2" effort="1000"/>
     </joint>
-    <xacro:insert_position_transmission name="head_tilt_unit_joint" />
+    <xacro:insert_position_transmission name="head_tilt_joint" />
 
     <link name="head_d435_link">
         <visual>
