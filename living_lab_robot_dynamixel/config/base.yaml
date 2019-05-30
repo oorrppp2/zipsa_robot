@@ -1,0 +1,38 @@
+dynamixel_hw:
+  - wheel1
+  - wheel2
+  - wheel3
+
+# operating_mode = # 0: Current, 1: Velocity, 3: Position, 4: Ext. Position, 5: Current based Position Control, 16: PWM
+# joint_name: match URDF joint_name
+# gear_ratio
+# inverse: control the direction of motors
+# profile_acceleration: (rad/s^2)
+# profile_velocity: (rad/s)
+
+wheel1:
+  id: 1
+  operating_mode: 1
+  joint_name: omni_wheel_1_joint
+  gear_ratio: 0.45454545
+  inverse: -1.0
+  profile_acceleration: 1.5
+  profile_velocity: 3.0
+
+wheel2:
+  id: 3
+  operating_mode: 1
+  joint_name: omni_wheel_2_joint
+  gear_ratio: 0.45454545
+  inverse: -1.0
+  profile_acceleration: 1.5
+  profile_velocity: 3.0
+
+wheel3:
+  id: 2
+  operating_mode: 1
+  joint_name: omni_wheel_3_joint
+  gear_ratio: 0.45454545
+  inverse: -1.0
+  profile_acceleration: 1.5
+  profile_velocity: 3.0

@@ -1,0 +1,33 @@
+dynamixel_hw:
+  - screen_tilt
+  - pan
+  - tilt
+
+screen_tilt:
+  id: 1
+  operating_mode: 3
+  joint_name: head_screen_tilt_joint
+  gear_ratio: 1.0
+  inverse: 1.0
+  profile_acceleration: 1.0
+  profile_velocity: 1.0
+  origin_offset: 2074
+
+pan:
+  id: 6
+  operating_mode: 3
+  joint_name: head_pan_joint
+  gear_ratio: 1.333333
+  inverse: 1.0
+  profile_acceleration: 0.8
+  profile_velocity: 0.4
+  origin_offset: -1200
+
+tilt:
+  id: 7
+  operating_mode: 3
+  joint_name: head_tilt_joint
+  gear_ratio: 1.0
+  inverse: 1.0
+  profile_acceleration: 0.6
+  profile_velocity: 0.2

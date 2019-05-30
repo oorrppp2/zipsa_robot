@@ -1,0 +1,136 @@
+dynamixel_hw:
+  - body_rotate
+  - elevation
+  - arm_base
+  - arm1
+  - arm2
+  - arm3
+  - arm4
+  - arm5
+  - arm6
+  - gripper
+
+# operating_mode = # 0: Current, 1: Velocity, 3: Position, 4: Ext. Position, 5: Current based Position Control, 16: PWM
+# joint_name: match URDF joint_name
+# gear_ratio
+# inverse: control the direction of motors
+# profile_acceleration: (rad/s^2)
+# profile_velocity: (rad/s)
+
+# homing
+# enable: is need the homing?
+# mode: # 0: current base
+# direction: homing direction
+# max_speed: homing max_speed
+# current_limit: homing current limit
+
+body_rotate:
+  id: 1
+  operating_mode: 4
+  joint_name: body_rotate_joint
+  gear_ratio: 2.5
+  inverse: 1.0
+  profile_acceleration: 0.4
+  profile_velocity: 0.2
+
+elevation:
+  id: 4
+  operating_mode: 4
+  joint_name: elevation_joint
+  gear_ratio: 36.0
+  inverse: 1.0
+  profile_acceleration: 0.05
+  profile_velocity: 0.01
+  homing:
+    enable: true
+    mode: 0
+    direction: 1.0
+    max_speed: 0.003
+    current_limit: 2.0
+
+arm_base:
+  id: 5
+  operating_mode: 4
+  joint_name: arm_base_joint
+  gear_ratio: 58.5
+  inverse: 1.0
+  profile_acceleration: 0.05
+  profile_velocity: 0.015
+  homing:
+    enable: true
+    mode: 0
+    direction: 1.0
+    max_speed: 0.002
+    current_limit: 1.2
+
+arm1:
+  id: 9
+  operating_mode: 3
+  joint_name: arm1_joint
+  gear_ratio: 1.0
+  inverse: 1.0
+  profile_acceleration: 0.4
+  profile_velocity: 0.2
+  origin_offset: 1500
+
+arm2:
+  id: 10
+  operating_mode: 3
+  joint_name: arm2_joint
+  gear_ratio: 1.0
+  inverse: -1.0
+  profile_acceleration: 0.4
+  profile_velocity: 0.2
+  origin_offset: 3000
+
+arm3:
+  id: 11
+  operating_mode: 3
+  joint_name: arm3_joint
+  gear_ratio: 1
+  inverse: -1.0
+  profile_acceleration: 0.4
+  profile_velocity: 0.2
+  origin_offset: -62000
+
+arm4:
+  id: 12
+  operating_mode: 3
+  joint_name: arm4_joint
+  gear_ratio: 1
+  inverse: 1.0
+  profile_acceleration: 0.4
+  profile_velocity: 0.2
+
+arm5:
+  id: 13
+  operating_mode: 3
+  joint_name: arm5_joint
+  gear_ratio: 1.0
+  inverse: -1.0
+  profile_acceleration: 0.4
+  profile_velocity: 0.2
+  origin_offset: 250
+
+arm6:
+  id: 14
+  operating_mode: 3
+  joint_name: arm6_joint
+  gear_ratio: 1.0
+  inverse: 1.0
+  profile_acceleration: 0.4
+  profile_velocity: 0.2
+
+gripper:
+  id: 15
+  operating_mode: 5
+  joint_name: gripper_joint
+  gear_ratio: 1.0
+  inverse: 1.0
+  profile_acceleration: 0
+  profile_velocity: 0.02
+  gripper:
+    enable: true
+    gap_size: 690
+    current_limit: 0.070
+

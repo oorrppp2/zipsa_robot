@@ -3,13 +3,13 @@
 
     <link name="gripper">
         <visual>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 ${90/180*pi} 0"/>
             <geometry>
                 <mesh filename="package://living_lab_robot_description/meshes/gripper.dae" scale="1 1 1"/>
             </geometry>
         </visual>
         <collision>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 ${90/180*pi} 0"/>
             <geometry>
                 <mesh filename="package://living_lab_robot_description/meshes/gripper.dae" scale="1 1 1"/>
             </geometry>
@@ -38,7 +38,7 @@
     <joint name="end_effector_joint" type="fixed">
         <parent link="gripper"/>
         <child link="end_effector"/>
-        <origin xyz="0 0 0.096" rpy="0 0 0"/>
+        <origin xyz="0.096 0 0" rpy="0 0 0"/>
     </joint>
 
 </robot>
