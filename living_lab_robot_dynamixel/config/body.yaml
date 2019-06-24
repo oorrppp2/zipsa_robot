@@ -16,10 +16,11 @@ dynamixel_hw:
 # inverse: control the direction of motors
 # profile_acceleration: (rad/s^2)
 # profile_velocity: (rad/s)
+# origin_offset (pulse)
 
 # homing
 # enable: is need the homing?
-# mode: # 0: current base
+# mode: # 0: current base 1: digital input (limit_sensor)
 # direction: homing direction
 # max_speed: homing max_speed
 # current_limit: homing current limit
@@ -32,6 +33,11 @@ body_rotate:
   inverse: 1.0
   profile_acceleration: 0.4
   profile_velocity: 0.2
+  homing:
+    enable: true
+    mode: 1
+    direction: -1.0
+    max_speed: 0.02
 
 elevation:
   id: 4
@@ -131,6 +137,6 @@ gripper:
   profile_velocity: 0.02
   gripper:
     enable: true
-    gap_size: 690
-    current_limit: 0.070
+    gap_size: 738
+    current_limit: 0.10
 

@@ -22,6 +22,10 @@ pan:
   profile_acceleration: 0.8
   profile_velocity: 0.4
   origin_offset: -1200
+  homing:
+    enable: true
+    mode: 1
+    max_speed: 0.003
 
 tilt:
   id: 7

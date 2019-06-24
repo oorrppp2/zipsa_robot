@@ -13,7 +13,7 @@
         <node name="base_dynamixel_node" type="dynamixel_ros_control_node" pkg="dynamixel_ros_control" output="screen">
             <rosparam file="$(arg base_config)" command="load"/>
             <param name="port_name" value="$(arg base_port)"/>
-            <param name="baudrate" value="$(arg baudrate)"/>
+            <param name="baudrate" value="2000000"/>
             <param name="rate" value="$(arg rate)"/>
         </node>
     </group>
