@@ -24,8 +24,9 @@ pan:
   origin_offset: -1200
   homing:
     enable: true
+    direction: -1.0
     mode: 1
-    max_speed: 0.003
+    max_speed: 0.15
 
 tilt:
   id: 7
