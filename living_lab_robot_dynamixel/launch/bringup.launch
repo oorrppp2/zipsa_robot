@@ -18,7 +18,6 @@
         </node>
     </group>
 
-
     <group ns="body">
         <node name="body_dynamixel_node" type="dynamixel_ros_control_node" pkg="dynamixel_ros_control" output="screen">
             <rosparam file="$(arg body_config)" command="load"/>

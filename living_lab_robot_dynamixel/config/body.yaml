@@ -34,7 +34,7 @@ body_rotate:
   profile_acceleration: 0.4
   profile_velocity: 0.2
   homing:
-    enable: true
+    enable: false
     mode: 1
     direction: -1.0
     max_speed: 0.02

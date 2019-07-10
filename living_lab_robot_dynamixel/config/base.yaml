@@ -18,9 +18,6 @@ wheel1:
   inverse: -1.0
   profile_acceleration: 1.5
   profile_velocity: 3.0
-  velocity_gains:
-    p: 6153   #6153
-    i: 2209   #2209
 
 wheel2:
   id: 3
@@ -30,9 +27,6 @@ wheel2:
   inverse: -1.0
   profile_acceleration: 1.5
   profile_velocity: 3.0
-  velocity_gains:
-    p: 6153   #6153
-    i: 2209   #2209
 
 wheel3:
   id: 2
@@ -42,6 +36,3 @@ wheel3:
   inverse: -1.0
   profile_acceleration: 1.5
   profile_velocity: 3.0
-  velocity_gains:
-    p: 6153   #6153
-    i: 2209   #2209
