@@ -3,7 +3,7 @@
     <rosparam file="$(find living_lab_robot_control)/config/controllers.yaml" command="load"/>
 
 	<group ns="base">
-        <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+        <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="true"
             output="screen" args="joint_state_controller
                                 omni_base_controller
                               "/>
@@ -32,7 +32,7 @@
     </group>
 
     <group ns="head">
-        <node name="joint_controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+        <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="true"
             output="screen" args="joint_state_controller
                                   screen_tilt_controller
                                   pan_controller
