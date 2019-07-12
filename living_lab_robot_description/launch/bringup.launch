@@ -3,26 +3,9 @@
     <arg name="use_real_robot" default="false"/>
     <param name="robot_description" command="$(find xacro)/xacro $(find living_lab_robot_description)/urdf/robot.urdf.xacro" />
 
-
-    <node pkg="robot_state_publisher" type="state_publisher" name="robot_state_publisher1" if="$(arg use_real_robot)">
-        <remap to="/base/joint_states" from="/joint_states"/>
-    </node>
-
-    <node pkg="robot_state_publisher" type="state_publisher" name="robot_state_publisher2" if="$(arg use_real_robot)">
-        <remap to="/body/joint_states" from="/joint_states"/>
-    </node>
-
-    <node pkg="robot_state_publisher" type="state_publisher" name="robot_state_publisher3" if="$(arg use_real_robot)">
-        <remap to="/head/joint_states" from="/joint_states"/>
-    </node>
-
-    <node pkg="robot_state_publisher" type="state_publisher" name="robot_state_publisher" unless="$(arg use_real_robot)"/>
+    <node pkg="robot_state_publisher" type="state_publisher" name="robot_state_publisher"/>
 
     <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher" if="$(arg use_joint_state_publisher)">
         <param name="use_gui" value="1" />
     </node>
-
-    <include file="$(find rgbd_launch)/launch/kinect_frames.launch">
-        <arg name="camera" value="head_d435"/>
-    </include>
 </launch>

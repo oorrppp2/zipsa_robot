@@ -1,37 +1,52 @@
 <launch>
-	<!-- Robot Description and robot_state_publisher -->
-	<include file="$(find living_lab_robot_description)/launch/bringup.launch">
-		<arg name="use_real_robot" value="true"/>
-	</include>
+    <!-- Robot Description and robot_state_publisher -->
+    <include file="$(find living_lab_robot_description)/launch/bringup.launch">
+        <arg name="use_real_robot" value="true"/>
+    </include>
 
 
-	<!-- Front Laser Scanner -->
-	<node name="urg_node_front" pkg="urg_node" type="urg_node" output="screen">
-		<param name="serial_port" value="/dev/ttyACM1"/>
-		<param name="frame_id" value="front_hokuyo_link"/>
-		<remap from="scan" to="front/scan"/>
-		<param name="angle_min" value="-1.553343034"/>
-		<param name="angle_max" value="1.553343034"/>
-	</node>
+    <!-- Front Laser Scanner -->
+    <node name="urg_node_front" pkg="urg_node" type="urg_node" output="screen">
+        <param name="serial_port" value="/dev/ttyACM1"/>
+        <param name="frame_id" value="front_hokuyo_link"/>
+        <remap from="scan" to="front/scan"/>
+        <param name="angle_min" value="-1.553343034"/>
+        <param name="angle_max" value="1.553343034"/>
+    </node>
 
-	<!-- Rear Laser Scanner -->
-	<node name="urg_node_rear" pkg="urg_node" type="urg_node" output="screen">
-		<param name="serial_port" value="/dev/ttyACM0"/>
-		<param name="frame_id" value="rear_hokuyo_link"/>
-		<remap from="scan" to="rear/scan"/>
-		<param name="angle_min" value="-1.553343034"/>
-		<param name="angle_max" value="1.553343034"/>
-	</node>
+    <!-- Rear Laser Scanner -->
+    <node name="urg_node_rear" pkg="urg_node" type="urg_node" output="screen">
+        <param name="serial_port" value="/dev/ttyACM0"/>
+        <param name="frame_id" value="rear_hokuyo_link"/>
+        <remap from="scan" to="rear/scan"/>
+        <param name="angle_min" value="-1.553343034"/>
+        <param name="angle_max" value="1.553343034"/>
+    </node>
 
-	<!-- Dynamixels -->
-	<include file="$(find living_lab_robot_dynamixel)/launch/bringup.launch" />
+    <!-- Dynamixels -->
+    <include file="$(find living_lab_robot_dynamixel)/launch/bringup.launch" />
 
-	<!-- ros_controller -->
-	<include file="$(find living_lab_robot_control)/launch/bringup.launch">
-		<arg name="use_trajectory_controller" value="true" />
-	</include>
+    <!-- ros_controller -->
+    <include file="$(find living_lab_robot_control)/launch/bringup.launch">
+        <arg name="use_trajectory_controller" value="true" />
+    </include>
 
-	<!-- Teleop Joy & Twist Mux -->
-	<include file="$(find living_lab_robot_teleop_joy)/launch/bringup.launch"/>
-	<include file="$(find living_lab_robot_twist_mux)/launch/twist_mux.launch"/>
+    <!-- Teleop Joy & Twist Mux -->
+    <include file="$(find living_lab_robot_teleop_joy)/launch/bringup.launch"/>
+    <include file="$(find living_lab_robot_twist_mux)/launch/twist_mux.launch"/>
+
+    <!-- RGBD D435 -->
+    <include file="$(find realsense2_camera)/launch/rs_rgbd.launch">
+        <arg name="enable_infra1" value="false"/>
+        <arg name="enable_infra2" value="false"/>
+        <arg name="camera" value="head_d435"/>
+    </include>
+
+    <!-- MoveIt! -->
+    <include file="$(find living_lab_robot_moveit_config)/launch/move_group.launch"/>
+
+    <!-- Topic Relay -->
+    <node name="relay_base_joint_states" pkg="topic_tools" type="relay" args="/base/joint_states /joint_states"/>
+    <node name="relay_body_joint_states" pkg="topic_tools" type="relay" args="/body/joint_states /joint_states"/>
+    <node name="relay_head_joint_states" pkg="topic_tools" type="relay" args="/head/joint_states /joint_states"/>
 </launch>

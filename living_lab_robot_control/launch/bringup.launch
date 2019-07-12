@@ -28,6 +28,7 @@
         <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="true"
                     output="screen"   args="joint_state_controller
                                             arm_controller
+                                            arm_base_controller
                                             gripper_controller
                                             " if="$(arg use_trajectory_controller)"/>
     </group>

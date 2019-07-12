@@ -46,12 +46,12 @@ elevation:
   gear_ratio: 36.0
   inverse: 1.0
   profile_acceleration: 0.05
-  profile_velocity: 0.01
+  profile_velocity: 0.02
   homing:
     enable: true
     mode: 0
     direction: 1.0
-    max_speed: 0.003
+    max_speed: 0.005
     current_limit: 2.0
 
 arm_base:
@@ -66,7 +66,7 @@ arm_base:
     enable: true
     mode: 0
     direction: 1.0
-    max_speed: 0.002
+    max_speed: 0.004
     current_limit: 1.2
 
 arm1:
@@ -76,7 +76,7 @@ arm1:
   gear_ratio: 1.0
   inverse: 1.0
   profile_acceleration: 0.4
-  profile_velocity: 0.2
+  profile_velocity: 0.4
   origin_offset: 1500
 
 arm2:
@@ -86,7 +86,7 @@ arm2:
   gear_ratio: 1.0
   inverse: -1.0
   profile_acceleration: 0.4
-  profile_velocity: 0.2
+  profile_velocity: 0.4
   origin_offset: 3000
 
 arm3:
@@ -96,7 +96,7 @@ arm3:
   gear_ratio: 1
   inverse: -1.0
   profile_acceleration: 0.4
-  profile_velocity: 0.2
+  profile_velocity: 0.4
   origin_offset: -62000
 
 arm4:
@@ -106,7 +106,7 @@ arm4:
   gear_ratio: 1
   inverse: 1.0
   profile_acceleration: 0.4
-  profile_velocity: 0.2
+  profile_velocity: 0.4
 
 arm5:
   id: 13
@@ -115,7 +115,7 @@ arm5:
   gear_ratio: 1.0
   inverse: -1.0
   profile_acceleration: 0.4
-  profile_velocity: 0.2
+  profile_velocity: 0.4
   origin_offset: 250
 
 arm6:
@@ -125,7 +125,7 @@ arm6:
   gear_ratio: 1.0
   inverse: 1.0
   profile_acceleration: 0.4
-  profile_velocity: 0.2
+  profile_velocity: 0.4
 
 gripper:
   id: 15
