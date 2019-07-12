@@ -35,7 +35,7 @@
         </inertial>
     </link>
 
-    <joint name="end_effector_joint" type="fixed">
+    <joint name="gripper_joint" type="fixed">
         <parent link="gripper"/>
         <child link="end_effector"/>
         <origin xyz="0.096 0 0" rpy="0 0 0"/>
