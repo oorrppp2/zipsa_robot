@@ -5,8 +5,9 @@
 	<group ns="base">
         <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="true"
             output="screen" args="joint_state_controller
-                                omni_base_controller
-                              "/>
+                                omni_base_controller">
+        </node>
+
     </group>
 
     <group ns="body">
