@@ -55,7 +55,7 @@
         <child link="manipulator_link1"/>
         <origin xyz="0.15612 0 -0.051215" rpy="0 0 0"/>
         <axis xyz="1 0 0"/>
-        <limit lower="${-90/180*pi}" upper="${90/180*pi}" velocity="0.4" effort="1000"/>
+        <limit lower="${-180/180*pi}" upper="${180/180*pi}" velocity="0.4" effort="1000"/>
     </joint>
     <xacro:insert_position_transmission name="arm1_joint" />
 
@@ -171,7 +171,7 @@
         <child link="manipulator_link5"/>
         <origin xyz="0.027 0 0" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
-        <limit lower="${-90/180*pi}" upper="${90/180*pi}" velocity="0.4" effort="1000"/>
+        <limit lower="${-95/180*pi}" upper="${95/180*pi}" velocity="0.4" effort="1000"/>
     </joint>
     <xacro:insert_position_transmission name="arm5_joint" />
 

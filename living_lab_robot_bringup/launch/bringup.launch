@@ -43,7 +43,7 @@
     </include>
 
     <!-- MoveIt! -->
-    <include file="$(find living_lab_robot_moveit_config)/launch/move_group.launch"/>
+    <!-- <include file="$(find living_lab_robot_moveit_config)/launch/move_group.launch"/> -->
 
     <!-- Topic Relay -->
     <node name="relay_base_joint_states" pkg="topic_tools" type="relay" args="/base/joint_states /joint_states"/>
