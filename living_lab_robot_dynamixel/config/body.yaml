@@ -34,10 +34,10 @@ body_rotate:
   profile_acceleration: 0.4
   profile_velocity: 0.2
   homing:
-    enable: false
+    enable: true
     mode: 1
     direction: -1.0
-    max_speed: 0.02
+    max_speed: 0.06
 
 elevation:
   id: 4
@@ -53,6 +53,7 @@ elevation:
     direction: 1.0
     max_speed: 0.005
     current_limit: 2.0
+  origin_offset: -170000
 
 arm_base:
   id: 5
@@ -68,6 +69,7 @@ arm_base:
     direction: 1.0
     max_speed: 0.004
     current_limit: 1.2
+  origin_offset: 268000
 
 arm1:
   id: 9
@@ -87,7 +89,7 @@ arm2:
   inverse: -1.0
   profile_acceleration: 0.4
   profile_velocity: 0.4
-  origin_offset: 3000
+  origin_offset: 1500
 
 arm3:
   id: 11
