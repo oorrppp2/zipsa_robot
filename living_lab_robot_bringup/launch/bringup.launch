@@ -4,7 +4,6 @@
         <arg name="use_real_robot" value="true"/>
     </include>
 
-
     <!-- Front Laser Scanner -->
     <node name="urg_node_front" pkg="urg_node" type="urg_node" output="screen">
         <param name="serial_port" value="/dev/ttyACM1"/>
@@ -42,8 +41,11 @@
         <arg name="camera" value="head_d435"/>
     </include>
 
+    <!-- Navigation -->
+    <include file="$(find living_lab_robot_navigation)/launch/navigation.launch"/>
+
     <!-- MoveIt! -->
-    <!-- <include file="$(find living_lab_robot_moveit_config)/launch/move_group.launch"/> -->
+    <include file="$(find living_lab_robot_moveit_config)/launch/move_group.launch"/>
 
     <!-- Topic Relay -->
     <node name="relay_base_joint_states" pkg="topic_tools" type="relay" args="/base/joint_states /joint_states"/>

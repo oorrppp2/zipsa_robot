@@ -1,0 +1,8 @@
+# goal
+string target_name
+---
+# result
+bool result
+---
+# feedback
+bool is_moving
