@@ -41,6 +41,9 @@
         <arg name="camera" value="head_d435"/>
     </include>
 
+    <!-- ros_bridge -->
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
+
     <!-- Navigation -->
     <include file="$(find living_lab_robot_navigation)/launch/navigation.launch"/>
 
