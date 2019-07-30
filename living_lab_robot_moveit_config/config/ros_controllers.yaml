@@ -11,6 +11,7 @@ hardware_interface:
   joints:
     - body_rotate_joint
     - elevation_joint
+    - arm_base_joint
     - arm1_joint
     - arm2_joint
     - arm3_joint

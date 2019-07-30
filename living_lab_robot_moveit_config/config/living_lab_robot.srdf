@@ -11,14 +11,14 @@
     <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
     <group name="arm">
         <link name="body_assy" />
-        <link name="trans_module" />
-        <link name="manipulator_base" />
-        <link name="manipulator_link1" />
-        <link name="manipulator_link2" />
-        <link name="manipulator_link3" />
-        <link name="manipulator_link4" />
-        <link name="manipulator_link5" />
-        <link name="manipulator_link6" />
+        <link name="elevation_module" />
+        <link name="arm_base" />
+        <link name="arm_link1" />
+        <link name="arm_link2" />
+        <link name="arm_link3" />
+        <link name="arm_link4" />
+        <link name="arm_link5" />
+        <link name="arm_link6" />
         <link name="gripper" />
         <link name="end_effector" />
         <joint name="body_rotate_joint" />
@@ -46,112 +46,85 @@
         <joint name="body_rotate_joint" value="0" />
         <joint name="elevation_joint" value="-0.215" />
     </group_state>
-    <group_state name="sleep" group="arm">
-        <joint name="arm1_joint" value="0" />
-        <joint name="arm2_joint" value="1.5707" />
-        <joint name="arm3_joint" value="-3.1415" />
-        <joint name="arm4_joint" value="0" />
-        <joint name="arm5_joint" value="0" />
-        <joint name="arm6_joint" value="0" />
-        <joint name="arm_base_joint" value="-0.14" />
-        <joint name="body_rotate_joint" value="0" />
-        <joint name="elevation_joint" value="-0.215" />
-    </group_state>
     <!--PASSIVE JOINT: Purpose: this element is used to mark joints that are not actuated-->
     <passive_joint name="arm_base_joint" />
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
-    <disable_collisions link1="base_footprint" link2="base_link" reason="Adjacent" />
-    <disable_collisions link1="base_footprint" link2="body_assy" reason="Never" />
-    <disable_collisions link1="base_footprint" link2="gripper" reason="Never" />
-    <disable_collisions link1="base_footprint" link2="head_assy" reason="Never" />
-    <disable_collisions link1="base_footprint" link2="head_d435_link" reason="Never" />
-    <disable_collisions link1="base_footprint" link2="head_screen" reason="Never" />
-    <disable_collisions link1="base_footprint" link2="head_tilt_unit" reason="Never" />
-    <disable_collisions link1="base_footprint" link2="manipulator_base" reason="Never" />
-    <disable_collisions link1="base_footprint" link2="manipulator_link1" reason="Never" />
-    <disable_collisions link1="base_footprint" link2="manipulator_link2" reason="Never" />
-    <disable_collisions link1="base_footprint" link2="manipulator_link3" reason="Never" />
-    <disable_collisions link1="base_footprint" link2="manipulator_link4" reason="Never" />
-    <disable_collisions link1="base_footprint" link2="manipulator_link5" reason="Never" />
-    <disable_collisions link1="base_footprint" link2="omni_wheel_1" reason="Never" />
-    <disable_collisions link1="base_footprint" link2="omni_wheel_2" reason="Never" />
-    <disable_collisions link1="base_footprint" link2="omni_wheel_3" reason="Never" />
-    <disable_collisions link1="base_footprint" link2="trans_module" reason="Never" />
+    <disable_collisions link1="arm_base" link2="arm_link1" reason="Adjacent" />
+    <disable_collisions link1="arm_base" link2="arm_link2" reason="Never" />
+    <disable_collisions link1="arm_base" link2="base_link" reason="Never" />
+    <disable_collisions link1="arm_base" link2="body_assy" reason="Default" />
+    <disable_collisions link1="arm_base" link2="camera_link" reason="Never" />
+    <disable_collisions link1="arm_base" link2="elevation_module" reason="Adjacent" />
+    <disable_collisions link1="arm_base" link2="head_assy" reason="Never" />
+    <disable_collisions link1="arm_base" link2="head_screen" reason="Never" />
+    <disable_collisions link1="arm_base" link2="head_tilt_unit" reason="Never" />
+    <disable_collisions link1="arm_base" link2="omni_wheel_1" reason="Never" />
+    <disable_collisions link1="arm_base" link2="omni_wheel_2" reason="Never" />
+    <disable_collisions link1="arm_base" link2="omni_wheel_3" reason="Never" />
+    <disable_collisions link1="arm_link1" link2="arm_link2" reason="Adjacent" />
+    <disable_collisions link1="arm_link1" link2="arm_link3" reason="Never" />
+    <disable_collisions link1="arm_link1" link2="base_link" reason="Never" />
+    <disable_collisions link1="arm_link1" link2="camera_link" reason="Never" />
+    <disable_collisions link1="arm_link1" link2="head_assy" reason="Never" />
+    <disable_collisions link1="arm_link1" link2="head_screen" reason="Never" />
+    <disable_collisions link1="arm_link1" link2="head_tilt_unit" reason="Never" />
+    <disable_collisions link1="arm_link1" link2="omni_wheel_1" reason="Never" />
+    <disable_collisions link1="arm_link1" link2="omni_wheel_2" reason="Never" />
+    <disable_collisions link1="arm_link1" link2="omni_wheel_3" reason="Never" />
+    <disable_collisions link1="arm_link2" link2="arm_link3" reason="Adjacent" />
+    <disable_collisions link1="arm_link2" link2="camera_link" reason="Never" />
+    <disable_collisions link1="arm_link2" link2="head_tilt_unit" reason="Never" />
+    <disable_collisions link1="arm_link2" link2="omni_wheel_1" reason="Never" />
+    <disable_collisions link1="arm_link2" link2="omni_wheel_2" reason="Never" />
+    <disable_collisions link1="arm_link2" link2="omni_wheel_3" reason="Never" />
+    <disable_collisions link1="arm_link3" link2="arm_link4" reason="Adjacent" />
+    <disable_collisions link1="arm_link3" link2="gripper" reason="Never" />
+    <disable_collisions link1="arm_link4" link2="arm_link5" reason="Adjacent" />
+    <disable_collisions link1="arm_link4" link2="gripper" reason="Never" />
+    <disable_collisions link1="arm_link5" link2="gripper" reason="Adjacent" />
     <disable_collisions link1="base_link" link2="body_assy" reason="Adjacent" />
+    <disable_collisions link1="base_link" link2="camera_link" reason="Never" />
+    <disable_collisions link1="base_link" link2="elevation_module" reason="Never" />
     <disable_collisions link1="base_link" link2="head_assy" reason="Never" />
-    <disable_collisions link1="base_link" link2="head_d435_link" reason="Never" />
     <disable_collisions link1="base_link" link2="head_screen" reason="Never" />
     <disable_collisions link1="base_link" link2="head_tilt_unit" reason="Never" />
-    <disable_collisions link1="base_link" link2="manipulator_base" reason="Never" />
-    <disable_collisions link1="base_link" link2="manipulator_link1" reason="Never" />
     <disable_collisions link1="base_link" link2="omni_wheel_1" reason="Adjacent" />
     <disable_collisions link1="base_link" link2="omni_wheel_2" reason="Adjacent" />
     <disable_collisions link1="base_link" link2="omni_wheel_3" reason="Adjacent" />
-    <disable_collisions link1="base_link" link2="trans_module" reason="Never" />
+    <disable_collisions link1="body_assy" link2="camera_link" reason="Never" />
+    <disable_collisions link1="body_assy" link2="elevation_module" reason="Adjacent" />
     <disable_collisions link1="body_assy" link2="head_assy" reason="Adjacent" />
-    <disable_collisions link1="body_assy" link2="head_d435_link" reason="Never" />
     <disable_collisions link1="body_assy" link2="head_screen" reason="Never" />
     <disable_collisions link1="body_assy" link2="head_tilt_unit" reason="Never" />
     <disable_collisions link1="body_assy" link2="omni_wheel_1" reason="Never" />
     <disable_collisions link1="body_assy" link2="omni_wheel_2" reason="Never" />
     <disable_collisions link1="body_assy" link2="omni_wheel_3" reason="Never" />
-    <disable_collisions link1="body_assy" link2="trans_module" reason="Adjacent" />
-    <disable_collisions link1="gripper" link2="manipulator_link3" reason="Never" />
-    <disable_collisions link1="gripper" link2="manipulator_link4" reason="Never" />
-    <disable_collisions link1="gripper" link2="manipulator_link5" reason="Adjacent" />
-    <disable_collisions link1="head_assy" link2="head_d435_link" reason="Never" />
+    <disable_collisions link1="camera_link" link2="elevation_module" reason="Never" />
+    <disable_collisions link1="camera_link" link2="head_assy" reason="Never" />
+    <disable_collisions link1="camera_link" link2="head_screen" reason="Never" />
+    <disable_collisions link1="camera_link" link2="head_tilt_unit" reason="Adjacent" />
+    <disable_collisions link1="camera_link" link2="omni_wheel_1" reason="Never" />
+    <disable_collisions link1="camera_link" link2="omni_wheel_2" reason="Never" />
+    <disable_collisions link1="camera_link" link2="omni_wheel_3" reason="Never" />
+    <disable_collisions link1="elevation_module" link2="head_assy" reason="Never" />
+    <disable_collisions link1="elevation_module" link2="head_screen" reason="Never" />
+    <disable_collisions link1="elevation_module" link2="head_tilt_unit" reason="Never" />
+    <disable_collisions link1="elevation_module" link2="omni_wheel_1" reason="Never" />
+    <disable_collisions link1="elevation_module" link2="omni_wheel_2" reason="Never" />
+    <disable_collisions link1="elevation_module" link2="omni_wheel_3" reason="Never" />
     <disable_collisions link1="head_assy" link2="head_screen" reason="Adjacent" />
     <disable_collisions link1="head_assy" link2="head_tilt_unit" reason="Adjacent" />
-    <disable_collisions link1="head_assy" link2="manipulator_base" reason="Never" />
-    <disable_collisions link1="head_assy" link2="manipulator_link1" reason="Never" />
     <disable_collisions link1="head_assy" link2="omni_wheel_1" reason="Never" />
     <disable_collisions link1="head_assy" link2="omni_wheel_2" reason="Never" />
     <disable_collisions link1="head_assy" link2="omni_wheel_3" reason="Never" />
-    <disable_collisions link1="head_assy" link2="trans_module" reason="Never" />
-    <disable_collisions link1="head_d435_link" link2="head_screen" reason="Never" />
-    <disable_collisions link1="head_d435_link" link2="head_tilt_unit" reason="Adjacent" />
-    <disable_collisions link1="head_d435_link" link2="manipulator_base" reason="Never" />
-    <disable_collisions link1="head_d435_link" link2="manipulator_link1" reason="Never" />
-    <disable_collisions link1="head_d435_link" link2="manipulator_link2" reason="Never" />
-    <disable_collisions link1="head_d435_link" link2="omni_wheel_1" reason="Never" />
-    <disable_collisions link1="head_d435_link" link2="omni_wheel_2" reason="Never" />
-    <disable_collisions link1="head_d435_link" link2="omni_wheel_3" reason="Never" />
-    <disable_collisions link1="head_d435_link" link2="trans_module" reason="Never" />
     <disable_collisions link1="head_screen" link2="head_tilt_unit" reason="Never" />
-    <disable_collisions link1="head_screen" link2="manipulator_base" reason="Never" />
-    <disable_collisions link1="head_screen" link2="manipulator_link1" reason="Never" />
     <disable_collisions link1="head_screen" link2="omni_wheel_1" reason="Never" />
     <disable_collisions link1="head_screen" link2="omni_wheel_2" reason="Never" />
     <disable_collisions link1="head_screen" link2="omni_wheel_3" reason="Never" />
-    <disable_collisions link1="head_screen" link2="trans_module" reason="Never" />
-    <disable_collisions link1="head_tilt_unit" link2="manipulator_base" reason="Never" />
-    <disable_collisions link1="head_tilt_unit" link2="manipulator_link1" reason="Never" />
-    <disable_collisions link1="head_tilt_unit" link2="manipulator_link2" reason="Never" />
     <disable_collisions link1="head_tilt_unit" link2="omni_wheel_1" reason="Never" />
     <disable_collisions link1="head_tilt_unit" link2="omni_wheel_2" reason="Never" />
     <disable_collisions link1="head_tilt_unit" link2="omni_wheel_3" reason="Never" />
-    <disable_collisions link1="head_tilt_unit" link2="trans_module" reason="Never" />
-    <disable_collisions link1="manipulator_base" link2="manipulator_link1" reason="Adjacent" />
-    <disable_collisions link1="manipulator_base" link2="manipulator_link2" reason="Never" />
-    <disable_collisions link1="manipulator_base" link2="omni_wheel_1" reason="Never" />
-    <disable_collisions link1="manipulator_base" link2="omni_wheel_2" reason="Never" />
-    <disable_collisions link1="manipulator_base" link2="omni_wheel_3" reason="Never" />
-    <disable_collisions link1="manipulator_base" link2="trans_module" reason="Adjacent" />
-    <disable_collisions link1="manipulator_link1" link2="manipulator_link2" reason="Adjacent" />
-    <disable_collisions link1="manipulator_link1" link2="manipulator_link3" reason="Never" />
-    <disable_collisions link1="manipulator_link1" link2="omni_wheel_1" reason="Never" />
-    <disable_collisions link1="manipulator_link1" link2="omni_wheel_2" reason="Never" />
-    <disable_collisions link1="manipulator_link1" link2="omni_wheel_3" reason="Never" />
-    <disable_collisions link1="manipulator_link2" link2="manipulator_link3" reason="Adjacent" />
-    <disable_collisions link1="manipulator_link2" link2="omni_wheel_1" reason="Never" />
-    <disable_collisions link1="manipulator_link2" link2="omni_wheel_2" reason="Never" />
-    <disable_collisions link1="manipulator_link2" link2="omni_wheel_3" reason="Never" />
-    <disable_collisions link1="manipulator_link3" link2="manipulator_link4" reason="Adjacent" />
-    <disable_collisions link1="manipulator_link4" link2="manipulator_link5" reason="Adjacent" />
     <disable_collisions link1="omni_wheel_1" link2="omni_wheel_2" reason="Never" />
     <disable_collisions link1="omni_wheel_1" link2="omni_wheel_3" reason="Never" />
-    <disable_collisions link1="omni_wheel_1" link2="trans_module" reason="Never" />
     <disable_collisions link1="omni_wheel_2" link2="omni_wheel_3" reason="Never" />
-    <disable_collisions link1="omni_wheel_2" link2="trans_module" reason="Never" />
-    <disable_collisions link1="omni_wheel_3" link2="trans_module" reason="Never" />
 </robot>

@@ -39,7 +39,7 @@ joint_limits:
     max_acceleration: 0
   body_rotate_joint:
     has_velocity_limits: true
-    max_velocity: 1
+    max_velocity: 0.4
     has_acceleration_limits: false
     max_acceleration: 0
   elevation_joint:
