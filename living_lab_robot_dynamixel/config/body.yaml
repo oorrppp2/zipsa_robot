@@ -32,7 +32,7 @@ body_rotate:
   gear_ratio: 2.5
   inverse: 1.0
   profile_acceleration: 0.4
-  profile_velocity: 0.2
+  profile_velocity: 0.3
   homing:
     enable: true
     mode: 1
@@ -77,8 +77,8 @@ arm1:
   joint_name: arm1_joint
   gear_ratio: 1.0
   inverse: 1.0
-  profile_acceleration: 0.4
-  profile_velocity: 0.4
+  profile_acceleration: 0.6
+  profile_velocity: 0.6
   origin_offset: 1500
 
 arm2:
@@ -87,8 +87,8 @@ arm2:
   joint_name: arm2_joint
   gear_ratio: 1.0
   inverse: -1.0
-  profile_acceleration: 0.4
-  profile_velocity: 0.4
+  profile_acceleration: 0.6
+  profile_velocity: 0.6
   origin_offset: 1500
 
 arm3:
@@ -97,8 +97,8 @@ arm3:
   joint_name: arm3_joint
   gear_ratio: 1
   inverse: -1.0
-  profile_acceleration: 0.4
-  profile_velocity: 0.4
+  profile_acceleration: 0.6
+  profile_velocity: 0.6
   origin_offset: -62000
 
 arm4:
@@ -107,8 +107,8 @@ arm4:
   joint_name: arm4_joint
   gear_ratio: 1
   inverse: 1.0
-  profile_acceleration: 0.4
-  profile_velocity: 0.4
+  profile_acceleration: 0.6
+  profile_velocity: 0.6
 
 arm5:
   id: 13
@@ -116,8 +116,8 @@ arm5:
   joint_name: arm5_joint
   gear_ratio: 1.0
   inverse: -1.0
-  profile_acceleration: 0.4
-  profile_velocity: 0.4
+  profile_acceleration: 0.6
+  profile_velocity: 0.6
   origin_offset: 250
 
 arm6:
@@ -126,8 +126,8 @@ arm6:
   joint_name: arm6_joint
   gear_ratio: 1.0
   inverse: 1.0
-  profile_acceleration: 0.4
-  profile_velocity: 0.4
+  profile_acceleration: 0.6
+  profile_velocity: 0.6
 
 gripper:
   id: 15

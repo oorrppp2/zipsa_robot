@@ -38,7 +38,6 @@
     <include file="$(find realsense2_camera)/launch/rs_rgbd.launch">
         <arg name="enable_infra1" value="false"/>
         <arg name="enable_infra2" value="false"/>
-        <arg name="camera" value="head_d435"/>
     </include>
 
     <!-- Polly Speech -->
