@@ -34,6 +34,18 @@ body:
       - arm4_joint
       - arm5_joint
       - arm6_joint
+    constraints:
+      goal_time: 30.0
+      stopped_velocity_tolerance: 0.05
+      shoulder_pan_joint: {trajectory: 0.1, goal: 0.1}
+      shoulder_lift_joint: {trajectory: 0.1, goal: 0.1}
+      elbow_joint: {trajectory: 0.1, goal: 0.1}
+      wrist_1_joint: {trajectory: 0.1, goal: 0.1}
+      wrist_2_joint: {trajectory: 0.1, goal: 0.1}
+      wrist_3_joint: {trajectory: 0.1, goal: 0.1}
+    stop_trajectory_duration: 0.5
+    state_publish_rate:  50
+    action_monitor_rate: 10
 
   body_rotate_controller:
     type: position_controllers/JointPositionController
