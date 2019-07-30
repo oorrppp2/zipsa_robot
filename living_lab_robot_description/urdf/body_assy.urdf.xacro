@@ -1,17 +1,16 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-
     <link name="body_assy">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://living_lab_robot_description/meshes/c4_body_assy.dae" scale="1 1 1"/>
+                <mesh filename="package://living_lab_robot_description/meshes/body_assy.dae" scale="1 1 1"/>
             </geometry>
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://living_lab_robot_description/meshes/c4_body_assy.dae" scale="1 1 1"/>
+                <mesh filename="package://living_lab_robot_description/meshes/body_assy.dae" scale="1 1 1"/>
             </geometry>
         </collision>
         <inertial>
@@ -26,21 +25,21 @@
         <child link="body_assy"/>
         <origin xyz="0 0 0.242" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
-        <limit lower="${-180/180*pi}" upper="${180/180*pi}" velocity="1.0" effort="1000"/>
+        <limit lower="${-200/180*pi}" upper="${200/180*pi}" velocity="1.0" effort="1000"/>
     </joint>
     <xacro:insert_position_transmission name="body_rotate_joint" />
 
-    <link name="trans_module">
+    <link name="elevation_module">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://living_lab_robot_description/meshes/c4_trans_module.dae" scale="1 1 1"/>
+                <mesh filename="package://living_lab_robot_description/meshes/elevation_module.dae" scale="1 1 1"/>
             </geometry>
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://living_lab_robot_description/meshes/c4_trans_module.dae" scale="1 1 1"/>
+                <mesh filename="package://living_lab_robot_description/meshes/elevation_module.dae" scale="1 1 1"/>
             </geometry>
         </collision>
         <inertial>
@@ -52,11 +51,10 @@
 
     <joint name="elevation_joint" type="prismatic">
         <parent link="body_assy"/>
-        <child link="trans_module"/>
-        <origin xyz="-0.05 0 0.660" rpy="0 0 0"/>
+        <child link="elevation_module"/>
+        <origin xyz="-0.05 0 0.665" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
         <limit lower="-0.45" upper="0" velocity="0.04" effort="1000"/>
     </joint>
     <xacro:insert_position_transmission name="elevation_joint" />
-
 </robot>

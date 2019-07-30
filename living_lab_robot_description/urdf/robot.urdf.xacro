@@ -6,8 +6,7 @@
 
     <xacro:include filename="$(find living_lab_robot_description)/urdf/mobile_assy.urdf.xacro"/>
     <xacro:include filename="$(find living_lab_robot_description)/urdf/body_assy.urdf.xacro"/>
-    <xacro:include filename="$(find living_lab_robot_description)/urdf/manipulator_arm.urdf.xacro"/>
+    <xacro:include filename="$(find living_lab_robot_description)/urdf/arm.urdf.xacro"/>
     <xacro:include filename="$(find living_lab_robot_description)/urdf/gripper.urdf.xacro"/>
     <xacro:include filename="$(find living_lab_robot_description)/urdf/head_assy.urdf.xacro"/>
-
 </robot>

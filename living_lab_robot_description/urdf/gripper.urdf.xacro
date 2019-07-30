@@ -1,15 +1,14 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-
     <link name="gripper">
         <visual>
-            <origin xyz="0 0 0" rpy="0 ${90/180*pi} 0"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
                 <mesh filename="package://living_lab_robot_description/meshes/gripper.dae" scale="1 1 1"/>
             </geometry>
         </visual>
         <collision>
-            <origin xyz="0 0 0" rpy="0 ${90/180*pi} 0"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
                 <mesh filename="package://living_lab_robot_description/meshes/gripper.dae" scale="1 1 1"/>
             </geometry>
@@ -22,7 +21,7 @@
     </link>
 
     <joint name="gripper_mount_joint" type="fixed">
-        <parent link="manipulator_link6"/>
+        <parent link="arm_link6"/>
         <child link="gripper"/>
         <origin xyz="0 0 0" rpy="0 0 0"/>
     </joint>
@@ -40,5 +39,4 @@
         <child link="end_effector"/>
         <origin xyz="0.096 0 0" rpy="0 0 0"/>
     </joint>
-
 </robot>
