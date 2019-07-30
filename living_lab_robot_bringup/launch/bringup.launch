@@ -41,6 +41,9 @@
         <arg name="camera" value="head_d435"/>
     </include>
 
+    <!-- Polly Speech -->
+    <include file="$(find polly_speech)/launch/bringup.launch"/>
+
     <!-- ros_bridge -->
     <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
 
