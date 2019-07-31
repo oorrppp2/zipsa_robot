@@ -1,0 +1,11 @@
+<launch>
+
+  <!-- loads moveit_controller_manager on the parameter server which is taken as argument
+    if no argument is passed, moveit_simple_controller_manager will be set -->
+  <arg name="moveit_controller_manager" default="moveit_simple_controller_manager/MoveItSimpleControllerManager" />
+  <param name="moveit_controller_manager" value="$(arg moveit_controller_manager)"/>
+  <param name="trajectory_execution/controller_connection_timeout" value="1200"/>
+
+  <!-- loads ros_controllers to the param server -->
+  <rosparam file="$(find living_lab_robot_moveit_config)/config/controllers_gazebo.yaml"/>
+</launch>
