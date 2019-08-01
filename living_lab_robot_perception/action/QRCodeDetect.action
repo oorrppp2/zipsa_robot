@@ -1,0 +1,9 @@
+#goal
+---
+#result
+string code_data
+geometry_msgs/PoseStamped pose
+bool result
+---
+#feedback
+bool is_searching

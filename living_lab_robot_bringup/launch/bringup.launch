@@ -51,6 +51,14 @@
 
     <!-- MoveIt! -->
     <include file="$(find living_lab_robot_moveit_config)/launch/move_group.launch"/>
+    <node name="moveit_client_node" type="moveit_client_node.py" pkg="living_lab_robot_moveit_client" output="screen" respawn="true"/>
+
+    <!-- QR Code Detector -->
+    <node name="qrcode_detector" type="qrcode_detector_node" pkg="qrcode_detector_ros" output="screen">
+        <remap from="image_raw" to="/camera/color/image_raw" />
+        <remap from="points" to="/camera/depth_registered/points"/>
+    </node>
+    <node name="qrcode_detector_action" type="qrcode_detector_node.py" pkg="living_lab_robot_perception" output="screen"/>
 
     <!-- Topic Relay -->
     <node name="relay_base_joint_states" pkg="topic_tools" type="relay" args="/base/joint_states /joint_states"/>

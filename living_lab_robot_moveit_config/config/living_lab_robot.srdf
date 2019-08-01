@@ -57,6 +57,17 @@
         <joint name="body_rotate_joint" value="0" />
         <joint name="elevation_joint" value="-0.215" />
     </group_state>
+    <group_state name="grasp_done" group="arm">
+        <joint name="arm1_joint" value="0" />
+        <joint name="arm2_joint" value="1.5707" />
+        <joint name="arm3_joint" value="-3.1415" />
+        <joint name="arm4_joint" value="0" />
+        <joint name="arm5_joint" value="1.5707" />
+        <joint name="arm6_joint" value="1.5707" />
+        <joint name="arm_base_joint" value="0" />
+        <joint name="body_rotate_joint" value="0" />
+        <joint name="elevation_joint" value="0" />
+    </group_state>
     <!--PASSIVE JOINT: Purpose: this element is used to mark joints that are not actuated-->
     <passive_joint name="arm_base_joint" />
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->

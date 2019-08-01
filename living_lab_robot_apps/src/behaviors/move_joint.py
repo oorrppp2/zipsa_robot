@@ -13,7 +13,6 @@ class MoveJoint(py_trees.behaviour.Behaviour):
         self.topic_name = controller_name + "/command"
         self.target_command = command
         self.published = False
-        rospy.loginfo( self.topic_name)
 
     def setup(self, timeout):
         self.publisher = rospy.Publisher(self.topic_name, Float64, queue_size=10)
@@ -26,4 +25,6 @@ class MoveJoint(py_trees.behaviour.Behaviour):
             self.published = True
             return py_trees.common.Status.RUNNING
 
+
+        self.published = False
         return py_trees.common.Status.SUCCESS

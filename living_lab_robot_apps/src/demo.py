@@ -16,6 +16,12 @@ from behaviors.speech import *
 from behaviors.move_arm_controller import *
 from behaviors.move_joint import *
 from behaviors.lamp_control import *
+from behaviors.wait_time import *
+from behaviors.actions import *
+
+from living_lab_robot_moveit_client.msg import PlanExecuteNamedPoseAction, PlanExecuteNamedPoseGoal
+from living_lab_robot_moveit_client.msg import PlanExecutePoseAction, PlanExecutePoseGoal
+from living_lab_robot_perception.msg import QRCodeDetectAction, QRCodeDetectGoal
 
 
 def create_root():
@@ -32,6 +38,8 @@ def create_root():
     turn_back = BodyRotateOnly(name="turn_back", target_pose=3.14)
     turn_front = BodyRotateOnly(name="turn_front", target_pose=0.0)
 
+    gripper_close = MoveJoint(name="gripper_close", controller_name="/body/gripper_controller", command=0.0)
+    gripper_open = MoveJoint(name="gripper_open", controller_name="/body/gripper_controller", command=1.0)
 
     root = py_trees.composites.Parallel("demo")
     idle = py_trees.behaviours.Running(name="done")
@@ -196,7 +204,7 @@ def create_root():
     goal_grasp = move_base_msgs.msg.MoveBaseGoal()
     goal_grasp.target_pose.header.frame_id = "map"
     goal_grasp.target_pose.header.stamp = rospy.Time.now()
-    goal_grasp.target_pose.pose.position.x = 0.96
+    goal_grasp.target_pose.pose.position.x = 0.92
     goal_grasp.target_pose.pose.position.y = -1.2
 
     quat1 = quaternion_from_euler(0, 0, -1.5707)
@@ -220,7 +228,143 @@ def create_root():
         ]
     )
 
-    root.add_children([scene1, scene2, scene3, scene4, scene5, idle])
+    # Scene #6
+
+    scene6 = py_trees.composites.Sequence("scene6_grasp")
+
+    wait_scene6_intro = py_trees_ros.subscribers.CheckData(name="wait_intro_demo", topic_name="/wait_select_scene", topic_type=String,
+        variable_name="data", expected_value="grasp6")
+
+    wait_time1 = WaitForTime(name="delay_4.5s", time=4.5)
+    wait_time2 = WaitForTime(name="delay_1s", time=1.0)
+    grasp_head_tilt_down = MoveJoint(name="tilt_down", controller_name="/head/tilt_controller", command=0.5)
+
+    find_qr_code = QRCodeActionClient(
+        name="find_qr_code",
+        action_namespace="/qrcode_detect",
+        action_spec=QRCodeDetectAction,
+        action_goal=QRCodeDetectGoal()
+    )
+
+    goal_grap_ready = PlanExecuteNamedPoseGoal()
+    goal_grap_ready.target_name ="grasp_ready"
+
+    move_manipulator_to_grasp_ready = py_trees_ros.actions.ActionClient(
+        name="move_manipulator_to_grasp_ready",
+        action_namespace="/plan_and_execute_named_pose",
+        action_spec=PlanExecuteNamedPoseAction,
+        action_goal=goal_grap_ready
+    )
+
+    goal_grap_done = PlanExecuteNamedPoseGoal()
+    goal_grap_done.target_name ="grasp_done"
+
+    move_manipulator_to_grasp_done = py_trees_ros.actions.ActionClient(
+        name="move_manipulator_to_grasp_done",
+        action_namespace="/plan_and_execute_named_pose",
+        action_spec=PlanExecuteNamedPoseAction,
+        action_goal=goal_grap_done
+    )
+
+    move_manipulator_to_grasp1 = GraspActionClient(
+        name="move_manipulator_to_grasp1",
+        action_namespace="/plan_and_execute_pose",
+        action_spec=PlanExecutePoseAction,
+        action_goal=PlanExecutePoseGoal()
+    )
+
+    move_manipulator_to_grasp2 = GraspActionClient(
+        name="move_manipulator_to_grasp2",
+        action_namespace="/plan_and_execute_pose",
+        action_spec=PlanExecutePoseAction,
+        action_goal=PlanExecutePoseGoal(),
+        x_offset=0.03
+    )
+
+    move_manipulator_to_grasp3 = GraspActionClient(
+        name="move_manipulator_to_grasp3",
+        action_namespace="/plan_and_execute_pose",
+        action_spec=PlanExecutePoseAction,
+        action_goal=PlanExecutePoseGoal(),
+        z_offset=0.10
+    )
+
+    move_manipulator_to_grasp4 = GraspActionClient(
+        name="move_manipulator_to_grasp4",
+        action_namespace="/plan_and_execute_pose",
+        action_spec=PlanExecutePoseAction,
+        action_goal=PlanExecutePoseGoal(),
+        x_offset=-0.04,
+        z_offset=0.10
+    )
+
+    goal_exit = move_base_msgs.msg.MoveBaseGoal()
+    goal_exit.target_pose.header.frame_id = "map"
+    goal_exit.target_pose.header.stamp = rospy.Time.now()
+    goal_exit.target_pose.pose.position.x = 3.9
+    goal_exit.target_pose.pose.position.y = -1.3
+
+    quat1 = quaternion_from_euler(0, 0, 1.5707)
+    goal_exit.target_pose.pose.orientation.x = quat1[0]
+    goal_exit.target_pose.pose.orientation.y = quat1[1]
+    goal_exit.target_pose.pose.orientation.z = quat1[2]
+    goal_exit.target_pose.pose.orientation.w = quat1[3]
+
+    move_to_exit = py_trees_ros.actions.ActionClient(
+        name="move to exit",
+        action_namespace="/move_base",
+        action_spec=move_base_msgs.msg.MoveBaseAction,
+        action_goal=goal_exit
+    )
+
+    scene6.add_children(
+        [ wait_scene6_intro,
+          move_arm_base1,
+          wait_time1,
+          grasp_head_tilt_down,
+          wait_time2,
+          find_qr_code,
+          wait_time2,
+          move_manipulator_to_grasp_ready,
+          wait_time2,
+          move_manipulator_to_grasp1,
+          move_manipulator_to_grasp2,
+          gripper_close,
+          wait_time2,
+          move_manipulator_to_grasp3,
+          move_manipulator_to_grasp4,
+          move_manipulator_to_grasp_done,
+          intro_head_tilt_home,
+          wait_time1,
+          move_to_exit,
+          gripper_open
+        ]
+    )
+
+
+    debug_behaviors = py_trees.composites.Sequence("debug_behaviors")
+
+    wait_debug_behaviors_intro = py_trees_ros.subscribers.CheckData(name="wait_intro_demo", topic_name="/wait_select_scene", topic_type=String,
+        variable_name="data", expected_value="debug_home")
+
+    goal_grap_home = PlanExecuteNamedPoseGoal()
+    goal_grap_home.target_name ="home"
+
+    move_manipulator_to_grasp_home = py_trees_ros.actions.ActionClient(
+        name="move_manipulator_to_grasp_home",
+        action_namespace="/plan_and_execute_named_pose",
+        action_spec=PlanExecuteNamedPoseAction,
+        action_goal=goal_grap_home
+    )
+
+    debug_behaviors.add_children([
+        wait_debug_behaviors_intro,
+        move_manipulator_to_grasp_home,
+        move_arm_base2,
+        move_to_home
+    ])
+
+    root.add_children([scene1, scene2, scene3, scene4, scene5, scene6, debug_behaviors, idle])
 
 
     # root.add_children([wait_for_intro_selection, turn_back, wait_trigger, say1, say2, turn_front, say3, head_tilt_down, say4, head_tilt_home, lamp_intro, lamp_mode2, move_arm_base1, say6, move_arm_base2])
@@ -231,7 +375,7 @@ def shutdown(behaviour_tree):
 
 if __name__ == '__main__':
     rospy.init_node('app_introduction', anonymous=False)
-    py_trees.logging.level = py_trees.logging.Level.DEBUG
+    #py_trees.logging.level = py_trees.logging.Level.DEBUG
 
     root = create_root()
     behaviour_tree = py_trees_ros.trees.BehaviourTree(root)
@@ -239,4 +383,5 @@ if __name__ == '__main__':
     if not behaviour_tree.setup(timeout=15):
         console.logerror("failed to setup the tree, aborting.")
         sys.exit(1)
+    print('initialize...')
     behaviour_tree.tick_tock(500)
