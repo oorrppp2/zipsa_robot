@@ -19,8 +19,8 @@ pan:
   joint_name: head_pan_joint
   gear_ratio: 1.333333
   inverse: 1.0
-  profile_acceleration: 1.0
-  profile_velocity: 0.6
+  profile_acceleration: 0.8
+  profile_velocity: 0.8
   origin_offset: -1200
   homing:
     enable: true
@@ -34,5 +34,5 @@ tilt:
   joint_name: head_tilt_joint
   gear_ratio: 1.0
   inverse: 1.0
-  profile_acceleration: 0.6
-  profile_velocity: 0.2
+  profile_acceleration: 1.2
+  profile_velocity: 0.6

@@ -3,14 +3,14 @@
     <arg name="body_port" default="/dev/ttyUSB2"/>
     <arg name="head_port" default="/dev/ttyUSB1"/>
     <arg name="baudrate" default="1000000"/>
-    <arg name="rate" default="50"/>
+    <arg name="rate" default="25"/>
 
     <arg name="base_config" default="$(find living_lab_robot_dynamixel)/config/base.yaml"/>
     <arg name="body_config" default="$(find living_lab_robot_dynamixel)/config/body.yaml"/>
     <arg name="head_config" default="$(find living_lab_robot_dynamixel)/config/head.yaml"/>
 
     <group ns="base">
-        <node name="base_dynamixel_node" type="dynamixel_ros_control_node" pkg="dynamixel_ros_control" output="screen">
+        <node name="base_dynamixel_node" type="dynamixel_ros_control_node" pkg="dynamixel_ros_control" output="screen" required="true">
             <rosparam file="$(arg base_config)" command="load"/>
             <param name="port_name" value="$(arg base_port)"/>
             <param name="baudrate" value="$(arg baudrate)"/>
@@ -19,7 +19,7 @@
     </group>
 
     <group ns="body">
-        <node name="body_dynamixel_node" type="dynamixel_ros_control_node" pkg="dynamixel_ros_control" output="screen">
+        <node name="body_dynamixel_node" type="dynamixel_ros_control_node" pkg="dynamixel_ros_control" output="screen" required="true">
             <rosparam file="$(arg body_config)" command="load"/>
             <param name="port_name" value="$(arg body_port)"/>
             <param name="baudrate" value="$(arg baudrate)"/>
@@ -28,7 +28,7 @@
     </group>
 
     <group ns="head">
-        <node name="head_dynamixel_node" type="dynamixel_ros_control_node" pkg="dynamixel_ros_control" output="screen">
+        <node name="head_dynamixel_node" type="dynamixel_ros_control_node" pkg="dynamixel_ros_control" output="screen" required="true">
             <rosparam file="$(arg head_config)" command="load"/>
             <param name="port_name" value="$(arg head_port)"/>
             <param name="baudrate" value="$(arg baudrate)"/>

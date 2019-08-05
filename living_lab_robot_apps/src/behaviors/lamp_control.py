@@ -24,7 +24,10 @@ class LampControl(py_trees.behaviour.Behaviour):
         if not self.published:
             json_data = {"mode": self.lamp_mode, "args": self.lamp_args}
             self.publisher.publish(json.dumps(json_data))
+            rospy.sleep(0.02)
             self.published = True
             return py_trees.common.Status.RUNNING
 
+        rospy.sleep(0.02)
+        self.published = False
         return py_trees.common.Status.SUCCESS

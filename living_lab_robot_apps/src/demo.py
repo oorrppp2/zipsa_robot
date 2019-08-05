@@ -61,17 +61,18 @@ def create_root():
 
     intro_iot = py_trees.composites.Parallel('iot_intro')
     intro_say5 = Say(name="say_hello2", text="IoT를 이용해 집안 여러 가전제품을 관리할 수 있습니다.")
-    intro_iot.add_children([lamp_mode2, intro_say5])
+    #intro_iot.add_children([])
 
     move_arm_base1 = MoveJoint(name="move_arm_base", controller_name="/body/arm_base_controller", command=0.0)
     intro_say6 = Say(name="say_hello3", text='<break time="1.0s"/> 또, 로봇 팔을 이용해, 간단한 심부름 서비스를 제공할 수 있습니다.')
+    intro_say7 = Say(name="say_hello4", text='<break time="1.0s"/> 이제 거실로 이동하도록 하겠습니다.')
     move_arm_base2 = MoveJoint(name="move_arm_base", controller_name="/body/arm_base_controller", command=-0.15)
 
     scene1.add_children(
         [ wait_scene1_intro, turn_back,
           wait_start_trigger, intro_say1,
           intro_say2, turn_front, intro_say3, intro_head_tilt_down, intro_say4, intro_head_tilt_home,
-          intro_iot, lamp_mode1, move_arm_base1, intro_say6, move_arm_base2 ]
+          lamp_mode2, intro_say5, lamp_mode1, move_arm_base1, intro_say6, move_arm_base2, intro_say7 ]
     )
 
     #
@@ -103,7 +104,7 @@ def create_root():
     )
 
     scene2_say1 = Say(name="scene2_say1", text='<break time="1s"/> 저는 원격 프로젝션 기술을 통해, 원격 문서 공유 서비스와 원격 코칭 서비스를 지원할 수 있습니다.')
-    scene2_say2 = Say(name="scene2_say2", text='원격 서비스에 대한 구체적인 데모는 죄송하지만 다음에 준비되는데로 보여드리겠습니다. <break time="1s"/> 이제 부엌을 구경해 보실까요?')
+    scene2_say2 = Say(name="scene2_say2", text='원격 서비스에 대한 구체적인 데모는 죄송하지만 다음에 보여드리겠습니다. <break time="1s"/> 자, 이제 부엌을 구경해 보실까요?')
 
     scene2.add_children(
         [ wait_scene2_intro,
@@ -142,7 +143,7 @@ def create_root():
         action_goal=goal_kitchen
     )
 
-    scene3_say1 = Say(name="scene3_say1", text='<break time="1s"/> 이 스마트 식탁은, 음식을 인식해서 영양정보를 제공해줍니다. 참 편하겠죠?')
+    scene3_say1 = Say(name="scene3_say1", text='<break time="1s"/> 이 스마트 식탁은, 음식을 인식해서 영양정보를 제공해줍니다. 스마트 식탁에 대한 데모는 다음에 보여드리도록 하겠습니다.')
 
     scene3.add_children(
         [ wait_scene3_intro,
@@ -180,7 +181,7 @@ def create_root():
         action_goal=goal_home
     )
 
-    scene4_say1 = Say(name="scene4_say1", text='<break time="1s"/> 지켜봐 주셔서 감사합니다. 이상으로 리빙랩 소개를 마치도록 하겠습니다.')
+    scene4_say1 = Say(name="scene4_say1", text='<break time="1s"/> 저의 데모를 지켜봐 주셔서 감사합니다. 이상으로 리빙랩 소개를 마치도록 하겠습니다. 다음엔 좀더 발전된 모습의 데모를 보여드릴수 있도록 하겠습니다.')
     scene4_say2 = Say(name="scene4_say2", text='소소하지만 제가 준비한 선물을 드리도록 하겠습니다. 잠시만 기다려주세요!')
 
     scene4.add_children(
@@ -205,7 +206,7 @@ def create_root():
     goal_grasp.target_pose.header.frame_id = "map"
     goal_grasp.target_pose.header.stamp = rospy.Time.now()
     goal_grasp.target_pose.pose.position.x = 0.92
-    goal_grasp.target_pose.pose.position.y = -1.2
+    goal_grasp.target_pose.pose.position.y = -1.05
 
     quat1 = quaternion_from_euler(0, 0, -1.5707)
     goal_grasp.target_pose.pose.orientation.x = quat1[0]
@@ -237,7 +238,7 @@ def create_root():
 
     wait_time1 = WaitForTime(name="delay_4.5s", time=4.5)
     wait_time2 = WaitForTime(name="delay_1s", time=1.0)
-    grasp_head_tilt_down = MoveJoint(name="tilt_down", controller_name="/head/tilt_controller", command=0.5)
+    grasp_head_tilt_down = MoveJoint(name="tilt_down", controller_name="/head/tilt_controller", command=0.45)
 
     find_qr_code = QRCodeActionClient(
         name="find_qr_code",
@@ -245,6 +246,8 @@ def create_root():
         action_spec=QRCodeDetectAction,
         action_goal=QRCodeDetectGoal()
     )
+
+    scene6_say1 = Say(name="scene4_say2", text='좋은 시간이 되셨길 바랍니다. 감사합니다. 다음에 또 찾아주세요!')
 
     goal_grap_ready = PlanExecuteNamedPoseGoal()
     goal_grap_ready.target_name ="grasp_ready"
@@ -337,7 +340,8 @@ def create_root():
           intro_head_tilt_home,
           wait_time1,
           move_to_exit,
-          gripper_open
+          gripper_open,
+          scene6_say1
         ]
     )
 
@@ -361,6 +365,7 @@ def create_root():
         wait_debug_behaviors_intro,
         move_manipulator_to_grasp_home,
         move_arm_base2,
+        wait_time2,
         move_to_home
     ])
 

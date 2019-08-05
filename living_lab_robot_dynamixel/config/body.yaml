@@ -32,7 +32,7 @@ body_rotate:
   gear_ratio: 2.5
   inverse: 1.0
   profile_acceleration: 0.4
-  profile_velocity: 0.3
+  profile_velocity: 0.4
   homing:
     enable: true
     mode: 1
