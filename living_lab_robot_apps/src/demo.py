@@ -8,7 +8,8 @@ import py_trees.console as console
 import rospy
 import sys
 
-from std_msgs.msg import Empty, String
+from std_msgs.msg import Empty, String, Bool
+from geometry_msgs.msg import PointStamped
 import move_base_msgs
 from tf.transformations import quaternion_from_euler
 
@@ -18,6 +19,7 @@ from behaviors.move_joint import *
 from behaviors.lamp_control import *
 from behaviors.wait_time import *
 from behaviors.actions import *
+from behaviors.gaze_sync_control import *
 
 from living_lab_robot_moveit_client.msg import PlanExecuteNamedPoseAction, PlanExecuteNamedPoseGoal
 from living_lab_robot_moveit_client.msg import PlanExecutePoseAction, PlanExecutePoseGoal
@@ -34,6 +36,9 @@ def create_root():
     lamp_mode3r = LampControl(name="lamp_mode_3r", mode=3, args="{\"color\": \"r\"}")
     lamp_mode3g = LampControl(name="lamp_mode_3g", mode=3, args="{\"color\": \"g\"}")
     lamp_mode3b = LampControl(name="lamp_mode_3b", mode=3, args="{\"color\": \"b\"}")
+
+    gaze_sync_on = HeadGazeSyncControl(name="gaze_sync_on", data=True)
+    gaze_sync_off = HeadGazeSyncControl(name="gaze_sync_on", data=False)
 
     turn_back = BodyRotateOnly(name="turn_back", target_pose=3.14)
     turn_front = BodyRotateOnly(name="turn_front", target_pose=0.0)
@@ -143,6 +148,14 @@ def create_root():
         action_goal=goal_kitchen
     )
 
+    point1 = PointStamped()
+    point1.header.frame_id = "base_footprint"
+    point1.point.x = 1.0
+    point1.point.y = -1.2
+    point1.point.z = 1.0
+
+    view_table_on_kitchen = HeadSetGazeTarget(name="view_table_on_kitchen", target=point1)
+
     scene3_say1 = Say(name="scene3_say1", text='<break time="1s"/> 이 스마트 식탁은, 음식을 인식해서 영양정보를 제공해줍니다. 스마트 식탁에 대한 데모는 다음에 보여드리도록 하겠습니다.')
 
     scene3.add_children(
@@ -150,7 +163,11 @@ def create_root():
           lamp_mode3g,
           move_to_kitchen,
           lamp_mode1,
-          scene3_say1]
+          gaze_sync_off,
+          view_table_on_kitchen,
+          scene3_say1,
+          gaze_sync_on,
+          intro_head_tilt_home]
     )
 
     #
@@ -247,6 +264,14 @@ def create_root():
         action_goal=QRCodeDetectGoal()
     )
 
+    point2 = PointStamped()
+    point2.header.frame_id = "base_footprint"
+    point2.point.x = 1.0
+    point2.point.y = 0.0
+    point2.point.z = 1.0
+
+    view_code_on_grasp = HeadSetGazeTarget(name="view_code_on_grasp", target=point2)
+
     scene6_say1 = Say(name="scene4_say2", text='좋은 시간이 되셨길 바랍니다. 감사합니다. 다음에 또 찾아주세요!')
 
     goal_grap_ready = PlanExecuteNamedPoseGoal()
@@ -281,7 +306,7 @@ def create_root():
         action_namespace="/plan_and_execute_pose",
         action_spec=PlanExecutePoseAction,
         action_goal=PlanExecutePoseGoal(),
-        x_offset=0.03
+        x_offset=0.02
     )
 
     move_manipulator_to_grasp3 = GraspActionClient(
@@ -320,11 +345,14 @@ def create_root():
         action_goal=goal_exit
     )
 
+
+
     scene6.add_children(
         [ wait_scene6_intro,
           move_arm_base1,
           wait_time1,
-          grasp_head_tilt_down,
+          gaze_sync_off,
+          view_code_on_grasp,
           wait_time2,
           find_qr_code,
           wait_time2,
@@ -337,6 +365,7 @@ def create_root():
           move_manipulator_to_grasp3,
           move_manipulator_to_grasp4,
           move_manipulator_to_grasp_done,
+          gaze_sync_on,
           intro_head_tilt_home,
           wait_time1,
           move_to_exit,

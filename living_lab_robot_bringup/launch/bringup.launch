@@ -62,6 +62,12 @@
     </node>
     <node name="qrcode_detector_action" type="qrcode_detector_node.py" pkg="living_lab_robot_perception" output="screen"/>
 
+    <!-- Head Pan/Tilt Controller -->
+    <node name="pan_tilt_controller" type="head_pan_controller.py" pkg="living_lab_robot_control" output="screen" />
+
+    <!-- Topic Throttle for Point Cloud -->
+    <node name="points_throttler" type="throttle" pkg="topic_tools" args="messages /camera/depth_registered/points 2.0 /throttled_depth_registered_points"/>
+
     <!-- Topic Relay -->
     <node name="relay_base_joint_states" pkg="topic_tools" type="relay" args="/base/joint_states /joint_states"/>
     <node name="relay_body_joint_states" pkg="topic_tools" type="relay" args="/body/joint_states /joint_states"/>

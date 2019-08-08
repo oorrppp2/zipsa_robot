@@ -103,8 +103,8 @@
     </link>
 
     <joint name="gaze_fixed_joint" type="fixed">
-        <parent link="head_tilt_unit"/>
+        <parent link="head_assy"/>
         <child link="gaze_link"/>
-        <origin xyz="0.04 0 0.0185" rpy="0 0 0"/>
+        <origin xyz="0.1 0 0.0185" rpy="0 0 0"/>
     </joint>
 </robot>
