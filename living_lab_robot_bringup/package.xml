@@ -17,6 +17,12 @@
   <depend>living_lab_robot_gazebo</depend>
   <depend>living_lab_robot_moveit_config</depend>
   <depend>living_lab_robot_navigation</depend>
+  <depend>living_lab_robot_apps</depend>
+  <depend>living_lab_robot_dynamixel</depend>
+  <depend>living_lab_robot_moveit_client</depend>
+  <depend>living_lab_robot_perception</depend>
+  <depend>living_lab_robot_teleop_joy</depend>
+  <depend>living_lab_robot_twist_mux</depend>
 
   <export>
   </export>

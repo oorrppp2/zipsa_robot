@@ -12,6 +12,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <depend>navigation</depend>
+  <depend>urg_node</depend>
   <depend>teb_local_planner</depend>
 
   <export>
