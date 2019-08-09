@@ -1,0 +1,6 @@
+- git: {local-name: polly_speech, uri: "https://github.com/byeongkyu/polly_speech.git"}
+- git: {local-name: google_cloud_speech, uri: "https://github.com/byeongkyu/google_cloud_speech.git"}
+- git: {local-name: siri_wave_screen, uri: "https://github.com/byeongkyu/siri_wave_screen.git"}
+- git: {local-name: dynamixel_ros_control, uri: "https://github.com/byeongkyu/dynamixel_ros_control.git"}
+- git: {local-name: qrcode_detector_ros, uri: "https://github.com/byeongkyu/qrcode_detector_ros.git"}
+- git: {local-name: realsense-ros, uri: "https://github.com/IntelRealSense/realsense-ros.git"}
