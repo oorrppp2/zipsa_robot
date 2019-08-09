@@ -1,0 +1,2 @@
+#!/bin/bash
+bash -c "source /opt/ros/$ROS_DISTRO/setup.bash; source ~/catkin_ws/devel/setup.bash; roscd living_lab_robot_webserver/nodejs; http-server"

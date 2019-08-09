@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="roslib.js"></script>
+        <style>
+            .wrapper {
+                text-align: center;
+                margin-top: 40px;
+            }
+            .btn {
+                display: block;
+                width: 120px;
+                height: 60px;
+                margin: 20px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="wrapper">
+            <center><button id="button1" class="btn" onclick="javascript:SelectScene('intro')">Ready<br>for<br>Introduction</button></center>
+            <center><button id="button2" class="btn" onclick="javascript:TriggerStart('start')">Start<br>Introduction</button></center>
+            <center><button id="button3" class="btn" onclick="javascript:SelectScene('livingroom')">Start<br>Living Room</button></center>
+            <center><button id="button4" class="btn" onclick="javascript:SelectScene('kitchen')">Start<br>Smart Kitchen</button></center>
+            <center><button id="button5" class="btn" onclick="javascript:SelectScene('home_end')">Start<br>Finalize Demo</button></center>
+            <center><button id="button6" class="btn" onclick="javascript:SelectScene('grasp')">Start<br>Ready<br>Grasp</button></center>
+            <center><button id="button7" class="btn" onclick="javascript:SelectScene('grasp6')">Start<br>Start Grasp</button></center>
+        </div>
+
+        <script>
+            var ros = new ROSLIB.Ros({
+                url : 'ws://192.168.1.210:9090'
+            });
+
+            ros.on('connection', function() {
+                console.log('Connected to websocket server.');
+            });
+
+            ros.on('error', function(error) {
+                console.log('Error connecting to websocket server: ', error);
+            });
+
+            ros.on('close', function() {
+                console.log('Connection to websocket server closed.');
+            });
+
+            var pub_select_scene = new ROSLIB.Topic({
+                ros : ros,
+                name : 'wait_select_scene',
+                messageType : 'std_msgs/String'
+            });
+
+            var pub_trigger_start = new ROSLIB.Topic({
+                ros : ros,
+                name : 'wait_start_trigger',
+                messageType : 'std_msgs/String'
+            });
+
+            var listener = new ROSLIB.Topic({
+                ros : ros,
+                name : '/wait_done_scene',
+                messageType : 'std_msgs/String'
+            });
+
+            listener.subscribe(function(message) {
+                document.getElementById("button1").disabled = false;
+                document.getElementById("button2").disabled = false;
+                document.getElementById("button3").disabled = false;
+                document.getElementById("button4").disabled = false;
+                document.getElementById("button5").disabled = false;
+                document.getElementById("button6").disabled = false;
+                document.getElementById("button7").disabled = false;
+                //listener.unsubscribe();
+            });
+
+            function SelectScene(name) {
+                var msg = new ROSLIB.Message({ data: name});
+                pub_select_scene.publish(msg)
+
+                console.log(name)
+
+                if(name=="intro") {
+                    document.getElementById("button1").disabled = true;
+                    document.getElementById("button3").disabled = true;
+                    document.getElementById("button4").disabled = true;
+                    document.getElementById("button5").disabled = true;
+                    document.getElementById("button6").disabled = true;
+                    document.getElementById("button7").disabled = true;
+                }
+                else if(name=="livingroom" || name=="kitchen" || name=="home_end" || name=="grasp" || name=="grasp6") {
+                    document.getElementById("button1").disabled = true;
+                    document.getElementById("button2").disabled = true;
+                    document.getElementById("button3").disabled = true;
+                    document.getElementById("button4").disabled = true;
+                    document.getElementById("button5").disabled = true;
+                    document.getElementById("button6").disabled = true;
+                    document.getElementById("button7").disabled = true;
+                }
+            }
+
+            function TriggerStart(data) {
+                var msg = new ROSLIB.Message({ data: data});
+                pub_trigger_start.publish(msg)
+
+                if(data=="start") {
+                    document.getElementById("button1").disabled = true;
+                    document.getElementById("button2").disabled = true;
+                    document.getElementById("button3").disabled = true;
+                    document.getElementById("button4").disabled = true;
+                    document.getElementById("button5").disabled = true;
+                    document.getElementById("button6").disabled = true;
+                    document.getElementById("button7").disabled = true;
+                }
+            }
+        </script>
+    </body>
+</html>
