@@ -20,6 +20,7 @@ from behaviors.lamp_control import *
 from behaviors.wait_time import *
 from behaviors.actions import *
 from behaviors.gaze_sync_control import *
+from behaviors.app_control import *
 
 from living_lab_robot_moveit_client.msg import PlanExecuteNamedPoseAction, PlanExecuteNamedPoseGoal
 from living_lab_robot_moveit_client.msg import PlanExecutePoseAction, PlanExecutePoseGoal
@@ -36,6 +37,8 @@ def create_root():
     lamp_mode3r = LampControl(name="lamp_mode_3r", mode=3, args="{\"color\": \"r\"}")
     lamp_mode3g = LampControl(name="lamp_mode_3g", mode=3, args="{\"color\": \"g\"}")
     lamp_mode3b = LampControl(name="lamp_mode_3b", mode=3, args="{\"color\": \"b\"}")
+
+    done_scene = DonePlayScene(name="done_scene")
 
     gaze_sync_on = HeadGazeSyncControl(name="gaze_sync_on", data=True)
     gaze_sync_off = HeadGazeSyncControl(name="gaze_sync_on", data=False)
@@ -77,7 +80,7 @@ def create_root():
         [ wait_scene1_intro, turn_back,
           wait_start_trigger, intro_say1,
           intro_say2, turn_front, intro_say3, intro_head_tilt_down, intro_say4, intro_head_tilt_home,
-          lamp_mode2, intro_say5, lamp_mode1, move_arm_base1, intro_say6, move_arm_base2, intro_say7 ]
+          lamp_mode2, intro_say5, lamp_mode1, move_arm_base1, intro_say6, move_arm_base2, intro_say7, done_scene ]
     )
 
     #
@@ -117,7 +120,8 @@ def create_root():
           move_to_living_room,
           lamp_mode1,
           scene2_say1,
-          scene2_say2]
+          scene2_say2,
+          done_scene]
     )
 
     #
@@ -167,7 +171,8 @@ def create_root():
           view_table_on_kitchen,
           scene3_say1,
           gaze_sync_on,
-          intro_head_tilt_home]
+          intro_head_tilt_home,
+          done_scene]
     )
 
     #
@@ -207,7 +212,8 @@ def create_root():
           move_to_home,
           lamp_mode1,
           scene4_say1,
-          scene4_say2]
+          scene4_say2,
+          done_scene]
     )
 
     #
@@ -242,7 +248,8 @@ def create_root():
         [ wait_scene5_intro,
           lamp_mode3g,
           move_to_grasp,
-          lamp_mode1
+          lamp_mode1,
+          done_scene
         ]
     )
 
@@ -370,7 +377,8 @@ def create_root():
           wait_time1,
           move_to_exit,
           gripper_open,
-          scene6_say1
+          scene6_say1,
+          done_scene
         ]
     )
 

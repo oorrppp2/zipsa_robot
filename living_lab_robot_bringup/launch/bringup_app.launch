@@ -1,0 +1,4 @@
+<launch>
+    <node name="demo_app" type="demo.py" pkg="living_lab_robot_apps" output="screen" />
+    <node name="web_server" type="bringup_server" pkg="living_lab_robot_webserver" output="screen" />
+</launch>

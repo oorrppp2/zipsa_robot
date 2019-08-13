@@ -12,8 +12,8 @@
             .btn {
                 display: block;
                 width: 120px;
-                height: 60px;
-                margin: 20px;
+                height: 50px;
+                margin: 16px;
             }
         </style>
     </head>
@@ -27,11 +27,12 @@
             <center><button id="button5" class="btn" onclick="javascript:SelectScene('home_end')">Start<br>Finalize Demo</button></center>
             <center><button id="button6" class="btn" onclick="javascript:SelectScene('grasp')">Start<br>Ready<br>Grasp</button></center>
             <center><button id="button7" class="btn" onclick="javascript:SelectScene('grasp6')">Start<br>Start Grasp</button></center>
+            <center><button id="button8" class="btn" onclick="javascript:SelectScene('debug_home')">Debug Home</button></center>
         </div>
 
         <script>
             var ros = new ROSLIB.Ros({
-                url : 'ws://192.168.1.210:9090'
+                url : 'ws://192.168.9.10:9090'
             });
 
             ros.on('connection', function() {
