@@ -26,10 +26,9 @@
         <child link="arm_base"/>
         <origin xyz="0.035 0 -0.0228" rpy="0 0 0"/>
         <axis xyz="1 0 0"/>
-        <limit lower="0" upper="0" velocity="1.0" effort="1000"/>
+        <limit lower="-0.15" upper="0" velocity="1.0" effort="1000"/>
     </joint>
     <xacro:insert_position_transmission name="arm_base_joint" />
-
 
     <link name="arm_link1">
         <visual>

@@ -1,11 +1,8 @@
 <launch>
     <arg name="use_joint_state_publisher" default="false"/>
     <arg name="use_real_robot" default="false"/>
-    <param name="robot_description" command="$(find xacro)/xacro $(find living_lab_robot_description)/urdf/robot.urdf.xacro" />
+    <param name="robot_description" command="$(find xacro)/xacro $(find living_lab_robot_description)/urdf/robot.urdf.xacro use_nominal_extrinsics:=true" />
 
-    <node pkg="robot_state_publisher" type="state_publisher" name="robot_state_publisher"/>
-
-    <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher" if="$(arg use_joint_state_publisher)">
-        <param name="use_gui" value="1" />
-    </node>
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher"/>
+    <node pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" name="joint_state_publisher_gui" if="$(arg use_joint_state_publisher)"/>
 </launch>
