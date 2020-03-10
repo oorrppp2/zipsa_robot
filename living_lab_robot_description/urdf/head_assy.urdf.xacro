@@ -16,9 +16,9 @@
             </geometry>
         </collision>
         <inertial>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="1.0"/>
-            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+            <origin xyz="0 0 -0.1224" rpy="0 0 0"/>
+            <mass value="6.545411"/>
+            <inertia ixx="0.085366" ixy="0.0" ixz="0.0" iyy="0.085366" iyz="0.0" izz="0.105357"/>
         </inertial>
     </link>
 
@@ -45,9 +45,9 @@
             </geometry>
         </collision>
         <inertial>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="1.0"/>
-            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+            <origin xyz="0.014478 0.0 -0.045490" rpy="0 0 0"/>
+            <mass value="0.186690"/>
+            <inertia ixx="0.000811" ixy="0.0" ixz="0.000012" iyy="0.000271" iyz="0.0" izz="0.000576"/>
         </inertial>
     </link>
 
@@ -74,9 +74,9 @@
             </geometry>
         </collision>
         <inertial>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="5.0"/>
-            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+            <origin xyz="-0.098000 0 0.057616" rpy="0 0 0"/>
+            <mass value="2.540090"/>
+            <inertia ixx="0.022353" ixy="0.0" ixz="0.0" iyy="0.022353" iyz="0.0" izz="0.040886"/>
         </inertial>
     </link>
 
@@ -95,11 +95,11 @@
     <xacro:insert_rgbd_camera_sensor name="camera"/>
 
     <link name="gaze_link">
-        <inertial>
+        <!-- <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="1.0"/>
-            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
-        </inertial>
+            <mass value="0.01"/>
+            <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+        </inertial> -->
     </link>
 
     <joint name="gaze_fixed_joint" type="fixed">
