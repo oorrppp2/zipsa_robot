@@ -15,9 +15,9 @@
             </geometry>
         </collision>
         <inertial>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="1.0"/>
-            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+            <origin xyz="0.0791 0 -0.0397" rpy="0 0 0"/>
+            <mass value="0.25"/>
+            <inertia ixx="0.000190" ixy="0.0" ixz="0.0" iyy="0.000508" iyz="0.0" izz="0.000434"/>
         </inertial>
     </link>
 
@@ -44,9 +44,9 @@
             </geometry>
         </collision>
         <inertial>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="1.0"/>
-            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+            <origin xyz="0.0333 0 0" rpy="0 0 0"/>
+            <mass value="0.39"/>
+            <inertia ixx="0.000954" ixy="0.0" ixz="0.0" iyy="0.000283" iyz="0.0" izz="0.000954"/>
         </inertial>
     </link>
 
@@ -73,9 +73,9 @@
             </geometry>
         </collision>
         <inertial>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="1.0"/>
-            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+            <origin xyz="0.1691 0 0.0089" rpy="0 0 0"/>
+            <mass value="0.12"/>
+            <inertia ixx="0.004171" ixy="0.0" ixz="-0.001476" iyy="0.014517" iyz="0.0" izz="0.016818"/>
         </inertial>
     </link>
 
@@ -102,9 +102,9 @@
             </geometry>
         </collision>
         <inertial>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="1.0"/>
-            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+            <origin xyz="0.1137 0 -0.0419" rpy="0 0 0"/>
+            <mass value="0.14"/>
+            <inertia ixx="0.000363" ixy="0.000002" ixz="-0.000009" iyy="0.000832" iyz="0.0" izz="0.001036"/>
         </inertial>
     </link>
 
@@ -131,9 +131,9 @@
             </geometry>
         </collision>
         <inertial>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="1.0"/>
-            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+            <origin xyz="0.0274 0.0 0.0" rpy="0 0 0"/>
+            <mass value="0.20"/>
+            <inertia ixx="0.000315" ixy="0.0" ixz="0.0" iyy="0.000096" iyz="0.0" izz="0.000315"/>
         </inertial>
     </link>
 
@@ -160,9 +160,9 @@
             </geometry>
         </collision>
         <inertial>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="1.0"/>
-            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+            <origin xyz="0.0608 0 0" rpy="0 0 0"/>
+            <mass value="0.15"/>
+            <inertia ixx="0.000427" ixy="0.0" ixz="0.0" iyy="0.000507" iyz="0.0" izz="0.000774"/>
         </inertial>
     </link>
 
@@ -173,13 +173,13 @@
         <axis xyz="0 1 0"/>
         <limit lower="${-95/180*pi}" upper="${95/180*pi}" velocity="0.4" effort="1000"/>
     </joint>
-    <xacro:insert_position_transmission name="arm5_joint" />
+    <xacro:insert_position_transmission name="arm5_joint" /> -->
 
     <link name="arm_link6">
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="1.0"/>
-            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+            <mass value="0.00001"/>
+            <inertia ixx="0.00001" ixy="0.0" ixz="0.0" iyy="0.00001" iyz="0.0" izz="0.00001"/>
         </inertial>
     </link>
 
