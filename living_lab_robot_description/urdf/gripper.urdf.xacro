@@ -1,42 +1,237 @@
 <?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <link name="gripper">
-        <visual>
+
+<robot name="robotis_gripper" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:macro name="robotis_gripper" params="parent *origin prefix:=''">
+        <link name="gripper_base_link">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <mesh filename="package://robotis_gripper_description/meshes/gripper_base.dae" scale="1 1 1"/>
+                </geometry>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <mesh filename="package://robotis_gripper_description/meshes/gripper_base.dae" scale="1 1 1"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0.03022 0.0 0.00109" rpy="0 0 0"/>
+                <mass value="0.3910"/>
+                <inertia ixx="0.000276" ixy="0.0" ixz="0.0" iyy="0.000198" iyz="0.0" izz="0.000265"/>
+            </inertial>
+        </link>
+
+        <joint name="gripper_base_fixed_joint" type="fixed">
+            <parent link="${parent}"/>
+            <child link="gripper_base_link"/>
             <origin xyz="0 0 0" rpy="0 0 0"/>
-            <geometry>
-                <mesh filename="package://living_lab_robot_description/meshes/gripper.dae" scale="1 1 1"/>
-            </geometry>
-        </visual>
-        <collision>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <geometry>
-                <mesh filename="package://living_lab_robot_description/meshes/gripper.dae" scale="1 1 1"/>
-            </geometry>
-        </collision>
+        </joint>
+
+        <link name="gripper_l_inner_link">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <mesh filename="package://robotis_gripper_description/meshes/inner_link.dae" scale="1 1 1"/>
+                </geometry>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <mesh filename="package://robotis_gripper_description/meshes/inner_link.dae" scale="1 1 1"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0.02966 -0.00035 0.00002" rpy="0 0 0"/>
+                <mass value="0.0158"/>
+                <inertia ixx="0.000002" ixy="0.0" ixz="0.0" iyy="0.000006" iyz="0.0" izz="0.000004"/>
+            </inertial>
+        </link>
+
+        <joint name="gripper_joint" type="revolute">
+            <parent link="gripper_base_link"/>
+            <child link="gripper_l_inner_link"/>
+            <origin xyz="0.048 0.008 0" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+            <limit effort="1000" velocity="1.0" lower="-0.075" upper="1.2217"/>
+        </joint>
+
+        <transmission name="gripper_joint_tran">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="gripper_joint" >
+                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+                <mechanicalReduction>1</mechanicalReduction>
+            </joint>
+            <actuator name="gripper_joint_motor">
+                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+                <mechanicalReduction>1</mechanicalReduction>
+            </actuator>
+        </transmission>
+
+        <link name="gripper_r_inner_link">
+            <visual>
+                <origin xyz="0 0 0" rpy="${pi} 0 0"/>
+                <geometry>
+                    <mesh filename="package://robotis_gripper_description/meshes/inner_link.dae" scale="1 1 1"/>
+                </geometry>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="${pi} 0 0"/>
+                <geometry>
+                    <mesh filename="package://robotis_gripper_description/meshes/inner_link.dae" scale="1 1 1"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0.02966 -0.00035 0.00002" rpy="${pi} 0 0"/>
+                <mass value="0.0158"/>
+                <inertia ixx="0.000002" ixy="0.0" ixz="0.0" iyy="0.000006" iyz="0.0" izz="0.000004"/>
+            </inertial>
+        </link>
+
+        <joint name="gripper_r_inner_joint" type="revolute">
+            <parent link="gripper_base_link"/>
+            <child link="gripper_r_inner_link"/>
+            <origin xyz="0.048 -0.008 0" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+            <limit effort="1000" velocity="1.0" lower="-1.5707" upper="1.5707"/>
+            <mimic joint="gripper_joint" multiplier="-1" offset="0"/>
+        </joint>
+        <xacro:insert_mimic_joint reference="gripper_joint" name="gripper_r_inner_joint" multiplier="-1.0" offset="0.0"/>
+
+        <link name="gripper_l_outer_link">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <mesh filename="package://robotis_gripper_description/meshes/l_outer_link.dae" scale="1 1 1"/>
+                </geometry>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <mesh filename="package://robotis_gripper_description/meshes/l_outer_link.dae" scale="1 1 1"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0.01616 0.02092 0.00067" rpy="0 0 0"/>
+                <mass value="0.0130"/>
+                <inertia ixx="0.000001" ixy="-0.000001" ixz="0.0" iyy="0.000006" iyz="0.0" izz="0.000006"/>
+            </inertial>
+        </link>
+
+        <joint name="gripper_l_outer_joint" type="revolute">
+            <parent link="gripper_base_link"/>
+            <child link="gripper_l_outer_link"/>
+            <origin xyz="0.0374 0.0186 0" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+            <limit effort="1000" velocity="1.0" lower="-1.5707" upper="1.5707"/>
+            <mimic joint="gripper_joint" multiplier="1" offset="-0.405"/>
+        </joint>
+        <xacro:insert_mimic_joint reference="gripper_joint" name="gripper_l_outer_joint" multiplier="1.0" offset="-0.405"/>
+
+        <link name="gripper_r_outer_link">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <mesh filename="package://robotis_gripper_description/meshes/r_outer_link.dae" scale="1 1 1"/>
+                </geometry>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <mesh filename="package://robotis_gripper_description/meshes/r_outer_link.dae" scale="1 1 1"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0.01616 -0.02092 0.00065" rpy="0 0 0"/>
+                <mass value="0.0130"/>
+                <inertia ixx="0.000001" ixy="0.000001" ixz="0.0" iyy="0.000006" iyz="0.0" izz="0.000006"/>
+            </inertial>
+        </link>
+
+        <joint name="gripper_r_outer_joint" type="revolute">
+            <parent link="gripper_base_link"/>
+            <child link="gripper_r_outer_link"/>
+            <origin xyz="0.0374 -0.0186 0" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+            <limit effort="1000" velocity="1.0" lower="-1.5707" upper="1.5707"/>
+            <mimic joint="gripper_joint" multiplier="-1" offset="0.405"/>
+        </joint>
+        <xacro:insert_mimic_joint reference="gripper_joint" name="gripper_r_outer_joint" multiplier="-1.0" offset="0.405"/>
+
+        <link name="gripper_l_finger_link">
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <mesh filename="package://robotis_gripper_description/meshes/finger.dae" scale="1 1 1"/>
+                </geometry>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <mesh filename="package://robotis_gripper_description/meshes/finger.dae" scale="1 1 1"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0.00958 0.00643 0.00000" rpy="0 0 0"/>
+                <mass value="0.0257"/>
+                <inertia ixx="0.000003" ixy="0.000002" ixz="0.0" iyy="0.000008" iyz="0.0" izz="0.000007"/>
+            </inertial>
+        </link>
+
+        <joint name="gripper_l_finger_joint" type="revolute">
+            <parent link="gripper_l_inner_link"/>
+            <child link="gripper_l_finger_link"/>
+            <origin xyz="0.057 0 0" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+            <limit effort="1000" velocity="1.0" lower="-1.5707" upper="1.5707"/>
+            <mimic joint="gripper_joint" multiplier="-1" offset="0"/>
+        </joint>
+        <xacro:insert_mimic_joint reference="gripper_joint" name="gripper_l_finger_joint" multiplier="-1.0" offset="0.0"/>
+
+        <link name="gripper_r_finger_link">
+            <visual>
+                <origin xyz="0 0 0" rpy="${pi} 0 0"/>
+                <geometry>
+                    <mesh filename="package://robotis_gripper_description/meshes/finger.dae" scale="1 1 1"/>
+                </geometry>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="${pi} 0 0"/>
+                <geometry>
+                    <mesh filename="package://robotis_gripper_description/meshes/finger.dae" scale="1 1 1"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0.00958 -0.00643 0.00000" rpy="${pi} 0 0"/>
+                <mass value="0.0257"/>
+                <inertia ixx="0.000003" ixy="0.000002" ixz="0.0" iyy="0.000008" iyz="0.0" izz="0.000007"/>
+            </inertial>
+        </link>
+
+        <joint name="gripper_r_finger_joint" type="revolute">
+            <parent link="gripper_r_inner_link"/>
+            <child link="gripper_r_finger_link"/>
+            <origin xyz="0.057 0 0" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+            <limit effort="1000" velocity="1.0" lower="-1.5707" upper="1.5707"/>
+            <mimic joint="gripper_joint" multiplier="1" offset="0"/>
+        </joint>
+        <xacro:insert_mimic_joint reference="gripper_joint" name="gripper_r_finger_joint" multiplier="1.0" offset="0.0"/>
+
+
+        <link name="end_effector">
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <mass value="1.0"/>
             <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
         </inertial>
-    </link>
+        </link>
 
-    <joint name="gripper_mount_joint" type="fixed">
-        <parent link="arm_link6"/>
-        <child link="gripper"/>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-    </joint>
-
-    <link name="end_effector">
-        <inertial>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="1.0"/>
-            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
-        </inertial>
-    </link>
-
-    <joint name="gripper_joint" type="fixed">
-        <parent link="gripper"/>
-        <child link="end_effector"/>
-        <origin xyz="0.096 0 0" rpy="0 0 0"/>
-    </joint>
+        <joint name="eef_fixed_joint" type="fixed">
+            <parent link="gripper_base_link"/>
+            <child link="end_effector"/>
+            <origin xyz="0.12 0 0" rpy="0 0 0"/>
+        </joint>
+    </xacro:macro>
 </robot>

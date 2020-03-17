@@ -12,10 +12,36 @@
             <commandTopic>cmd_vel</commandTopic>
             <odometryTopic>odom</odometryTopic>
             <odometryFrame>odom</odometryFrame>
-            <odometryRate>30.0</odometryRate>
-            <robotBaseFrame>base_footprint</robotBaseFrame>
+            <odometryRate>50.0</odometryRate>
+            <robotBaseFrame>base_link</robotBaseFrame>
         </plugin>
     </gazebo>
+
+    <gazebo reference="omni_wheel_1">
+        <mu1 value="0.0"/>
+        <mu1 value="0.0"/>
+    </gazebo>
+
+    <gazebo reference="omni_wheel_2">
+        <mu1 value="0.0"/>
+        <mu1 value="0.0"/>
+    </gazebo>
+
+    <gazebo reference="omni_wheel_3">
+        <mu1 value="0.0"/>
+        <mu1 value="0.0"/>
+    </gazebo>
+
+    <xacro:macro name="insert_mimic_joint" params="reference name multiplier offset">
+        <gazebo>
+            <plugin name="mimic_${name}" filename="libgazebo_mimic_joint_plugin.so">
+                <joint>${reference}</joint>
+                <mimicJoint>${name}</mimicJoint>
+                <multiplier>${multiplier}</multiplier>
+                <offset>${offset}</offset>
+            </plugin>
+        </gazebo>
+    </xacro:macro>
 
     <gazebo reference="base_link">
         <mu1 value="0.0"/>

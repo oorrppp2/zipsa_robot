@@ -17,7 +17,7 @@
         </collision>
         <inertial>
             <origin xyz="0 0 0.1111" rpy="0 0 0"/>
-            <mass value="52.01"/>
+            <mass value="55.0"/>
             <inertia ixx="1.700489" ixy="0.0" ixz="0.0" iyy="1.700489" iyz="0.0" izz="2.604803"/>
         </inertial>
     </link>
@@ -68,7 +68,8 @@
         <collision>
             <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
             <geometry>
-                <cylinder radius="0.065" length="0.06"/>
+                <!-- <cylinder radius="0.065" length="0.06"/> -->
+                <sphere radius="0.065"/>
             </geometry>
         </collision>
         <inertial>
@@ -96,7 +97,8 @@
         <collision>
             <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
             <geometry>
-                <cylinder radius="0.065" length="0.06"/>
+                <!-- <cylinder radius="0.065" length="0.06"/> -->
+                <sphere radius="0.065"/>
             </geometry>
         </collision>
         <inertial>
@@ -124,7 +126,8 @@
         <collision>
             <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
             <geometry>
-                <cylinder radius="0.065" length="0.06"/>
+                <!-- <cylinder radius="0.065" length="0.06"/> -->
+                <sphere radius="0.065"/>
             </geometry>
         </collision>
         <inertial>
