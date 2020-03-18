@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   moveit_core
   moveit_ros_planning
   moveit_ros_planning_interface
+  moveit_msgs
   rospy
   actionlib_msgs
   geometry_msgs
@@ -69,6 +70,7 @@ add_action_files(
   FILES
   PlanExecutePose.action
   PlanExecuteNamedPose.action
+  PlanExecutePoseConstraints.action
 )
 
 ## Generate added messages and services with any dependencies listed here
@@ -76,6 +78,7 @@ generate_messages(
   DEPENDENCIES
   actionlib_msgs
   geometry_msgs
+  moveit_msgs
   std_msgs  # Or other packages containing msgs
 )
 
