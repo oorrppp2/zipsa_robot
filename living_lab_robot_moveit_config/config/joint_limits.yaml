@@ -4,46 +4,46 @@
 joint_limits:
   arm1_joint:
     has_velocity_limits: true
-    max_velocity: 0.6
+    max_velocity: 0.8
     has_acceleration_limits: false
     max_acceleration: 0
   arm2_joint:
     has_velocity_limits: true
-    max_velocity: 0.6
+    max_velocity: 0.8
     has_acceleration_limits: false
     max_acceleration: 0
   arm3_joint:
     has_velocity_limits: true
-    max_velocity: 0.6
+    max_velocity: 0.8
     has_acceleration_limits: false
     max_acceleration: 0
   arm4_joint:
     has_velocity_limits: true
-    max_velocity: 0.6
+    max_velocity: 0.8
     has_acceleration_limits: false
     max_acceleration: 0
   arm5_joint:
     has_velocity_limits: true
-    max_velocity: 0.6
+    max_velocity: 0.8
     has_acceleration_limits: false
     max_acceleration: 0
   arm6_joint:
     has_velocity_limits: true
-    max_velocity: 0.6
+    max_velocity: 0.8
     has_acceleration_limits: false
     max_acceleration: 0
   arm_base_joint:
     has_velocity_limits: true
-    max_velocity: 0.015
+    max_velocity: 0.6
     has_acceleration_limits: false
     max_acceleration: 0
   body_rotate_joint:
     has_velocity_limits: true
-    max_velocity: 0.3
+    max_velocity: 0.4
     has_acceleration_limits: false
     max_acceleration: 0
   elevation_joint:
     has_velocity_limits: true
-    max_velocity: 0.02
+    max_velocity: 0.08
     has_acceleration_limits: false
     max_acceleration: 0

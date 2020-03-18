@@ -18,16 +18,19 @@
     </gazebo>
 
     <gazebo reference="omni_wheel_1">
+        <selfCollide>false</selfCollide>
         <mu1 value="0.0"/>
         <mu1 value="0.0"/>
     </gazebo>
 
     <gazebo reference="omni_wheel_2">
+        <selfCollide>false</selfCollide>
         <mu1 value="0.0"/>
         <mu1 value="0.0"/>
     </gazebo>
 
     <gazebo reference="omni_wheel_3">
+        <selfCollide>false</selfCollide>
         <mu1 value="0.0"/>
         <mu1 value="0.0"/>
     </gazebo>

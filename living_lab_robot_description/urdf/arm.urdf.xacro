@@ -26,7 +26,7 @@
         <child link="arm_base"/>
         <origin xyz="0.035 0 -0.0228" rpy="0 0 0"/>
         <axis xyz="1 0 0"/>
-        <limit lower="-0.15" upper="0" velocity="1.0" effort="20"/>
+        <limit lower="-0.15" upper="0" velocity="0.6" effort="20"/>
     </joint>
     <xacro:insert_position_transmission name="arm_base_joint" />
 
@@ -55,7 +55,7 @@
         <child link="arm_link1"/>
         <origin xyz="0.15612 0 -0.051215" rpy="0 0 0"/>
         <axis xyz="1 0 0"/>
-        <limit lower="${-180/180*pi}" upper="${180/180*pi}" velocity="0.4" effort="20"/>
+        <limit lower="${-180/180*pi}" upper="${180/180*pi}" velocity="0.8" effort="20"/>
     </joint>
     <xacro:insert_position_transmission name="arm1_joint" />
 
@@ -84,7 +84,7 @@
         <child link="arm_link2"/>
         <origin xyz="0.033 0 0" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
-        <limit lower="${-95/180*pi}" upper="${95/180*pi}" velocity="0.4" effort="20"/>
+        <limit lower="${-95/180*pi}" upper="${95/180*pi}" velocity="0.8" effort="20"/>
     </joint>
     <xacro:insert_position_transmission name="arm2_joint" />
 
@@ -113,7 +113,7 @@
         <child link="arm_link3"/>
         <origin xyz="0.264 0 0.030" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
-        <limit lower="${-180/180*pi}" upper="${5/180*pi}" velocity="0.4" effort="20"/>
+        <limit lower="${-180/180*pi}" upper="${5/180*pi}" velocity="0.8" effort="20"/>
     </joint>
     <xacro:insert_position_transmission name="arm3_joint" />
 
@@ -142,7 +142,7 @@
         <child link="arm_link4"/>
         <origin xyz="0.231 0 -0.042" rpy="0 0 0"/>
         <axis xyz="1 0 0"/>
-        <limit lower="${-180/180*pi}" upper="${180/180*pi}" velocity="0.4" effort="20"/>
+        <limit lower="${-180/180*pi}" upper="${180/180*pi}" velocity="0.8" effort="20"/>
     </joint>
     <xacro:insert_position_transmission name="arm4_joint" />
 
@@ -171,7 +171,7 @@
         <child link="arm_link5"/>
         <origin xyz="0.027 0 0" rpy="0 0 0"/>
         <axis xyz="0 1 0"/>
-        <limit lower="${-95/180*pi}" upper="${95/180*pi}" velocity="0.4" effort="20"/>
+        <limit lower="${-95/180*pi}" upper="${95/180*pi}" velocity="0.8" effort="20"/>
     </joint>
     <xacro:insert_position_transmission name="arm5_joint" />
 
@@ -200,7 +200,7 @@
         <child link="arm_link6"/>
         <origin xyz="0.123 0 0" rpy="0 0 0"/>
         <axis xyz="1 0 0"/>
-        <limit lower="${-180/180*pi}" upper="${180/180*pi}" velocity="0.4" effort="20"/>
+        <limit lower="${-180/180*pi}" upper="${180/180*pi}" velocity="0.8" effort="20"/>
     </joint>
     <xacro:insert_position_transmission name="arm6_joint" />
 </robot>
