@@ -27,6 +27,7 @@
   <exec_depend>moveit_ros_planning_interface</exec_depend>
   <exec_depend>rospy</exec_depend>
   <depend>moveit_ros</depend>
+  <depend>moveit_commander</depend>
 
   <export>
   </export>
