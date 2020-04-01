@@ -45,7 +45,7 @@
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <mass value="0.31"/>
-            <inertia ixx="0.001422" ixy="0.000007" ixz="0.000024" iyy="0.000917" iyz="-0.000039" izz="0.001769"/>
+            <inertia ixx="0.001422" ixy="0" ixz="0" iyy="0.000917" iyz="0" izz="0.001769"/>
         </inertial>
     </link>
 
@@ -55,6 +55,7 @@
         <origin xyz="-0.05 0 0.665" rpy="0 0 0"/>
         <axis xyz="0 0 1"/>
         <limit lower="-0.45" upper="0" velocity="0.1" effort="100"/>
+        <dynamics damping="0.01" friction="0.0"/>
     </joint>
     <xacro:insert_position_transmission name="elevation_joint" />
 </robot>
