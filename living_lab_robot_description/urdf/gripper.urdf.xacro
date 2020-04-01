@@ -220,13 +220,7 @@
         <xacro:insert_mimic_joint reference="gripper_joint" name="gripper_r_finger_joint" multiplier="1.0" offset="0.0"/>
 
 
-        <link name="end_effector">
-        <inertial>
-            <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="1.0"/>
-            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
-        </inertial>
-        </link>
+        <link name="end_effector"/>
 
         <joint name="eef_fixed_joint" type="fixed">
             <parent link="gripper_base_link"/>

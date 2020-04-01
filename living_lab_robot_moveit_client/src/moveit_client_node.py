@@ -52,6 +52,21 @@ class MoveitClientNode:
         self.group.clear_pose_targets()
         self.group.set_start_state_to_current_state()
 
+
+        #include default arm_base_joint // it is bug that moveit does not exclude passive joint in thier joint trajectory.
+        js_base = JointConstraint()
+        js_base.joint_name = "arm_base_joint"
+        js_base.position = 0.0
+        js_base.tolerance_above = 0.001
+        js_base.tolerance_below = 0.001
+        js_base.weight = 1.0
+
+        self.contraints.name = "constraints"
+        self.contraints.joint_constraints.append(js_base)
+        self.group.set_path_constraints(self.contraints)
+        #
+
+
         try:
             self.group.set_pose_target(goal.target_pose)
         except MoveItCommanderException:
@@ -76,6 +91,9 @@ class MoveitClientNode:
         self.group.go(wait=True)
         rospy.sleep(2.0)
 
+        self.group.set_path_constraints(None)
+        self.contraints.joint_constraints = []
+
         rospy.loginfo('Planning goal pose succeeded.')
         self.action_plan_execute_pose.set_succeeded(result)
 
@@ -86,6 +104,20 @@ class MoveitClientNode:
 
         self.group.clear_pose_targets()
         #self.group.set_start_state_to_current_state()
+
+        #include default arm_base_joint // it is bug that moveit does not exclude passive joint in thier joint trajectory.
+        js_base = JointConstraint()
+        js_base.joint_name = "arm_base_joint"
+        js_base.position = 0.0
+        js_base.tolerance_above = 0.001
+        js_base.tolerance_below = 0.001
+        js_base.weight = 1.0
+
+        self.contraints.name = "constraints"
+        self.contraints.joint_constraints.append(js_base)
+        self.group.set_path_constraints(self.contraints)
+        #
+
 
         try:
             self.group.set_named_target(goal.target_name)
@@ -107,6 +139,11 @@ class MoveitClientNode:
         rospy.loginfo('Start moving...')
         self.group.go(wait=True)
 
+
+        self.group.set_path_constraints(None)
+        self.contraints.joint_constraints = []
+
+
         rospy.loginfo('Planning named pose succeeded.')
         self.action_plan_execute_named_pose.set_succeeded(result)
 
@@ -115,8 +152,17 @@ class MoveitClientNode:
         result = PlanExecutePoseConstraintsResult()
         result.result = True
 
+        #include default arm_base_joint // it is bug that moveit does not exclude passive joint in thier joint trajectory.
+        js_base = JointConstraint()
+        js_base.joint_name = "arm_base_joint"
+        js_base.position = 0.0
+        js_base.tolerance_above = 0.001
+        js_base.tolerance_below = 0.001
+        js_base.weight = 1.0
 
         self.contraints.name = "constraints"
+        self.contraints.joint_constraints.append(js_base)
+
         for js in goal.joint_constraints:
             self.contraints.joint_constraints.append(js)
         self.group.set_path_constraints(self.contraints)

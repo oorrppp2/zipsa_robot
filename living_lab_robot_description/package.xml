@@ -12,7 +12,6 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <depend>realsense2_description</depend>
-  <depend>robotis_gripper_description</depend>
   <depend>joint_state_publisher_gui</depend>
   <depend>xacro</depend>
 

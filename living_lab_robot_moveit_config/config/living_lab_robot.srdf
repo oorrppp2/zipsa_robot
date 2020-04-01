@@ -12,7 +12,7 @@
     <group name="arm">
         <joint name="body_rotate_joint" />
         <joint name="elevation_joint" />
-        <joint name="arm_base_joint" />
+        <!-- <joint name="arm_base_joint" /> -->
         <joint name="arm1_joint" />
         <joint name="arm2_joint" />
         <joint name="arm3_joint" />
@@ -29,7 +29,7 @@
         <joint name="arm4_joint" value="0" />
         <joint name="arm5_joint" value="0" />
         <joint name="arm6_joint" value="0" />
-        <joint name="arm_base_joint" value="0" />
+        <!-- <joint name="arm_base_joint" value="0" /> -->
         <joint name="body_rotate_joint" value="0" />
         <joint name="elevation_joint" value="-0.215" />
     </group_state>
@@ -40,7 +40,7 @@
         <joint name="arm4_joint" value="0" />
         <joint name="arm5_joint" value="1.5707" />
         <joint name="arm6_joint" value="1.5707" />
-        <joint name="arm_base_joint" value="0" />
+        <!-- <joint name="arm_base_joint" value="0" /> -->
         <joint name="body_rotate_joint" value="0" />
         <joint name="elevation_joint" value="-0.215" />
     </group_state>
@@ -51,7 +51,7 @@
         <joint name="arm4_joint" value="0" />
         <joint name="arm5_joint" value="1.5707" />
         <joint name="arm6_joint" value="1.5707" />
-        <joint name="arm_base_joint" value="0" />
+        <!-- <joint name="arm_base_joint" value="0" /> -->
         <joint name="body_rotate_joint" value="0" />
         <joint name="elevation_joint" value="0" />
     </group_state>
