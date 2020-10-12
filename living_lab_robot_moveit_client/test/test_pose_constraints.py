@@ -32,14 +32,21 @@ def main(argv):
         goal.target_pose.pose.orientation.z = quat[2]
         goal.target_pose.pose.orientation.w = quat[3]
 
-        joint_constraint = JointConstraint()
-        joint_constraint.joint_name = argv[7]
-        joint_constraint.position = float(argv[8])
-        joint_constraint.tolerance_above = float(argv[9]) * math.pi / 180.0
-        joint_constraint.tolerance_below = float(argv[10]) * math.pi / 180.0
-        joint_constraint.weight = 1.0
+        joint_constraint_arm1_joint = JointConstraint()
+        joint_constraint_arm1_joint.joint_name = "arm1_joint"
+        joint_constraint_arm1_joint.position = float(0.0)
+        joint_constraint_arm1_joint.tolerance_above = float(30) * math.pi / 180.0
+        joint_constraint_arm1_joint.tolerance_below = float(30) * math.pi / 180.0
+        joint_constraint_arm1_joint.weight = 1.0
 
-        goal.joint_constraints.append(joint_constraint)
+        joint_constraint_arm6_joint = JointConstraint()
+        joint_constraint_arm6_joint.joint_name = "arm6_joint"
+        joint_constraint_arm6_joint.position = float(0.0)
+        joint_constraint_arm6_joint.tolerance_above = float(10) * math.pi / 180.0
+        joint_constraint_arm6_joint.tolerance_below = float(10) * math.pi / 180.0
+        joint_constraint_arm6_joint.weight = 1.0
+        goal.joint_constraints.append(joint_constraint_arm1_joint)
+        goal.joint_constraints.append(joint_constraint_arm6_joint)
 
     except ValueError:
         quit()
