@@ -9,9 +9,9 @@ from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryG
 
 class BodyRotateOnly(py_trees_ros.actions.ActionClient):
     def __init__(self, name="RotateBody", target_pose=0.0):
-        rospy.wait_for_service('/body/arm_controller/query_state')
+        rospy.wait_for_service('/arm_controller/query_state')
         try:
-            query_state = rospy.ServiceProxy('/body/arm_controller/query_state', QueryTrajectoryState)
+            query_state = rospy.ServiceProxy('/arm_controller/query_state', QueryTrajectoryState)
             resp = query_state(rospy.Time.now())
         except rospy.ServiceException, e:
             print "Service call failed: %s"%e
@@ -20,6 +20,7 @@ class BodyRotateOnly(py_trees_ros.actions.ActionClient):
         joint_positions = resp.position
 
         goal = FollowJointTrajectoryGoal()
+        print(goal)
         goal.trajectory.joint_names = list(resp.name)
 
         point = JointTrajectoryPoint()
@@ -33,7 +34,7 @@ class BodyRotateOnly(py_trees_ros.actions.ActionClient):
         super(BodyRotateOnly, self).__init__(name=name,
             action_spec=FollowJointTrajectoryAction,
             action_goal=goal,
-            action_namespace="/body/arm_controller/follow_joint_trajectory",
+            action_namespace="/arm_controller/follow_joint_trajectory",
             override_feedback_message_on_running="moving")
 
     def initialize(self):
