@@ -1,4 +1,5 @@
 #goal
+string target
 ---
 #result
 string code_data
