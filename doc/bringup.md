@@ -22,6 +22,13 @@ Use the icons on Desktop. Just press double touch in the screen. If you want bri
 
     $ roslaunch living_lab_robot_bringup bringup.launch
 
+Launch the darknet_ros node to detect the target object.
+
+    $ roslaunch darknet_ros yolo_v3.launch
+
+Launch the convert_2d_to_3d node to convert from 2D center pixel of target object to 3D position in relative coordinate for camera.
+
+    $ rosrun convert_2d_to_3d convert_boundingbox_node
 
 ## 2. Homing
 
