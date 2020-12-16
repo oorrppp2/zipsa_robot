@@ -1,0 +1,9 @@
+#goal
+string target
+---
+#result
+string data
+bool result
+---
+#feedback
+bool is_searching
