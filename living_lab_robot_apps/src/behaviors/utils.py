@@ -5,6 +5,7 @@ import threading
 from geometry_msgs.msg import PointStamped
 from std_msgs.msg import Empty, String, Bool, Header, Float64
 from moveit_msgs.msg import Constraints
+from sensor_msgs.msg import JointState
 
 class Print_message(py_trees.behaviour.Behaviour):
     def __init__(self, name="Print_message"):
@@ -49,3 +50,24 @@ class Publish(py_trees.behaviour.Behaviour):
         pub.publish(data=self.data)
         rospy.sleep(1.0)
         return py_trees.common.Status.SUCCESS
+
+class Elevation_up(py_trees.behaviour.Behaviour):
+	def __init__(self, name="Elevation_up", topic_name="", data=""):
+		super(Elevation_up, self).__init__(name=name)
+		self.data = data
+		self.topic_name = topic_name
+		self.elevation_position = 0.0
+
+	def callback(self, msg):
+		self.elevation_position
+		self.elevation_position = msg.position[-2]
+	#    print msg.position[-2]
+		rospy.sleep(1.0)
+
+	def setup(self, timeout):
+		self.joint_sub = rospy.Subscriber('/body/joint_states', JointState, self.callback)
+		return True
+
+	def update(self):
+		print(self.elevation_position)
+		return py_trees.common.Status.SUCCESS
