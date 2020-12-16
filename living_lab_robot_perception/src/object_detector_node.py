@@ -10,14 +10,14 @@ import tf2_ros
 import geometry_msgs
 
 
-from living_lab_robot_perception.msg import QRCodeDetectAction, QRCodeDetectFeedback, QRCodeDetectResult
+from living_lab_robot_perception.msg import ObjectDetectAction, ObjectDetectFeedback, ObjectDetectResult
 from geometry_msgs.msg import PoseStamped, Quaternion, PointStamped
 from tf2_geometry_msgs import PoseStamped as TF2PoseStamped
 from qrcode_detector_ros.msg import Result
 from tf.transformations import quaternion_from_euler, quaternion_multiply
 
 
-class QRCodeDetectServer:
+class ObjectDetectServer:
     def __init__(self):
         print("init")
         self.tf_buffer = tf2_ros.Buffer()
@@ -31,12 +31,12 @@ class QRCodeDetectServer:
         self.result_pose = np.array([0.0, 0.0, 0.0])
         self.result_orientation = np.array([0.0, 0.0, 0.0, 0.0])
         self.result_frame_id = "base_footprint"
-        self.result_code_data = ""
+        self.result_data = ""
 
         self.detected_object = PointStamped()
 
         self.sub_detect = rospy.Subscriber('detected_object', Result, self.handle_detector_result)
-        self.server = actionlib.SimpleActionServer('object_detect', QRCodeDetectAction, self.handle_request_detect, False)
+        self.server = actionlib.SimpleActionServer('object_detect', ObjectDetectAction, self.handle_request_detect, False)
         self.server.start()
 	self.publish_count = 10
 	self.publishing = False
@@ -112,8 +112,8 @@ class QRCodeDetectServer:
 		print("Goal target is empty")
 		return
         self.goal = goal.target
-        feedback = QRCodeDetectFeedback()
-        result = QRCodeDetectResult()
+        feedback = ObjectDetectFeedback()
+        result = ObjectDetectResult()
         success = True
 
         self.result_pose = np.array([0.0, 0.0, 0.0])
@@ -153,19 +153,19 @@ class QRCodeDetectServer:
         result_pose.pose.orientation.z = target_detect_pose.pose.orientation.z
         result_pose.pose.orientation.w = target_detect_pose.pose.orientation.w
 
-        self.result_code_data = self.result_frame_id
+        self.result_data = self.result_frame_id
         if success:
             result.result = True
-            result.code_data = self.result_code_data
+            result.data = self.result_data
             result.pose = result_pose
             print(result)
             self.server.set_succeeded(result)
 
 
 if __name__ == '__main__':
-    rospy.init_node('qrcode_detect_server')
+    rospy.init_node('object_detect_server')
     detect_pose_check = TF2PoseStamped()
     print("type : ",type(detect_pose_check))
     # rospy.Subscriber("/clicked_point", PointStamped, callback_point)
-    server = QRCodeDetectServer()
+    server = ObjectDetectServer()
     rospy.spin()
