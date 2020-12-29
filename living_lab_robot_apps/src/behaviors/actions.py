@@ -3,6 +3,7 @@ import py_trees
 import rospy
 import math
 import actionlib_msgs.msg as actionlib_msgs
+from std_msgs.msg import Empty, String, Bool, Header
 from geometry_msgs.msg import PoseStamped
 from tf.transformations import *
 from moveit_msgs.msg import JointConstraint
@@ -10,83 +11,6 @@ from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from tf.transformations import *
 from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryGoal
 
-
-class GetJointStateActionClient(py_trees.behaviour.Behaviour):
-    def __init__(self, name="Action Client", action_spec=None, action_goal=None, action_namespace="/action",
-                 override_feedback_message_on_running="moving"):
-        super(GetJointStateActionClient, self).__init__(name)
-        self.action_client = None
-        self.sent_goal = False
-        self.action_spec = action_spec
-        self.action_goal = action_goal
-        self.action_namespace = action_namespace
-        self.override_feedback_message_on_running = override_feedback_message_on_running
-
-    def setup(self, timeout):
-        self.action_client = actionlib.SimpleActionClient(
-            self.action_namespace,
-            self.action_spec
-        )
-        if not self.action_client.wait_for_server(rospy.Duration(timeout)):
-            self.logger.error("{0}.setup() could not connect to the rotate action server at '{1}'".format(self.__class__.__name__, self.action_namespace))
-            self.action_client = None
-            return False
-        return True
-
-    def initialise(self):
-        self.logger.debug("{0}.initialise()".format(self.__class__.__name__))
-        self.sent_goal = False
-
-    def update(self):
-#	print("GetJointStateActionClient is called")
-        self.logger.debug("{0}.update()".format(self.__class__.__name__))
-        if not self.action_client:
-            self.feedback_message = "no action client, did you call setup() on your tree?"
-            return py_trees.Status.INVALID
-        # pity there is no 'is_connected' api like there is for c++
-        if not self.sent_goal:
-            self.action_client.send_goal(self.action_goal)
-            self.sent_goal = True
-            self.feedback_message = "sent goal to the action server"
-            return py_trees.Status.RUNNING
-        self.feedback_message = self.action_client.get_goal_status_text()
-        if self.action_client.get_state() in [actionlib_msgs.GoalStatus.ABORTED,
-                                              actionlib_msgs.GoalStatus.PREEMPTED]:
-            return py_trees.Status.FAILURE
-        result = self.action_client.get_result()
-
-        if result:
-            print("code_data :"+ str(result.code_data))
-            target_elevation_position = float(result.code_data) + 0.05
-            print("target_elevation_position :"+ str(target_elevation_position))
-
-            client = actionlib.SimpleActionClient('/body/arm_controller/follow_joint_trajectory', FollowJointTrajectoryAction)
-            client.wait_for_server()
-
-            goal = FollowJointTrajectoryGoal()
-            goal.trajectory.header.stamp = rospy.Time.now()
-            goal.trajectory.joint_names = ['elevation_joint']
-
-            point = JointTrajectoryPoint()
-            point.positions = [target_elevation_position]
-            point.time_from_start = rospy.Duration(1.0)
-
-            goal.trajectory.points.append(point)
-
-            client.send_goal(goal)
-            client.wait_for_result()
-
-            rospy.sleep(1.0)
-
-            client.send_goal(goal)
-            client.wait_for_result()
-
-            print client.get_result()
-
-            return py_trees.Status.SUCCESS
-        else:
-            self.feedback_message = self.override_feedback_message_on_running
-            return py_trees.Status.RUNNING
 
 class OrderActionClient(py_trees.behaviour.Behaviour):
     def __init__(self, name="Action Client", action_spec=None, action_goal=None, action_namespace="/action",
@@ -154,10 +78,10 @@ class OrderActionClient(py_trees.behaviour.Behaviour):
         self.sent_goal = False
 
 
-class QRCodeActionClient(py_trees.behaviour.Behaviour):
+class ObjectDetectionActionClient(py_trees.behaviour.Behaviour):
     def __init__(self, name="Action Client", action_spec=None, action_goal=None, action_namespace="/action",
                  override_feedback_message_on_running="moving"):
-        super(QRCodeActionClient, self).__init__(name)
+        super(ObjectDetectionActionClient, self).__init__(name)
         self.action_client = None
         self.sent_goal = False
         self.action_spec = action_spec
@@ -173,6 +97,8 @@ class QRCodeActionClient(py_trees.behaviour.Behaviour):
 
     def setup(self, timeout):
         self.logger.debug("%s.setup()" % self.__class__.__name__)
+        self.request_publisher = rospy.Publisher("/request_detection", String, queue_size=10)
+        self.done_publisher = rospy.Publisher("/request_detection", String, queue_size=10)
         self.action_client = actionlib.SimpleActionClient(
             self.action_namespace,
             self.action_spec
@@ -188,6 +114,7 @@ class QRCodeActionClient(py_trees.behaviour.Behaviour):
         self.sent_goal = False
 
     def update(self):
+        self.request_publisher.publish('request')
 	print(self.feedback_message)
         self.logger.debug("{0}.update()".format(self.__class__.__name__))
         if not self.action_client:
@@ -212,10 +139,11 @@ class QRCodeActionClient(py_trees.behaviour.Behaviour):
 
         if result:
 		self.blackboard.qrcode_pose = result.pose
-		self.blackboard.frame_id = result.code_data
+		self.blackboard.frame_id = result.data
 		print("Conversion succeed!!")
 		print("Result with (robot coordinate)")
 		print(result)
+		self.done_publisher.publish('done')
 		return py_trees.Status.SUCCESS
         else:
 		self.feedback_message = self.override_feedback_message_on_running
@@ -242,7 +170,7 @@ class QRCodeActionClient(py_trees.behaviour.Behaviour):
 
 class GraspActionClient(py_trees.behaviour.Behaviour):
     def __init__(self, name="Action Client", action_spec=None, action_goal=None, x_offset=0.0, y_offset=0.0, z_offset=0.0, action_namespace="/action",
-                 override_feedback_message_on_running="moving", constraint=False, joint=[], mode=""):
+                 override_feedback_message_on_running="moving", constraint=False, joint={}, mode=""):
         super(GraspActionClient, self).__init__(name)
         self.action_client = None
         self.sent_goal = False
@@ -258,6 +186,7 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
         self.mode = mode
 
         self.blackboard = py_trees.blackboard.Blackboard()
+        self.n_try = 5
 
     def setup(self, timeout):
         self.logger.debug("%s.setup()" % self.__class__.__name__)
@@ -306,7 +235,7 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
 
             if self.mode == "put":
 	            self.action_goal.target_pose.pose.position.x = self.blackboard.qrcode_pose.pose.position.x
-	            self.action_goal.target_pose.pose.position.z = self.blackboard.qrcode_pose.pose.position.z + 0.03
+	            self.action_goal.target_pose.pose.position.z = self.blackboard.qrcode_pose.pose.position.z + 0.1
 	            self.action_goal.target_pose.pose.position.y = -self.blackboard.qrcode_pose.pose.position.y
             # rospy.loginfo(self.action_goal.target_pose.pose.position.x)
 
@@ -328,15 +257,20 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
                     print("Constraint joint not defined.")
                     return py_trees.Status.FAILURE
                 for joint in self.joint:
-                    joint_constraint = JointConstraint()
-                    joint_constraint.joint_name = joint
-                    joint_constraint.position = 0.0
-                    joint_constraint.tolerance_above = 30 * math.pi / 180.0
-                    joint_constraint.tolerance_below = 30 * math.pi / 180.0
-                    joint_constraint.weight = 1.0
-                    self.action_goal.joint_constraints.append(joint_constraint)
-
-                    print("Joint constrained : " + joint)
+                    try:
+                        position = self.joint[joint][0]
+                        above_bound = self.joint[joint][1]
+                        below_bound = self.joint[joint][2]
+                        joint_constraint = JointConstraint()
+                        joint_constraint.joint_name = joint
+                        joint_constraint.position = position
+                        joint_constraint.tolerance_above = above_bound
+                        joint_constraint.tolerance_below = below_bound
+                        joint_constraint.weight = 1.0
+                        self.action_goal.joint_constraints.append(joint_constraint)
+                        print("Joint constrained : " + joint)
+                    except:
+                        print("exception")
 
             # print("<== action goal ==>")
             # print("Find : " + self.blackboard.frame_id)
@@ -353,16 +287,26 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
             self.feedback_message = "sent goal to the action server"
             return py_trees.Status.RUNNING
         self.feedback_message = self.action_client.get_goal_status_text()
-        if self.action_client.get_state() in [actionlib_msgs.GoalStatus.ABORTED,
-                                              actionlib_msgs.GoalStatus.PREEMPTED]:
-            return py_trees.Status.FAILURE
+#        if self.action_client.get_state() in [actionlib_msgs.GoalStatus.ABORTED,
+#                                              actionlib_msgs.GoalStatus.PREEMPTED]:
+#            return py_trees.Status.FAILURE
         result = self.action_client.get_result()
 
         if result:
+            print(" * Got results!!")
             return py_trees.Status.SUCCESS
         else:
             self.feedback_message = self.override_feedback_message_on_running
-            return py_trees.Status.RUNNING
+            if self.n_try > 0:
+                print(" * else")
+                self.n_try -= 1
+                self.sent_goal = False
+                rospy.sleep(1)
+                return py_trees.Status.RUNNING
+            else:
+                print("Finally fail.")
+                self.n_try = 5
+                return py_trees.Status.FAILURE
 
     def terminate(self, new_status):
         self.logger.debug("%s.terminate(%s)" % (self.__class__.__name__, "%s->%s" % (self.status, new_status) if self.status != new_status else "%s" % new_status))
