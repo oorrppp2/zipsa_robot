@@ -58,7 +58,7 @@ class OrderTargetServer:
 
         if success:
             result.result = True
-            result.code_data = self.result_code_data
+            result.data = self.result_code_data
             self.order_server.set_succeeded(result)
 
 
