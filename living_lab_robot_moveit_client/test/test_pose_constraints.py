@@ -59,8 +59,8 @@ def main(argv):
 if __name__ == '__main__':
     rospy.init_node('test_pose', anonymous=False)
 
-    if len(sys.argv) != 12:
-        print "Usage: rosrun living_lab_robot_moveit_client test_pose <reference_link> <x> <y> <z> <r (deg)> <p (deg)> <y (deg)> <joint_name> <position> <upper_offset> <lower_offset>"
+    if len(sys.argv) != 8:
+        print "Usage: rosrun living_lab_robot_moveit_client test_pose <reference_link> <x> <y> <z> <r (deg)> <p (deg)> <y (deg)>"
         exit(-1)
 
     m = main(sys.argv[1:])

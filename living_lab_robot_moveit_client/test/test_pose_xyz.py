@@ -42,8 +42,17 @@ def main(argv):
         joint_constraint_arm6_joint.tolerance_above = float(10) * math.pi / 180.0
         joint_constraint_arm6_joint.tolerance_below = float(10) * math.pi / 180.0
         joint_constraint_arm6_joint.weight = 1.0
+
+        joint_constraint_elevation_joint = JointConstraint()
+        joint_constraint_elevation_joint.joint_name = "elevation_joint"
+        joint_constraint_elevation_joint.position = float(-0.05)
+        joint_constraint_elevation_joint.tolerance_above = 0
+        joint_constraint_elevation_joint.tolerance_below = 0.3
+        joint_constraint_elevation_joint.weight = 1.0
+
         goal.joint_constraints.append(joint_constraint_arm1_joint)
         goal.joint_constraints.append(joint_constraint_arm6_joint)
+        goal.joint_constraints.append(joint_constraint_elevation_joint)
 
     except ValueError:
         quit()
