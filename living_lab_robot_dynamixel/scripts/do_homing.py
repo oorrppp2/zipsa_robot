@@ -14,6 +14,7 @@ class DoHomingProcedure:
     def __init__(self):
 
         self.homing_target = ['head/pan', 'body/body_rotate', 'body/arm_base', 'body/elevation']
+#        self.homing_target = ['body/elevation']
 
         for controller in self.homing_target:
             self.current_target = controller
@@ -76,7 +77,7 @@ class DoHomingProcedure:
         goal.trajectory.joint_names = ['body_rotate_joint', 'elevation_joint', 'arm1_joint', 'arm2_joint', 'arm3_joint', 'arm4_joint', 'arm5_joint', 'arm6_joint']
 
         point = JointTrajectoryPoint()
-        point.positions = [0.0, 0.0, 0.0, 1.5708, -3.14, 0.0, 0.0, 0.0]
+        point.positions = [0.0, 0.0, 0.0, 1.2, -2.6, 0.0, 0.0, 0.0]
         point.time_from_start = rospy.Duration(1.0)
 
         goal.trajectory.points.append(point)
@@ -86,7 +87,19 @@ class DoHomingProcedure:
 
         rospy.sleep(1.0)
 
+
         goal.trajectory.header.stamp = rospy.Time.now()
+        point.positions = [0.0, 0.0, 0.0, 1.5708, -3.14, 0.0, 0.0, 0.0]
+        point.time_from_start = rospy.Duration(1.0)
+
+        client.send_goal(goal)
+        client.wait_for_result()
+
+        rospy.sleep(1.0)
+
+
+        goal.trajectory.header.stamp = rospy.Time.now()
+#        point.positions = [0.0, -0.115, 0.0, 1.57, -3.14, 0.0, 0.0, 0.0]
         point.positions = [0.0, -0.215, 0.0, 1.57, -3.14, 0.0, 0.0, 0.0]
         point.time_from_start = rospy.Duration(4.0)
 
