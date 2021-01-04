@@ -30,6 +30,7 @@ from living_lab_robot_moveit_client.msg import PlanExecuteNamedPoseAction, PlanE
 from living_lab_robot_moveit_client.msg import PlanExecutePoseAction, PlanExecutePoseGoal
 from living_lab_robot_moveit_client.msg import PlanExecutePoseConstraintsAction, PlanExecutePoseConstraintsGoal
 from living_lab_robot_perception.msg import ObjectDetectAction, ObjectDetectGoal
+from living_lab_robot_perception.msg import ReceiveTargetAction, ReceiveTargetGoal
 
 global Point_data
 global Point_flag
@@ -137,7 +138,7 @@ def create_root():
         name="order_target",
         action_namespace="/order_received",
         action_spec=ReceiveTargetAction,
-        action_goal=ReceiveTargetDetectGoal()
+        action_goal=ReceiveTargetGoal()
     )
 
     arm_pull_out = Fold_arm("Pull out", 0)
@@ -216,7 +217,7 @@ def create_root():
     wait_time1 = WaitForTime(name="delay_1s", time=1.0)
     wait_time05 = WaitForTime(name="delay_0.5s", time=0.5)
 
-    find_object = QRCodeActionClient(
+    find_object = ObjectDetectionActionClient(
         name="find_object",
         action_namespace="/object_detect",
         action_spec=ObjectDetectAction,
@@ -231,32 +232,44 @@ def create_root():
          ]
     )
 
+    #
+    # Arm_control  (Move arm to the target object to grasp it.)
+    #
+
     arm_control = py_trees.composites.Sequence("arm_control")
     wait_arm_control = py_trees_ros.subscribers.CheckData(name="wait_arm_control", topic_name="/wait_select_scene", topic_type=String,
            variable_name="data", expected_value="arm_control")
     arm_control_mention1 = Print_message(name="* Arm_control *")
+    arm_control_mention2 = Print_message(name="* Arm_control2 *")
 
     move_manipulator_to_grasp_add_offset = GraspActionClient(
         name="move_manipulator_to_grasp",
         action_namespace="/plan_and_execute_pose_w_joint_constraints",
         action_spec=PlanExecutePoseConstraintsAction,
         action_goal=PlanExecutePoseConstraintsGoal(),
-        x_offset=-0.1,
+        x_offset=-0.03,
         y_offset=0,
         z_offset=0.05,
         constraint=True,
-        joint=["arm1_joint", "arm6_joint"]
+        joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
+			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
+			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
+			'elevation_joint':[-0.05, 0.0, 0.35]}
+#        joint=["arm1_joint", "arm6_joint"]
     )
     move_manipulator_to_grasp = GraspActionClient(
         name="move_manipulator_to_grasp",
         action_namespace="/plan_and_execute_pose_w_joint_constraints",
         action_spec=PlanExecutePoseConstraintsAction,
         action_goal=PlanExecutePoseConstraintsGoal(),
-        x_offset=0,
+        x_offset=0.03,
         y_offset=0,
-        z_offset=0.02,
+        z_offset=-0.01,
         constraint=True,
-        joint=["arm1_joint", "arm6_joint"]
+        joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
+			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
+			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
+			'elevation_joint':[-0.05, 0.0, 0.35]}
     )
 
     arm_control.add_children(
@@ -282,23 +295,15 @@ def create_root():
 
     grasp_object_mention1 = Print_message(name="* Closing the gripper *")
 
-    move_manipulator_to_position_up = GraspActionClient(
-        name="move_manipulator_to_position_up",
-        action_namespace="/plan_and_execute_pose_w_joint_constraints",
-        action_spec=PlanExecutePoseConstraintsAction,
-        action_goal=PlanExecutePoseConstraintsGoal(),
-        x_offset=0,
-        y_offset=0,
-        z_offset=0.05,
-        constraint=True,
-        joint=["arm1_joint", "arm6_joint"]
-    )
+    elevation_up_action = Elevation_up(target_pose=0.05)
 
     grasp_object.add_children(
         [wait_grasp_object,
          grasp_object_mention1,
          gripper_close,
-         move_manipulator_to_position_up,
+         wait_time1,
+         elevation_up_action,
+         wait_time1,
          move_manipulator_to_grasp_done,
          done_scene,
          ]
@@ -321,9 +326,13 @@ def create_root():
         action_goal=PlanExecutePoseConstraintsGoal(),
         constraint=True,
         x_offset=0,
-        joint=["arm1_joint", "arm6_joint"],
+        joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, -30 * math.pi / 180.0],
+			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
+			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
+			'elevation_joint':[-0.05, 0.0, 0.35]},
         mode="put"
     )
+    elevation_down_action = Elevation_up(target_pose=-0.07)
 
     put_object.add_children(
         [wait_put_object,
@@ -331,8 +340,11 @@ def create_root():
          move_manipulator_to_put_down,
          wait_time1,
          wait_time1,
+         elevation_down_action,
+         wait_time1,
+         wait_time1,
          gripper_open,
-         move_manipulator_to_grasp_ready,
+         move_manipulator_to_home,
          done_scene,
          ]
     )
@@ -395,18 +407,12 @@ def create_root():
            variable_name="data", expected_value="elevation_up")
     elevation_up_mention1 = Print_message(name="* Elevation_up *")
 
-    elevation_up_action = GetJointStateActionClient(
-        name="get_joint",
-        action_namespace="/joint_state_request",
-        action_spec=ObjectDetectAction,
-        action_goal=ObjectDetectGoal()
-    )
-#    elevation_015 = ElevationOnly(name="elevation_015", target_pose=-0.15)
+#			Elevation_up : desired elevation position = current position + target_pose
+
     elevation_up.add_children(
         [wait_elevation_up,
          elevation_up_mention1,
-#         elevation_up_action,
-#         elevation_015,
+         elevation_up_action,
          done_scene,
          ]
     )
