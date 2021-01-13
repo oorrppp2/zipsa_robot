@@ -26,6 +26,8 @@
 #include <darknet_ros_msgs/BoundingBoxes.h>
 #include <darknet_ros_msgs/BoundingBox.h>
 
+#include <std_msgs/String.h>
+
 class ConvertBoundingBoxNode
 {
     public:
@@ -33,7 +35,9 @@ class ConvertBoundingBoxNode
         {
 			pointcloud_sub_ = nh_.subscribe<sensor_msgs::PointCloud2>("/camera/depth_registered/points", 1, &ConvertBoundingBoxNode::pointcloud_callback, this);
 			boundingboxes_sub_ = nh_.subscribe<darknet_ros_msgs::BoundingBoxes>("/darknet_ros/bounding_boxes", 1, &ConvertBoundingBoxNode::boundingbox_callback, this);
+			target_id_sub_ = nh_.subscribe<std_msgs::String>("/order_target", 1, &ConvertBoundingBoxNode::target_id_callback, this);
 			pub_result_ = nh_.advertise<convert_2d_to_3d::Result>("detected_object", 1);
+			pointcloud_pub = nh_.advertise<sensor_msgs::PointCloud2>("/camera/depth_registered/removed_object_points", 1);
 
             //cv::namedWindow("result", cv::WINDOW_AUTOSIZE);
             ROS_INFO("[%s] initialized...", ros::this_node::getName().c_str());
@@ -42,6 +46,7 @@ class ConvertBoundingBoxNode
         {
             delete pointcloud_sub_;
             delete boundingboxes_sub_;
+            delete target_id_sub_;
         }
 
 	void boundingbox_callback(const darknet_ros_msgs::BoundingBoxesConstPtr& boundingbox) {
@@ -49,7 +54,10 @@ class ConvertBoundingBoxNode
 		for(int i = 0; i < boundingbox->bounding_boxes.size(); i++) {
 		    gBoundingboxes.bounding_boxes.push_back(boundingbox->bounding_boxes[i]);
 		}
+	}
 
+	void target_id_callback(const std_msgs::StringConstPtr& msg) {
+		target_id = msg->data;
 	}
 
 	void pointcloud_callback(const sensor_msgs::PointCloud2ConstPtr& pointcloud)
@@ -57,65 +65,60 @@ class ConvertBoundingBoxNode
 //	    printf("Bounding boxes size : %d\n", gBoundingboxes.bounding_boxes.size());
 		pcl::PointCloud<pcl::PointXYZRGB> pcl_cloud;
 		pcl::fromROSMsg(*pointcloud, pcl_cloud);
+		if(!gBoundingboxes.bounding_boxes.empty()) {
 
-		if(gBoundingboxes.bounding_boxes.empty())
-		    return;
+			double x = 0.0;
+			double y = 0.0;
+			double z = 0.0;
+			std::string id = "";
 
-		double x = 0.0;
-		double y = 0.0;
-		double z = 0.0;
-		std::string id = "";
+			for(int i = 0; i < gBoundingboxes.bounding_boxes.size(); i++) {
+				pcl::PointXYZRGB p = pcl_cloud( (gBoundingboxes.bounding_boxes[i].xmin + gBoundingboxes.bounding_boxes[i].xmax)/2,
+												(gBoundingboxes.bounding_boxes[i].ymin + gBoundingboxes.bounding_boxes[i].ymax)/2);
+				x = p.x;
+				y = p.y;
+				z = p.z;
+				id = gBoundingboxes.bounding_boxes[i].Class;
+				
+				// std::cout <<"point : " << p << std::endl;
+				// std::cout <<" ==> " << p.x << " , " << p.y << " , " << p.z << std::endl;
+				// std::cout << "ID : " << id << std::endl;
+				// std::cout << "target_id : " << target_id << std::endl;
 
-		for(int i = 0; i < gBoundingboxes.bounding_boxes.size(); i++) {
-		    pcl::PointXYZRGB p = pcl_cloud( (gBoundingboxes.bounding_boxes[i].xmin + gBoundingboxes.bounding_boxes[i].xmax)/2,
-		                                    (gBoundingboxes.bounding_boxes[i].ymin + gBoundingboxes.bounding_boxes[i].ymax)/2);
-		    x = p.x;
-		    y = p.y;
-		    z = p.z;
-		    id = gBoundingboxes.bounding_boxes[i].Class;
-//		    std::cout <<"point : " << p << std::endl;
-//		    std::cout <<" ==> " << p.x << " , " << p.y << " , " << p.z << std::endl;
+				if(id == target_id) {
+					std::cout << target_id << " points removed" << std::endl;
+					for(int x = gBoundingboxes.bounding_boxes[i].xmin - 5; x < gBoundingboxes.bounding_boxes[i].xmax + 5; x++) {
+						for(int y = gBoundingboxes.bounding_boxes[i].ymin - 5; y < gBoundingboxes.bounding_boxes[i].ymax + 5; y++) {
+							pcl_cloud(x, y).x, pcl_cloud(x, y).y = 0;
+							pcl_cloud(x, y).z = -10;
+						}
+					}
+				}
 
-		    // create static tf
-/*
-		    geometry_msgs::TransformStamped transformStamped;
-		    std::string object_coordinate = "object_coordinate";
-		    transformStamped.header.frame_id = "camera_color_optical_frame";
-		    transformStamped.child_frame_id = object_coordinate;
+				// Publish result
+				convert_2d_to_3d::Result msg;
+				msg.type = "detected_object";
+				msg.data = id;
 
-		    transformStamped.transform.translation.x = x;
-		    transformStamped.transform.translation.y = y;
-		    transformStamped.transform.translation.z = z;
+				msg.pose.header.stamp = ros::Time::now();
+				msg.pose.header.frame_id = "object_coordinate";
+				msg.pose.pose.position.x = x;
+				msg.pose.pose.position.y = y;
+				msg.pose.pose.position.z = z;
 
-		    transformStamped.transform.rotation.x = 0;
-		    transformStamped.transform.rotation.y = 0;
-		    transformStamped.transform.rotation.z = 0;
-		    transformStamped.transform.rotation.w = 1;
+				msg.pose.pose.orientation.x = 0;
+				msg.pose.pose.orientation.y = 0;
+				msg.pose.pose.orientation.z = 0;
+				msg.pose.pose.orientation.w = 1;
 
-		    transformStamped.header.stamp = ros::Time::now();
-		    tfb_.sendTransform(transformStamped);
-*/
-		    // Publish result
-		    convert_2d_to_3d::Result msg;
-		    msg.type = "detected_object";
-		    msg.data = id;
+				pub_result_.publish(msg);
+			}
 
-		    msg.pose.header.stamp = ros::Time::now();
-		    msg.pose.header.frame_id = "object_coordinate";
-		    msg.pose.pose.position.x = x;
-		    msg.pose.pose.position.y = y;
-		    msg.pose.pose.position.z = z;
+			pointcloud_pub.publish(pcl_cloud);
 
-		    msg.pose.pose.orientation.x = 0;
-		    msg.pose.pose.orientation.y = 0;
-		    msg.pose.pose.orientation.z = 0;
-		    msg.pose.pose.orientation.w = 1;
-
-		    pub_result_.publish(msg);
+			ros::Duration(0.01).sleep();
+			gBoundingboxes.bounding_boxes.clear();
 		}
-
-		ros::Duration(0.01).sleep();
-		gBoundingboxes.bounding_boxes.clear();
 	}
 
     private:
@@ -123,8 +126,11 @@ class ConvertBoundingBoxNode
         tf2_ros::TransformBroadcaster tfb_;
 	ros::Subscriber pointcloud_sub_;
 	ros::Subscriber boundingboxes_sub_;
+	ros::Subscriber target_id_sub_;
 	ros::Publisher pub_result_;
+	ros::Publisher pointcloud_pub;
 	darknet_ros_msgs::BoundingBoxes gBoundingboxes;
+	std::string target_id;
 };
 
 int main(int argc, char** argv)
