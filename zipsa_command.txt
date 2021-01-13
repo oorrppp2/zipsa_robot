@@ -1,0 +1,93 @@
+scene command
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'scene3'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'elevation_up'"
+
+arm base control
+rostopic pub -1 /arm_base_controller/command std_msgs/Float64 "data: 0"
+rostopic pub -1 /arm_base_controller/command std_msgs/Float64 "data: -0.15"
+
+
+rostopic pub -1 /tilt_controller/command std_msgs/Float64 "data: 0.5"
+
+tf_echo
+rosrun tf tf_echo /base_link /end_effector
+rosrun tf tf_echo /map /base_footprint
+
+goal move_base
+rostopic echo /move_base/goal 
+
+goal end_effector
+rostopic echo /move_group/goal/goal/request/goal_constraints
+
+gripper close/open
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'gripper_close'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'gripper_open'"
+rostopic pub -1 /gripper_controller/command std_msgs/Float64 "data: 0"
+
+joint constraint
+rosrun living_lab_robot_moveit_client test_pose_constraints.py base_link 0.8 0.0 0.45 0 0 0 arm1_joint 0.0 30 30
+
+make arm home position
+rosrun living_lab_robot_moveit_client test_named_pose.py home
+rosrun living_lab_robot_moveit_client test_named_pose.py grasp_ready
+
+
+* Obstacle add/del
+rostopic pub -1 /add_obstacle std_msgs/String "data: '1.0 0.0 0.2 table 0.5 2.0 0.4'"
+rostopic pub -1 /del_obstacle std_msgs/String "data: 'table'"
+rostopic pub -1 /del_all_obstacles std_msgs/String "data: '1'"
+
+* YOLO detector on/off
+rostopic pub -1 /request_detection std_msgs/String "data: 'request'"
+rostopic pub -1 /request_detection std_msgs/String "data: 'done'"
+
+ZipSA eef control test 실행 순서
+roslaunch living_lab_robot_bringup bringup_gazebo.launch
+rosrun living_lab_robot_perception Order_target_node.py
+rosrun living_lab_robot_perception object_detector_node.py
+rosrun living_lab_robot_moveit_client moveit_client_node_obstacle_avoidance.py
+
+rosrun living_lab_robot_moveit_client test_pose_xyz.py base_footprint 0.94 0.0623 1.012
+(Arguments : <reference_link> <x> <y> <z> )
+
+rosrun living_lab_robot_moveit_client test_named_pose.py home
+(Make arm to home pose.)
+
+
+<ZipSA Demo 실행 순서>
+
+roslaunch living_lab_robot_bringup bringup_gazebo.launch
+rosrun living_lab_robot_perception Order_target_node.py
+rosrun living_lab_robot_perception object_detector_node.py
+rosrun living_lab_robot_moveit_client moveit_client_node_obstacle_avoidance.py
+roslaunch darknet_ros hyundai.launch
+rosrun convert_2d_to_3d convert_boundingbox_node
+rosrun living_lab_robot_apps demo.py
+
+
+<ZipSA Demo command 순서>
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'intro'"
+rostopic pub -1 /order_target std_msgs/String "data: 'cup'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'find_target'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'arm_control'"
+
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'move_to_table'"
+
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'find_target'"
+
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'arm_control'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'grasp_object'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'put_object'"
+(목표물 전달할 장소로 이동)
+(물건 내려놓기)
+rostopic pub -1 /del_all_obstacles std_msgs/String "data: '1'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'go_home'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'finish_demo'"
+
+
+rosrun living_lab_robot_moveit_client test_pose_xyz.py base_footprint 1.04 -0.1266 1.012
+rosrun living_lab_robot_moveit_client test_pose_xyz.py base_footprint 0.7 -0.1266 0.9
+rosrun tf tf_echo /base_footprint /camera_link
+
+rostopic pub -1 /remove_object std_msgs/String "data: 'request'"
+
