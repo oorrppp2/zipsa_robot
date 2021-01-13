@@ -287,26 +287,28 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
             self.feedback_message = "sent goal to the action server"
             return py_trees.Status.RUNNING
         self.feedback_message = self.action_client.get_goal_status_text()
-#        if self.action_client.get_state() in [actionlib_msgs.GoalStatus.ABORTED,
-#                                              actionlib_msgs.GoalStatus.PREEMPTED]:
-#            return py_trees.Status.FAILURE
+        
+        # Failure case
+        if self.action_client.get_state() in [actionlib_msgs.GoalStatus.ABORTED,
+                                              actionlib_msgs.GoalStatus.PREEMPTED]:
+#             if self.fail_count < 10:
+#                 self.sent_goal = False
+#                 self.fail_count += 1
+#                 self.x_offset -= 0.01
+# #                self.y_offset += 1
+#                 self.z_offset += 0.005
+#                 print("Action failed. Retry :: " + str(self.fail_count) + " try")
+#                 return py_trees.Status.RUNNING
+#             else:
+#                 print("Tried 10 times. Action failed.")
+            return py_trees.Status.FAILURE
         result = self.action_client.get_result()
 
         if result:
-            print(" * Got results!!")
             return py_trees.Status.SUCCESS
         else:
             self.feedback_message = self.override_feedback_message_on_running
-            if self.n_try > 0:
-                print(" * else")
-                self.n_try -= 1
-                self.sent_goal = False
-                rospy.sleep(1)
-                return py_trees.Status.RUNNING
-            else:
-                print("Finally fail.")
-                self.n_try = 5
-                return py_trees.Status.FAILURE
+            return py_trees.Status.RUNNING
 
     def terminate(self, new_status):
         self.logger.debug("%s.terminate(%s)" % (self.__class__.__name__, "%s->%s" % (self.status, new_status) if self.status != new_status else "%s" % new_status))

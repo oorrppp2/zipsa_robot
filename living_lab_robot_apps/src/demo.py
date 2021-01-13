@@ -326,7 +326,7 @@ def create_root():
         action_goal=PlanExecutePoseConstraintsGoal(),
         constraint=True,
         x_offset=0,
-        joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, -30 * math.pi / 180.0],
+        joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
 			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
 			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
 			'elevation_joint':[-0.05, 0.0, 0.35]},
