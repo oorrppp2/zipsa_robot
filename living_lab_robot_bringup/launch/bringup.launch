@@ -69,7 +69,8 @@
     <node name="pan_tilt_controller" type="head_pan_controller.py" pkg="living_lab_robot_control" output="screen" />
 
     <!-- Topic Throttle for Point Cloud -->
-    <node name="points_throttler" type="throttle" pkg="topic_tools" args="messages /camera/depth_registered/points 2.0 /throttled_depth_registered_points"/>
+    <!--node name="points_throttler" type="throttle" pkg="topic_tools" args="messages /camera/depth_registered/points 2.0 /throttled_depth_registered_points"/-->
+    <node name="points_throttler" type="throttle" pkg="topic_tools" args="messages /camera/depth_registered/removed_object_points 2.0 /throttled_depth_registered_points"/>
 
     <!-- Topic Relay -->
     <node name="relay_base_joint_states" pkg="topic_tools" type="relay" args="/base/joint_states /joint_states"/>
