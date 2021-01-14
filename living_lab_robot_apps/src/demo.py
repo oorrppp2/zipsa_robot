@@ -295,7 +295,7 @@ def create_root():
 
     grasp_object_mention1 = Print_message(name="* Closing the gripper *")
 
-    elevation_up_action = Elevation_up(target_pose=0.05)
+    elevation_up_action = Elevation_up(target_pose=0.1)
 
     grasp_object.add_children(
         [wait_grasp_object,
@@ -319,8 +319,21 @@ def create_root():
 
     put_object_mention1 = Print_message(name="* Putting down the object*")
 
-    move_manipulator_to_put_down = GraspActionClient(
-        name="move_manipulator_to_grasp3",
+    move_manipulator_to_put_down_1 = GraspActionClient(
+        name="move_manipulator_to_grasp",
+        action_namespace="/plan_and_execute_pose_w_joint_constraints",
+        action_spec=PlanExecutePoseConstraintsAction,
+        action_goal=PlanExecutePoseConstraintsGoal(),
+        constraint=True,
+        x_offset=-0.1,
+        joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
+			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
+			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
+			'elevation_joint':[-0.05, 0.0, 0.35]},
+        mode="put"
+    )
+    move_manipulator_to_put_down_2 = GraspActionClient(
+        name="move_manipulator_to_grasp",
         action_namespace="/plan_and_execute_pose_w_joint_constraints",
         action_spec=PlanExecutePoseConstraintsAction,
         action_goal=PlanExecutePoseConstraintsGoal(),
@@ -337,7 +350,8 @@ def create_root():
     put_object.add_children(
         [wait_put_object,
          put_object_mention1,
-         move_manipulator_to_put_down,
+         move_manipulator_to_put_down_1,
+         move_manipulator_to_put_down_2,
          wait_time1,
          wait_time1,
          elevation_down_action,
