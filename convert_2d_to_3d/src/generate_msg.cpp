@@ -39,6 +39,11 @@ class ConvertBoundingBoxNode
 			pub_result_ = nh_.advertise<convert_2d_to_3d::Result>("detected_object", 1);
 			pointcloud_pub = nh_.advertise<sensor_msgs::PointCloud2>("/camera/depth_registered/removed_object_points", 1);
 
+			last_boundingbox_xmin = 0;
+			last_boundingbox_xmax = 0;
+			last_boundingbox_ymin = 0;
+			last_boundingbox_ymax = 0;
+
             //cv::namedWindow("result", cv::WINDOW_AUTOSIZE);
             ROS_INFO("[%s] initialized...", ros::this_node::getName().c_str());
         }
@@ -86,9 +91,15 @@ class ConvertBoundingBoxNode
 				// std::cout << "target_id : " << target_id << std::endl;
 
 				if(id == target_id) {
-					std::cout << target_id << " points removed" << std::endl;
-					for(int x = gBoundingboxes.bounding_boxes[i].xmin - 5; x < gBoundingboxes.bounding_boxes[i].xmax + 5; x++) {
-						for(int y = gBoundingboxes.bounding_boxes[i].ymin - 5; y < gBoundingboxes.bounding_boxes[i].ymax + 5; y++) {
+					std::cout << target_id << " points removed!\t";
+					std::cout << "remove_padding : " << remove_padding << std::endl;
+					last_boundingbox_xmin = gBoundingboxes.bounding_boxes[i].xmin;
+					last_boundingbox_xmax = gBoundingboxes.bounding_boxes[i].xmax;
+					last_boundingbox_ymin = gBoundingboxes.bounding_boxes[i].ymin;
+					last_boundingbox_ymax = gBoundingboxes.bounding_boxes[i].ymax;
+
+					for(int x = last_boundingbox_xmin - remove_padding; x < last_boundingbox_xmax + remove_padding; x++) {
+						for(int y = last_boundingbox_ymin - remove_padding; y < last_boundingbox_ymax + remove_padding; y++) {
 							pcl_cloud(x, y).x, pcl_cloud(x, y).y = 0;
 							pcl_cloud(x, y).z = -10;
 						}
@@ -119,6 +130,15 @@ class ConvertBoundingBoxNode
 			ros::Duration(0.01).sleep();
 			gBoundingboxes.bounding_boxes.clear();
 		}
+//		else {
+//			for(int x = last_boundingbox_xmin - remove_padding; x < last_boundingbox_xmax + remove_padding; x++) {
+//				for(int y = last_boundingbox_ymin - remove_padding; y < last_boundingbox_ymax + remove_padding; y++) {
+//					pcl_cloud(x, y).x, pcl_cloud(x, y).y = 0;
+//					pcl_cloud(x, y).z = -10;
+//				}
+//			}
+//			pointcloud_pub.publish(pcl_cloud);
+//		}
 	}
 
     private:
@@ -131,6 +151,13 @@ class ConvertBoundingBoxNode
 	ros::Publisher pointcloud_pub;
 	darknet_ros_msgs::BoundingBoxes gBoundingboxes;
 	std::string target_id;
+
+	int last_boundingbox_xmin;
+	int last_boundingbox_xmax;
+	int last_boundingbox_ymin;
+	int last_boundingbox_ymax;
+
+	int remove_padding = 20;
 };
 
 int main(int argc, char** argv)
