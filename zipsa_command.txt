@@ -3,12 +3,10 @@ rostopic pub -1 /wait_select_scene std_msgs/String "data: 'scene3'"
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'elevation_up'"
 
 arm base control
-rostopic pub -1 /arm_base_controller/command std_msgs/Float64 "data: 0"
-rostopic pub -1 /arm_base_controller/command std_msgs/Float64 "data: -0.15"
+rostopic pub -1 /body/arm_base_controller/command std_msgs/Float64 "data: 0"
+rostopic pub -1 /body/arm_base_controller/command std_msgs/Float64 "data: -0.15"
 
-
-rostopic pub -1 /tilt_controller/command std_msgs/Float64 "data: 0.5"
-
+rostopic pub -1 /head/tilt_controller/command std_msgs/Float64 "data: 0.3"
 tf_echo
 rosrun tf tf_echo /base_link /end_effector
 rosrun tf tf_echo /map /base_footprint
