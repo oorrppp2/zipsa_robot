@@ -100,7 +100,8 @@ class DoHomingProcedure:
 
         goal.trajectory.header.stamp = rospy.Time.now()
 #        point.positions = [0.0, -0.115, 0.0, 1.57, -3.14, 0.0, 0.0, 0.0]
-        point.positions = [0.0, -0.215, 0.0, 1.57, -3.14, 0.0, 0.0, 0.0]
+#        point.positions = [0.0, -0.215, 0.0, 1.57, -3.14, 0.0, 0.0, 0.0]
+        point.positions = [0.0, -0.213, 0.0, 1.57, -3.14, 0.0, 0.0, 0.0]
         point.time_from_start = rospy.Duration(4.0)
 
         client.send_goal(goal)
