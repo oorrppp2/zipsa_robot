@@ -234,6 +234,8 @@ def create_root():
 
     #
     # Arm_control  (Move arm to the target object to grasp it.)
+    # x축으로 3cm 앞, z축으로 5cm 위를 경유하여
+    # x축으로 3cm 더 깊이(첫 경유보다 6cm 깊이), z축 center 기준으로 -1cm 지점으로 move.
     #
 
     arm_control = py_trees.composites.Sequence("arm_control")
@@ -287,6 +289,7 @@ def create_root():
 
     #
     # Grasp the object.  (Gripper close and arm position into 'grasp_done')
+    # 물건을 잡고 10cm 들어 올림.
     #
     grasp_object = py_trees.composites.Sequence("grasp_object")
 
@@ -310,7 +313,8 @@ def create_root():
     )
 
     #
-    # Put the object down. 
+    # Put the object down.
+    # 목표 지점 위 8cm 위치를 경유한 뒤 7cm elevation을 내림.
     #
     put_object = py_trees.composites.Sequence("put_object")
 
@@ -325,7 +329,7 @@ def create_root():
         action_spec=PlanExecutePoseConstraintsAction,
         action_goal=PlanExecutePoseConstraintsGoal(),
         constraint=True,
-        x_offset=-0.1,
+        # x_offset=-0.1,
         joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
 			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
 			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
@@ -351,7 +355,7 @@ def create_root():
         [wait_put_object,
          put_object_mention1,
          move_manipulator_to_put_down_1,
-         move_manipulator_to_put_down_2,
+        #  move_manipulator_to_put_down_2,
          wait_time1,
          wait_time1,
          elevation_down_action,
@@ -422,16 +426,33 @@ def create_root():
     elevation_up_mention1 = Print_message(name="* Elevation_up *")
 
 #			Elevation_up : desired elevation position = current position + target_pose
+    elevation_up_10cm_action = Elevation_up(target_pose=0.1)
+    elevation_down_10cm_action = Elevation_up(target_pose=-0.1)
 
     elevation_up.add_children(
         [wait_elevation_up,
          elevation_up_mention1,
-         elevation_up_action,
+         elevation_up_10cm_action,
          done_scene,
          ]
     )
 
-    root.add_children([gripper_open_cmd, intro, move_to_table, find_target, arm_control, grasp_object, go_home, finish_demo, put_object, elevation_up])
+    elevation_down = py_trees.composites.Sequence("Elevation_down")
+    wait_elevation_down = py_trees_ros.subscribers.CheckData(name="wait_elevation_down", topic_name="/wait_select_scene", topic_type=String,
+           variable_name="data", expected_value="elevation_down")
+    elevation_down_mention1 = Print_message(name="* Elevation_down *")
+
+#			Elevation_up : desired elevation position = current position + target_pose
+
+    elevation_down.add_children(
+        [wait_elevation_down,
+         elevation_down_mention1,
+         elevation_down_10cm_action,
+         done_scene,
+         ]
+    )
+
+    root.add_children([gripper_open_cmd, intro, move_to_table, find_target, arm_control, grasp_object, go_home, finish_demo, put_object, elevation_up, elevation_down])
     # root.add_children([scene1, scene3, scene4, scene5, scene6, scene7])
     return root
 

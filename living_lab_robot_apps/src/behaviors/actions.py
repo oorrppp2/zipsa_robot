@@ -221,8 +221,8 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
 #            self.action_goal.target_pose.pose.position.y = self.blackboard.qrcode_pose.pose.position.y
 #            self.action_goal.target_pose.pose.position.z = self.blackboard.qrcode_pose.pose.position.z
             self.action_goal.target_pose.pose.position.x = self.blackboard.qrcode_pose.pose.position.x + self.x_offset
-            self.action_goal.target_pose.pose.position.y = self.blackboard.qrcode_pose.pose.position.y+ self.y_offset
-            self.action_goal.target_pose.pose.position.z = self.blackboard.qrcode_pose.pose.position.z+ self.z_offset
+            self.action_goal.target_pose.pose.position.y = self.blackboard.qrcode_pose.pose.position.y + self.y_offset
+            self.action_goal.target_pose.pose.position.z = self.blackboard.qrcode_pose.pose.position.z + self.z_offset
 #            self.action_goal.target_pose.pose.position.x = 0.6
 #            self.action_goal.target_pose.pose.position.y = 0
 #            self.action_goal.target_pose.pose.position.z = 0.8
@@ -234,10 +234,17 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
 #	            self.action_goal.target_pose.pose.position.z = self.blackboard.qrcode_pose.pose.position.z - 0.02
 
             if self.mode == "put":
-	            self.action_goal.target_pose.pose.position.x = self.blackboard.qrcode_pose.pose.position.x
-	            self.action_goal.target_pose.pose.position.z = self.blackboard.qrcode_pose.pose.position.z + 0.1
-	            self.action_goal.target_pose.pose.position.y = -self.blackboard.qrcode_pose.pose.position.y
-            # rospy.loginfo(self.action_goal.target_pose.pose.position.x)
+	            # self.action_goal.target_pose.pose.position.x = self.blackboard.qrcode_pose.pose.position.x
+	            # self.action_goal.target_pose.pose.position.z = self.blackboard.qrcode_pose.pose.position.z + 0.1
+	            # self.action_goal.target_pose.pose.position.y = -self.blackboard.qrcode_pose.pose.position.y
+                # For demo.
+                # h1 : Kichen table height : 0.8
+                # h2 : Livingroom table height : 0.375
+                # x : Reach enough : 0.85
+                # Desired height(z) : object center - h1 + h2 + 0.07
+	            self.action_goal.target_pose.pose.position.x = 0.85
+	            self.action_goal.target_pose.pose.position.z = self.blackboard.qrcode_pose.pose.position.z -0.418
+	            self.action_goal.target_pose.pose.position.y = 0
 
             theta = math.atan2(self.action_goal.target_pose.pose.position.y, self.action_goal.target_pose.pose.position.x)
 
