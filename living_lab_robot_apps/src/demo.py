@@ -242,7 +242,9 @@ def create_root():
     wait_arm_control = py_trees_ros.subscribers.CheckData(name="wait_arm_control", topic_name="/wait_select_scene", topic_type=String,
            variable_name="data", expected_value="arm_control")
     arm_control_mention1 = Print_message(name="* Arm_control *")
-    arm_control_mention2 = Print_message(name="* Arm_control2 *")
+
+    publish_pause_request = Publish(topic_name="/pause_request", data="pause")
+    publish_resume_request = Publish(topic_name="/pause_request", data="resume")
 
     move_manipulator_to_grasp_add_offset = GraspActionClient(
         name="move_manipulator_to_grasp",
@@ -277,6 +279,7 @@ def create_root():
     arm_control.add_children(
         [wait_arm_control,
          arm_control_mention1,
+         publish_pause_request,
          # find_object,
          move_manipulator_to_grasp_add_offset,
          wait_time1,
@@ -308,6 +311,7 @@ def create_root():
          elevation_up_action,
          wait_time1,
          move_manipulator_to_grasp_done,
+         publish_resume_request,
          done_scene,
          ]
     )
