@@ -73,10 +73,8 @@ def create_root():
     head_tilt_up = MoveJoint(name="tilt_up", controller_name="/head/tilt_controller", command=0.0)
     head_tilt_down = MoveJoint(name="tilt_down", controller_name="/head/tilt_controller", command=0.4)
 
-    target_x = 0.7
-    target_y = -0.3
-    target_z = 0.8
-
+    publish_pause_request = Publish(topic_name="/pause_request", data="pause")
+    publish_resume_request = Publish(topic_name="/pause_request", data="resume")
 
     #
     # gripper_open  (gripper_open arm)
@@ -227,6 +225,7 @@ def create_root():
     find_target.add_children(
         [wait_find_target,
          find_target_mention1,
+         publish_resume_request,
          find_object,
          done_scene,
          ]
@@ -243,17 +242,14 @@ def create_root():
            variable_name="data", expected_value="arm_control")
     arm_control_mention1 = Print_message(name="* Arm_control *")
 
-    publish_pause_request = Publish(topic_name="/pause_request", data="pause")
-    publish_resume_request = Publish(topic_name="/pause_request", data="resume")
-
     move_manipulator_to_grasp_add_offset = GraspActionClient(
         name="move_manipulator_to_grasp",
         action_namespace="/plan_and_execute_pose_w_joint_constraints",
         action_spec=PlanExecutePoseConstraintsAction,
         action_goal=PlanExecutePoseConstraintsGoal(),
-        x_offset=-0.03,
+        x_offset=-0.02,
         y_offset=0,
-        z_offset=0.05,
+        z_offset=0.03,
         constraint=True,
         joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
 			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
