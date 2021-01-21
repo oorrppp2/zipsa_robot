@@ -70,6 +70,7 @@ class ConvertBoundingBoxNode
 		if(msg->data == "pause") {
 			pause_state = true;
 		} else if(msg->data == "resume") {
+			target_id = msg->data;
 			pause_state = false;
 		}
 	}
