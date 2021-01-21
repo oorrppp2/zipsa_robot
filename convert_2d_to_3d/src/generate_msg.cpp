@@ -35,7 +35,8 @@ class ConvertBoundingBoxNode
         {
 			pointcloud_sub_ = nh_.subscribe<sensor_msgs::PointCloud2>("/camera/depth_registered/points", 1, &ConvertBoundingBoxNode::pointcloud_callback, this);
 			boundingboxes_sub_ = nh_.subscribe<darknet_ros_msgs::BoundingBoxes>("/darknet_ros/bounding_boxes", 1, &ConvertBoundingBoxNode::boundingbox_callback, this);
-			target_id_sub_ = nh_.subscribe<std_msgs::String>("/order_target", 1, &ConvertBoundingBoxNode::target_id_callback, this);
+			target_id_sub_ = nh_.subscribe<std_msgs::String>("/remove_points_request", 1, &ConvertBoundingBoxNode::target_id_callback, this);
+			pause_sub_ = nh_.subscribe<std_msgs::String>("/pause_request", 1, &ConvertBoundingBoxNode::pause_sub_callback, this);
 			pub_result_ = nh_.advertise<convert_2d_to_3d::Result>("detected_object", 1);
 			pointcloud_pub = nh_.advertise<sensor_msgs::PointCloud2>("/camera/depth_registered/removed_object_points", 1);
 
@@ -65,10 +66,23 @@ class ConvertBoundingBoxNode
 		target_id = msg->data;
 	}
 
+	void pause_sub_callback(const std_msgs::StringConstPtr& msg) {
+		if(msg->data == "pause") {
+			pause_state = true;
+		} else if(msg->data == "resume") {
+			pause_state = false;
+		}
+	}
+
 	void pointcloud_callback(const sensor_msgs::PointCloud2ConstPtr& pointcloud)
 	{
+		if(pause_state) {
+			pointcloud_pub.publish(paused_pcl_cloud);
+			return;
+		}
 //	    printf("Bounding boxes size : %d\n", gBoundingboxes.bounding_boxes.size());
 		pcl::PointCloud<pcl::PointXYZRGB> pcl_cloud;
+		// pcl::PointCloud<pcl::PointXYZRGB>::iterator it;
 		pcl::fromROSMsg(*pointcloud, pcl_cloud);
 		if(!gBoundingboxes.bounding_boxes.empty()) {
 
@@ -91,19 +105,30 @@ class ConvertBoundingBoxNode
 				// std::cout << "target_id : " << target_id << std::endl;
 
 				if(id == target_id) {
-					std::cout << target_id << " points removed!\t";
-					std::cout << "remove_padding : " << remove_padding << std::endl;
-					last_boundingbox_xmin = gBoundingboxes.bounding_boxes[i].xmin;
-					last_boundingbox_xmax = gBoundingboxes.bounding_boxes[i].xmax;
-					last_boundingbox_ymin = gBoundingboxes.bounding_boxes[i].ymin;
-					last_boundingbox_ymax = gBoundingboxes.bounding_boxes[i].ymax;
+					// std::cout << target_id << " points removed!\t";
+					// std::cout << "remove_padding : " << remove_padding << std::endl;
+					last_boundingbox_xmin = gBoundingboxes.bounding_boxes[i].xmin - remove_padding;
+					last_boundingbox_xmax = gBoundingboxes.bounding_boxes[i].xmax + remove_padding;
+					last_boundingbox_ymin = gBoundingboxes.bounding_boxes[i].ymin - remove_padding;
+					last_boundingbox_ymax = gBoundingboxes.bounding_boxes[i].ymax + remove_padding;
 
-					for(int x = last_boundingbox_xmin - remove_padding; x < last_boundingbox_xmax + remove_padding; x++) {
-						for(int y = last_boundingbox_ymin - remove_padding; y < last_boundingbox_ymax + remove_padding; y++) {
-							pcl_cloud(x, y).x, pcl_cloud(x, y).y = 0;
-							pcl_cloud(x, y).z = -10;
+					// it = pcl_cloud.begin();
+					// for(int i = 0; i < last_boundingbox_ymax - last_boundingbox_ymin; i++) {
+					// 	std::cout << "i : " << i << std::endl;
+					// 	std::cout << "width : " << pcl_cloud.width << std::endl;
+					// 	pcl_cloud.erase(it + y * pcl_cloud.width + last_boundingbox_xmin,
+					// 					it + y * pcl_cloud.width + last_boundingbox_xmax);
+					// }
+
+					for(int x = last_boundingbox_xmin; x < last_boundingbox_xmax; x++) {
+						for(int y = last_boundingbox_ymin; y < last_boundingbox_ymax; y++) {
+							pcl_cloud(x, y).x, pcl_cloud(x, y).y = INFINITY;
+							pcl_cloud(x, y).z = INFINITY;
+							// pcl_cloud(x,y).a = 0;
+							// pcl_cloud(x, y)->
 						}
 					}
+					// std::cout << "isDense : " << pcl_cloud.is_dense << std::endl;
 				}
 
 				// Publish result
@@ -127,18 +152,20 @@ class ConvertBoundingBoxNode
 
 			pointcloud_pub.publish(pcl_cloud);
 
+			paused_pcl_cloud = pcl_cloud;
+
 			ros::Duration(0.01).sleep();
 			gBoundingboxes.bounding_boxes.clear();
 		}
-//		else {
-//			for(int x = last_boundingbox_xmin - remove_padding; x < last_boundingbox_xmax + remove_padding; x++) {
-//				for(int y = last_boundingbox_ymin - remove_padding; y < last_boundingbox_ymax + remove_padding; y++) {
-//					pcl_cloud(x, y).x, pcl_cloud(x, y).y = 0;
-//					pcl_cloud(x, y).z = -10;
-//				}
-//			}
-//			pointcloud_pub.publish(pcl_cloud);
-//		}
+		// else {
+		// 	for(int x = last_boundingbox_xmin - remove_padding; x < last_boundingbox_xmax + remove_padding; x++) {
+		// 		for(int y = last_boundingbox_ymin - remove_padding; y < last_boundingbox_ymax + remove_padding; y++) {
+		// 			// pcl_cloud(x, y).x, pcl_cloud(x, y).y = 0;
+		// 			pcl_cloud(x, y).y = 10;
+		// 		}
+		// 	}
+		// 	pointcloud_pub.publish(pcl_cloud);
+		// }
 	}
 
     private:
@@ -147,10 +174,12 @@ class ConvertBoundingBoxNode
 	ros::Subscriber pointcloud_sub_;
 	ros::Subscriber boundingboxes_sub_;
 	ros::Subscriber target_id_sub_;
+	ros::Subscriber pause_sub_;
 	ros::Publisher pub_result_;
 	ros::Publisher pointcloud_pub;
 	darknet_ros_msgs::BoundingBoxes gBoundingboxes;
 	std::string target_id;
+	pcl::PointCloud<pcl::PointXYZRGB> paused_pcl_cloud;
 
 	int last_boundingbox_xmin;
 	int last_boundingbox_xmax;
@@ -158,6 +187,7 @@ class ConvertBoundingBoxNode
 	int last_boundingbox_ymax;
 
 	int remove_padding = 20;
+	bool pause_state = false;
 };
 
 int main(int argc, char** argv)
