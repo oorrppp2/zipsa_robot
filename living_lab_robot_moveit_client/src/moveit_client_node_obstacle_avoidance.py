@@ -69,40 +69,6 @@ class MoveitClientNode:
 
 		self.collision_objects = []
 
-
-	def callback_pointcloud(self, data):
-		assert isinstance(data, PointCloud2)
-		for i in range(len(self.box_names_arr)):
-			self.scene.remove_world_object(self.box_names_arr[i])
-#			print("Remove " + str(self.box_names_arr[i]) + " result : " + str(self.wait_for_state_update(box_is_attached=False, box_is_known=False, timeout=4, box_name=self.box_names_arr[i])))
-		self.box_names_arr = []
-		gen = point_cloud2.read_points(data, field_names=("x", "y", "z"), skip_nans=True)
-#		time.sleep(1)
-		print(type(gen))
-		itr = 0
-		for p in gen:
-			f = random()
-#			print(f)
-			if f < 0.999:
-#				print(f)
-				continue
-#			print(" x : %.3f  y: %.3f  z: %.3f" %(p[0],p[1],p[2]))
-			itr += 1
-			self.box_pose.header.frame_id = "map"
-			self.box_pose.pose.orientation.w = 1.0
-			self.box_pose.pose.position.x = p[0]
-			self.box_pose.pose.position.y = p[1]
-			self.box_pose.pose.position.z = p[2]
-			box_name = "point" + str(itr)
-			self.scene.add_box(box_name, self.box_pose, size=(0.01, 0.01, 0.01))
-			self.box_names_arr.append(box_name)
-
-		start = rospy.get_time()
-		seconds = rospy.get_time()
-		is_known = False
-		print(itr)
-#		print("Add box result : " + str(self.wait_for_state_update(box_is_known=True, timeout=4, box_name=box_name)))
-
 	def listen_planningscene(self, msg):
 		self.collision_objects = msg.world.collision_objects
 		print(self.collision_objects)
@@ -110,7 +76,7 @@ class MoveitClientNode:
 	def add_obstacle(self, msg):
 # received_data = [position x, position y, position z, box_name, size_x, size_y, size_z]
 		received_data = msg.data.split()
-		self.box_pose.header.frame_id = "map"
+		self.box_pose.header.frame_id = "base_footprint"
 
 		self.box_pose.pose.orientation.w = 1.0
 		self.box_pose.pose.position.x = float(received_data[0])
@@ -124,7 +90,7 @@ class MoveitClientNode:
 		start = rospy.get_time()
 		seconds = rospy.get_time()
 		is_known = False
-		print("Add box result : " + str(self.wait_for_state_update(box_is_known=True, timeout=4, box_name=box_name)))
+		print("Add box result : " + str(self.wait_for_state_update(box_is_known=True, timeout=2, box_name=box_name)))
 
 	def del_obstacle(self, msg):
 		self.scene.remove_world_object(msg.data)
@@ -134,7 +100,7 @@ class MoveitClientNode:
 		print(self.box_names_arr)
 		for i in range(len(self.box_names_arr)):
 			self.scene.remove_world_object(self.box_names_arr[i])
-			print("Remove " + str(self.box_names_arr[i]) + " result : " + str(self.wait_for_state_update(box_is_attached=False, box_is_known=False, timeout=4, box_name=self.box_names_arr[i])))
+			print("Remove " + str(self.box_names_arr[i]) + " result : " + str(self.wait_for_state_update(box_is_attached=False, box_is_known=False, timeout=2, box_name=self.box_names_arr[i])))
 		self.box_names_arr = []
 		
 
@@ -243,9 +209,12 @@ class MoveitClientNode:
 
 		self.contraints.name = "constraints"
 		self.contraints.joint_constraints.append(js_base)
+		print("==================== Joint Constraints ====================")
 		for js in goal.joint_constraints:
 			self.contraints.joint_constraints.append(js)
+			print(js)
 		self.group.set_path_constraints(self.contraints)
+		print("============================================================")
 
 
 		self.group.clear_pose_targets()
