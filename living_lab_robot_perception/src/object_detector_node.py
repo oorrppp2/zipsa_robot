@@ -50,7 +50,7 @@ class ObjectDetectServer:
 	br = tf2_ros.TransformBroadcaster()
 	t = geometry_msgs.msg.TransformStamped()
 	t.header.stamp = rospy.Time.now()
-	t.header.frame_id = "camera_rgb_optical_frame"
+	t.header.frame_id = "camera_color_optical_frame"
 	t.child_frame_id = "object_coordinate"
 	t.transform.rotation.x = 0
 	t.transform.rotation.y = 0
@@ -170,7 +170,7 @@ class ObjectDetectServer:
                                  str(result_pose.pose.position.y) + ' ' + \
                                  str(result_pose.pose.position.z) + ' ' + \
                                  str(self.result_data) + ' ' + ' 0.5 0.5 0.5')
-                rospy.sleep(2.0)
+                rospy.sleep(5.0)
                 # Remove target region points to clearing.
                 print("Remove target region points to clearing.")
                 pub = rospy.Publisher("/remove_points_request", String, queue_size=1)
