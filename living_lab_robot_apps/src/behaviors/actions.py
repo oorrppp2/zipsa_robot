@@ -258,13 +258,13 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
                 for joint in self.joint:
                     joint_constraint = JointConstraint()
                     joint_constraint.joint_name = joint
-                    joint_constraint.position = 0.0
-                    joint_constraint.tolerance_above = 30 * math.pi / 180.0
-                    joint_constraint.tolerance_below = 30 * math.pi / 180.0
+                    joint_constraint.position = self.joint[joint_constraint.joint_name][0]
+                    joint_constraint.tolerance_above = self.joint[joint_constraint.joint_name][1]
+                    joint_constraint.tolerance_below = self.joint[joint_constraint.joint_name][2]
                     joint_constraint.weight = 1.0
                     self.action_goal.joint_constraints.append(joint_constraint)
 
-                    print("Joint constrained : " + joint)
+                    print("Joint constrained : " + str(joint_constraint))
 
             # print("<== action goal ==>")
             # print("Find : " + self.blackboard.frame_id)
