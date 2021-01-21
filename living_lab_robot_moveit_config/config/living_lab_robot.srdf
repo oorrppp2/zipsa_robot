@@ -31,7 +31,7 @@
         <joint name="arm6_joint" value="0" />
         <joint name="arm_base_joint" value="0" />
         <joint name="body_rotate_joint" value="0" />
-        <joint name="elevation_joint" value="-0.215" />
+        <joint name="elevation_joint" value="-0.213" />
     </group_state>
     <group_state name="grasp_ready" group="arm">
         <joint name="arm1_joint" value="0" />
