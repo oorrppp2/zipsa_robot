@@ -12,10 +12,10 @@ import tf2_ros
 from living_lab_robot_perception.msg import QRCodeDetectAction, QRCodeDetectFeedback, QRCodeDetectResult
 from geometry_msgs.msg import PoseStamped, Quaternion, PointStamped
 from tf2_geometry_msgs import PoseStamped as TF2PoseStamped
-from qrcode_detector_ros.msg import Result
 from tf.transformations import quaternion_from_euler, quaternion_multiply
 from std_msgs.msg import Empty, String, Bool, Header
 from sensor_msgs.msg import JointState
+from living_lab_robot_perception.msg import Result
 
 
 class GetJointStateServer:

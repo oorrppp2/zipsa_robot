@@ -8,12 +8,13 @@ import math
 
 import tf2_ros
 import geometry_msgs
+from std_msgs.msg import Empty, String, Bool, Header, Float64
 
 
 from living_lab_robot_perception.msg import ObjectDetectAction, ObjectDetectFeedback, ObjectDetectResult
 from geometry_msgs.msg import PoseStamped, Quaternion, PointStamped
 from tf2_geometry_msgs import PoseStamped as TF2PoseStamped
-from qrcode_detector_ros.msg import Result
+from living_lab_robot_perception.msg import Result
 from tf.transformations import quaternion_from_euler, quaternion_multiply
 
 
@@ -49,7 +50,7 @@ class ObjectDetectServer:
 	br = tf2_ros.TransformBroadcaster()
 	t = geometry_msgs.msg.TransformStamped()
 	t.header.stamp = rospy.Time.now()
-	t.header.frame_id = "camera_color_optical_frame"
+	t.header.frame_id = "camera_rgb_optical_frame"
 	t.child_frame_id = "object_coordinate"
 	t.transform.rotation.x = 0
 	t.transform.rotation.y = 0
@@ -126,7 +127,7 @@ class ObjectDetectServer:
         detect_pose = TF2PoseStamped()
         #print("type : ", detect_pose)
         detect_pose.header.frame_id = "object_coordinate"
-        #detect_pose.header.stamp = rospy.Time.now()
+#        detect_pose.header.stamp = rospy.Time.now()
         detect_pose.pose.position.x = self.detected_object.point.x
         detect_pose.pose.position.y = self.detected_object.point.y
         detect_pose.pose.position.z = self.detected_object.point.z
@@ -155,12 +156,33 @@ class ObjectDetectServer:
 
         self.result_data = self.result_frame_id
         if success:
-            result.result = True
-            result.data = self.result_data
-            result.pose = result_pose
-            print(result)
-            self.server.set_succeeded(result)
+                result.result = True
+                result.data = self.result_data
+                result.pose = result_pose
+                print(result)
+                self.server.set_succeeded(result)
 
+                # Obstacle add into detected object region.
+                print("Obstacle add into detected object region.")
+                pub = rospy.Publisher("/add_obstacle", String, queue_size=1)
+                rospy.sleep(0.4)
+                pub.publish(data=str(result_pose.pose.position.x) + ' ' + \
+                                 str(result_pose.pose.position.y) + ' ' + \
+                                 str(result_pose.pose.position.z) + ' ' + \
+                                 str(self.result_data) + ' ' + ' 0.5 0.5 0.5')
+                rospy.sleep(2.0)
+                # Remove target region points to clearing.
+                print("Remove target region points to clearing.")
+                pub = rospy.Publisher("/remove_points_request", String, queue_size=1)
+                rospy.sleep(0.4)
+                pub.publish(data=self.result_data)
+                rospy.sleep(2.0)
+                # Remove added obstacle to clear the target region.
+                print("Remove added obstacle to clear the target region.")
+                pub = rospy.Publisher("/del_all_obstacles", String, queue_size=1)
+                rospy.sleep(0.4)
+                pub.publish(data='1')
+                # rospy.sleep(1.0)
 
 if __name__ == '__main__':
     rospy.init_node('object_detect_server')
