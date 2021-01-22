@@ -229,6 +229,8 @@ class MoveitClientNode:
 		rospy.loginfo('Planning goal pose...')
 		plan1 = self.group.plan()
 
+		print(plan1)
+
 		if len(plan1.joint_trajectory.points) == 0:
 			result.result = False
 			return

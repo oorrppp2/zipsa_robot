@@ -249,12 +249,12 @@ def create_root():
         action_goal=PlanExecutePoseConstraintsGoal(),
         x_offset=-0.02,
         y_offset=0,
-        z_offset=0.03,
+        z_offset=0.05,
         constraint=True,
         joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
 			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
 			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
-			'elevation_joint':[-0.05, 0.0, 0.35]}
+			'elevation_joint':[0.0, 0.0, 0.25]}
 #        joint=["arm1_joint", "arm6_joint"]
     )
     move_manipulator_to_grasp = GraspActionClient(
@@ -264,12 +264,12 @@ def create_root():
         action_goal=PlanExecutePoseConstraintsGoal(),
         x_offset=0.03,
         y_offset=0,
-        z_offset=-0.01,
+#        z_offset=-0.01,
         constraint=True,
         joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
 			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
 			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
-			'elevation_joint':[-0.05, 0.0, 0.35]}
+			'elevation_joint':[0.0, 0.0, 0.25]}
     )
 
     arm_control.add_children(
@@ -333,7 +333,7 @@ def create_root():
         joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
 			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
 			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
-			'elevation_joint':[-0.05, 0.0, 0.35]},
+			'elevation_joint':[0.0, 0.0, 0.25]},
         mode="put"
     )
     move_manipulator_to_put_down_2 = GraspActionClient(
@@ -346,10 +346,10 @@ def create_root():
         joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
 			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
 			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
-			'elevation_joint':[-0.05, 0.0, 0.35]},
+			'elevation_joint':[0.0, 0.0, 0.25]},
         mode="put"
     )
-    elevation_down_action = Elevation_up(target_pose=-0.07)
+    elevation_down_action = Elevation_up(target_pose=-0.06)
 
     put_object.add_children(
         [wait_put_object,
