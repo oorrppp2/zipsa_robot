@@ -61,7 +61,7 @@
         <remap from="image_raw" to="/camera/color/image_raw" />
         <remap from="points" to="/camera/depth_registered/points"/>
     </node>  -->
-    <node name="object_detector_action" type="object_detector_node.py" pkg="living_lab_robot_perception" output="screen"/>
+    <!--node name="object_detector_action" type="object_detector_node.py" pkg="living_lab_robot_perception" output="screen"/-->
     <!--node name="Order_target_action" type="Order_target_node.py" pkg="living_lab_robot_perception" output="screen"/-->
     <!--node name="Get_joint_state_action" type="Get_joint_state_node.py" pkg="living_lab_robot_perception" output="screen"/-->
 
