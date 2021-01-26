@@ -269,7 +269,7 @@ def create_root():
         joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
 			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
 			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
-			'elevation_joint':[0.0, 0.0, 0.25]}
+			'elevation_joint':[0.0, 0.05, 0.25]}
     )
 
     arm_control.add_children(
@@ -308,6 +308,8 @@ def create_root():
          wait_time1,
          move_manipulator_to_grasp_done,
          publish_resume_request,
+         wait_time1,
+         move_manipulator_to_grasp_ready,
          done_scene,
          ]
     )
@@ -373,15 +375,15 @@ def create_root():
         mode="put"
     )
 
-    elevation_down_20cm_action = Elevation_up(target_pose=-0.2)
+    # elevation_down_20cm_action = Elevation_up(target_pose=-0.2)
     elevation_down_action = Elevation_up(target_pose=-0.085)
 
     put_object.add_children(
         [wait_put_object,
          put_object_mention1,
-         elevation_down_20cm_action,
-         wait_time1,
-         wait_time1,
+        #  elevation_down_20cm_action,
+        #  wait_time1,
+        #  wait_time1,
          move_manipulator_to_put_down,
          wait_time1,
          wait_time1,
