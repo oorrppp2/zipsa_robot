@@ -240,8 +240,8 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
 #	            self.action_goal.target_pose.pose.position.x = self.blackboard.object_pose.pose.position.x
 #	            self.action_goal.target_pose.pose.position.z = self.blackboard.object_pose.pose.position.z + 0.1
 #	            self.action_goal.target_pose.pose.position.y = -self.blackboard.object_pose.pose.position.y
-	            self.action_goal.target_pose.pose.position.x = 0.75
-	            self.action_goal.target_pose.pose.position.z = 0.9
+	            self.action_goal.target_pose.pose.position.x = 0.85
+	            self.action_goal.target_pose.pose.position.z = 0.55
 	            self.action_goal.target_pose.pose.position.y = 0.0
 
             theta = math.atan2(self.action_goal.target_pose.pose.position.y, self.action_goal.target_pose.pose.position.x)

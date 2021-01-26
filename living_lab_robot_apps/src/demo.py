@@ -176,8 +176,8 @@ def create_root():
 #    goal_table.target_pose.pose.orientation.w = 0.044
 
 	# kitchen table
-    goal_table.target_pose.pose.position.x = 2.75
-    goal_table.target_pose.pose.position.y = 2.87
+    goal_table.target_pose.pose.position.x = 3.231
+    goal_table.target_pose.pose.position.y = 3.02
 
     goal_table.target_pose.pose.orientation.x = 0
     goal_table.target_pose.pose.orientation.y = 0
@@ -313,6 +313,43 @@ def create_root():
     )
 
     #
+    # Move to tea table.
+    #
+    move_to_tea_table = py_trees.composites.Sequence("move_to_tea_table")
+
+    wait_move_to_tea_table = py_trees_ros.subscribers.CheckData(name="wait_move_to_tea_table", topic_name="/wait_select_scene", topic_type=String,
+           variable_name="data", expected_value="move_to_tea_table")
+
+    move_to_tea_table_mention1 = Print_message(name="* Move_to_tea_table *")
+	# coffee table
+    goal_tea_table = move_base_msgs.msg.MoveBaseGoal()
+    goal_tea_table.target_pose.header.frame_id = "map"
+    goal_tea_table.target_pose.header.stamp = rospy.Time.now()
+
+    goal_tea_table.target_pose.pose.position.x = 2.782
+    goal_tea_table.target_pose.pose.position.y = -1.78
+
+    goal_tea_table.target_pose.pose.orientation.x = 0
+    goal_tea_table.target_pose.pose.orientation.y = 0
+    goal_tea_table.target_pose.pose.orientation.z = -0.701
+    goal_tea_table.target_pose.pose.orientation.w = 0.713
+
+    move_to_tea_table_action = py_trees_ros.actions.ActionClient(
+        name="move to tea table",
+        action_namespace="/move_base",
+        action_spec=move_base_msgs.msg.MoveBaseAction,
+        action_goal=goal_tea_table
+    )
+
+    move_to_tea_table.add_children(
+        [wait_move_to_tea_table,
+         move_to_tea_table_mention1,
+         move_to_tea_table_action,
+         done_scene,
+         ]
+    )
+
+    #
     # Put the object down.
     # 목표 지점 위 8cm 위치를 경유한 뒤 7cm elevation을 내림.
     #
@@ -323,39 +360,29 @@ def create_root():
 
     put_object_mention1 = Print_message(name="* Putting down the object*")
 
-    move_manipulator_to_put_down_1 = GraspActionClient(
+    move_manipulator_to_put_down = GraspActionClient(
         name="move_manipulator_to_grasp",
         action_namespace="/plan_and_execute_pose_w_joint_constraints",
         action_spec=PlanExecutePoseConstraintsAction,
         action_goal=PlanExecutePoseConstraintsGoal(),
         constraint=True,
-        # x_offset=-0.1,
         joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
 			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
 			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
 			'elevation_joint':[0.0, 0.0, 0.25]},
         mode="put"
     )
-    move_manipulator_to_put_down_2 = GraspActionClient(
-        name="move_manipulator_to_grasp",
-        action_namespace="/plan_and_execute_pose_w_joint_constraints",
-        action_spec=PlanExecutePoseConstraintsAction,
-        action_goal=PlanExecutePoseConstraintsGoal(),
-        constraint=True,
-        x_offset=0,
-        joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
-			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
-			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
-			'elevation_joint':[0.0, 0.0, 0.25]},
-        mode="put"
-    )
-    elevation_down_action = Elevation_up(target_pose=-0.06)
+
+    elevation_down_20cm_action = Elevation_up(target_pose=-0.2)
+    elevation_down_action = Elevation_up(target_pose=-0.085)
 
     put_object.add_children(
         [wait_put_object,
          put_object_mention1,
-         move_manipulator_to_put_down_1,
-        #  move_manipulator_to_put_down_2,
+         elevation_down_20cm_action,
+         wait_time1,
+         wait_time1,
+         move_manipulator_to_put_down,
          wait_time1,
          wait_time1,
          elevation_down_action,
@@ -399,6 +426,7 @@ def create_root():
     go_home.add_children(
         [wait_go_home,
          go_home_mention,
+         arm_put_in,
          head_tilt_up,
          move_to_home,
          done_scene,
@@ -452,7 +480,7 @@ def create_root():
          ]
     )
 
-    root.add_children([gripper_open_cmd, intro, move_to_table, find_target, arm_control, grasp_object, go_home, finish_demo, put_object, elevation_up, elevation_down])
+    root.add_children([gripper_open_cmd, intro, move_to_table, find_target, arm_control, move_to_tea_table, grasp_object, go_home, finish_demo, put_object, elevation_up, elevation_down])
     # root.add_children([scene1, scene3, scene4, scene5, scene6, scene7])
     return root
 
