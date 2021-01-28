@@ -115,7 +115,7 @@ class ObjectDetectionActionClient(py_trees.behaviour.Behaviour):
 
     def update(self):
         self.request_publisher.publish('request')
-	print(self.feedback_message)
+	# print(self.feedback_message)
         self.logger.debug("{0}.update()".format(self.__class__.__name__))
         if not self.action_client:
             self.feedback_message = "no action client, did you call setup() on your tree?"
@@ -129,34 +129,19 @@ class ObjectDetectionActionClient(py_trees.behaviour.Behaviour):
             self.feedback_message = "sent goal to the action server"
             return py_trees.Status.RUNNING
 
-	# Wait a second.
-        rospy.sleep(1)
         self.feedback_message = self.action_client.get_goal_status_text()
-#        if self.action_client.get_state() in [actionlib_msgs.GoalStatus.ABORTED,
-#                                              actionlib_msgs.GoalStatus.PREEMPTED]:
-#            return py_trees.Status.FAILURE
         result = self.action_client.get_result()
 
         if result:
-		self.blackboard.object_pose = result.pose
-		self.blackboard.frame_id = result.data
-		print("Conversion succeed!!")
-		print("Result with (robot coordinate)")
-		print(result)
-		self.done_publisher.publish('done')
-		return py_trees.Status.SUCCESS
+            self.blackboard.object_pose = result.pose
+            self.blackboard.frame_id = result.data
+            print("Conversion succeed!!")
+            print("Result with (robot coordinate)")
+            print(result)
+            self.done_publisher.publish('done')
+            return py_trees.Status.SUCCESS
         else:
-		self.feedback_message = self.override_feedback_message_on_running
-		if self.n_try > 0:
-			self.n_try = self.n_try -1
-			self.sent_goal = False
-			print("Conversion failed. Retry send request.")
-			rospy.sleep(1)
-			return py_trees.Status.RUNNING
-		else:
-			print("Request failed.")
-			self.n_try = 20
-			return py_trees.Status.FAILURE
+            return py_trees.Status.RUNNING
 
     def terminate(self, new_status):
         self.logger.debug("%s.terminate(%s)" % (self.__class__.__name__, "%s->%s" % (self.status, new_status) if self.status != new_status else "%s" % new_status))
@@ -294,17 +279,15 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
         # Failure case
         if self.action_client.get_state() in [actionlib_msgs.GoalStatus.ABORTED,
                                               actionlib_msgs.GoalStatus.PREEMPTED]:
-#             if self.fail_count < 10:
-#                 self.sent_goal = False
-#                 self.fail_count += 1
-#                 self.x_offset -= 0.01
-# #                self.y_offset += 1
-#                 self.z_offset += 0.005
-#                 print("Action failed. Retry :: " + str(self.fail_count) + " try")
-#                 return py_trees.Status.RUNNING
-#             else:
-#                 print("Tried 10 times. Action failed.")
-            return py_trees.Status.FAILURE
+            if self.fail_count < 5:
+                self.sent_goal = False
+                self.fail_count += 1
+                print("Action failed. Retry :: " + str(self.fail_count) + " try")
+                return py_trees.Status.RUNNING
+            else:
+                print("Tried ",self.fail_count, " times. Action failed.")
+                self.fail_count = 0
+                return py_trees.Status.FAILURE
 
         result = self.action_client.get_result()
 

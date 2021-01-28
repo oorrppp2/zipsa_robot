@@ -41,12 +41,20 @@ class ObjectDetectServer:
         self.server.start()
 	self.publish_count = 10
 	self.publishing = False
+        self.clear_target_region = False
+
+        self.clear_buffer_count = 5    # 5개 메시지 무시
 
         rospy.loginfo('[%s] initialized...'%rospy.get_name())
 
     def handle_detector_result(self, msg):
         #print("Detector result!!!")
 	#print(msg)
+        if self.start_detect:
+                if self.clear_buffer_count > 0:
+                        print("Clearing buffer ...")
+                        self.clear_buffer_count -= 1
+                        return
 	br = tf2_ros.TransformBroadcaster()
 	t = geometry_msgs.msg.TransformStamped()
 	t.header.stamp = rospy.Time.now()
@@ -93,6 +101,7 @@ class ObjectDetectServer:
 		        self.detect_done = True
 
         self.start_detect = False
+        self.clear_buffer_count = 5
 
 #        self.detected_object.point.x = msg.pose.pose.position.x
 #        self.detected_object.point.y = msg.pose.pose.position.y
@@ -109,9 +118,10 @@ class ObjectDetectServer:
 
     def handle_request_detect(self, goal):
         print("Received goal : " + goal.target)
-	if goal.target == "":
-		print("Goal target is empty")
-		return
+        self.detected_pose = np.array([0.0, 0.0, 0.0])
+        if goal.target == "":
+                print("Goal target is empty")
+                return
         self.goal = goal.target
         feedback = ObjectDetectFeedback()
         result = ObjectDetectResult()
@@ -161,16 +171,18 @@ class ObjectDetectServer:
                 result.pose = result_pose
                 print(result)
                 self.server.set_succeeded(result)
+                self.clear_target_region = True
 
+        if self.clear_target_region:
                 # Obstacle add into detected object region.
                 print("Obstacle add into detected object region.")
                 pub = rospy.Publisher("/add_obstacle", String, queue_size=1)
                 rospy.sleep(0.4)
                 pub.publish(data=str(result_pose.pose.position.x) + ' ' + \
-                                 str(result_pose.pose.position.y) + ' ' + \
-                                 str(result_pose.pose.position.z) + ' ' + \
-                                 str(self.result_data) + ' ' + ' 0.5 0.5 0.5')
-                rospy.sleep(5.0)
+                                        str(result_pose.pose.position.y) + ' ' + \
+                                        str(result_pose.pose.position.z) + ' ' + \
+                                        str(self.result_data) + ' ' + ' 0.5 0.5 0.5')
+                rospy.sleep(2.0)
                 # Remove target region points to clearing.
                 print("Remove target region points to clearing.")
                 pub = rospy.Publisher("/remove_points_request", String, queue_size=1)

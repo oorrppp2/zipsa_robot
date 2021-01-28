@@ -298,6 +298,7 @@ def create_root():
     grasp_object_mention1 = Print_message(name="* Closing the gripper *")
 
     elevation_up_action = Elevation_up(target_pose=0.1)
+    elevation_down_20cm_action = Elevation_up(target_pose=-0.2)
 
     grasp_object.add_children(
         [wait_grasp_object,
@@ -309,7 +310,7 @@ def create_root():
          move_manipulator_to_grasp_done,
          publish_resume_request,
          wait_time1,
-         move_manipulator_to_grasp_ready,
+         elevation_down_20cm_action,
          done_scene,
          ]
     )
