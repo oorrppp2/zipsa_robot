@@ -140,6 +140,7 @@ def create_root():
     )
 
     arm_pull_out = Fold_arm("Pull out", 0)
+    done_scene_1 = Publish(topic_name="/wait_done_scene", data="scene_1_done")
 
     intro.add_children(
         [wait_intro,
@@ -148,10 +149,7 @@ def create_root():
          # scene1_say2,
          order_object,
          # scene1_say2,
-#         arm_pull_out,
-         #move_manipulator_to_grasp_ready,
-         #move_manipulator_to_home,
-         done_scene,
+         done_scene_1,
          ]
     )
 
@@ -162,18 +160,9 @@ def create_root():
            variable_name="data", expected_value="move_to_table")
 
     move_to_table_mention1 = Print_message(name="* Move_to_table *")
-	# coffee table
     goal_table = move_base_msgs.msg.MoveBaseGoal()
     goal_table.target_pose.header.frame_id = "map"
     goal_table.target_pose.header.stamp = rospy.Time.now()
-
-#    goal_table.target_pose.pose.position.x = 3.573
-#    goal_table.target_pose.pose.position.y = -3.71
-
-#    goal_table.target_pose.pose.orientation.x = 0
-#    goal_table.target_pose.pose.orientation.y = 0
-#    goal_table.target_pose.pose.orientation.z = 0.999
-#    goal_table.target_pose.pose.orientation.w = 0.044
 
 	# kitchen table
     goal_table.target_pose.pose.position.x = 3.231
@@ -190,6 +179,7 @@ def create_root():
         action_spec=move_base_msgs.msg.MoveBaseAction,
         action_goal=goal_table
     )
+    done_scene_2 = Publish(topic_name="/wait_done_scene", data="scene_2_done")
 
     move_to_table.add_children(
         [wait_move_to_table,
@@ -197,7 +187,7 @@ def create_root():
          move_to_table_action,
          arm_pull_out,
          head_tilt_down,
-         done_scene,
+         done_scene_2,
          ]
     )
 
@@ -221,13 +211,14 @@ def create_root():
         action_spec=ObjectDetectAction,
         action_goal=ObjectDetectGoal()
     )
+    done_scene_3 = Publish(topic_name="/wait_done_scene", data="scene_3_done")
 
     find_target.add_children(
         [wait_find_target,
          find_target_mention1,
          publish_resume_request,
          find_object,
-         done_scene,
+         done_scene_3,
          ]
     )
 
@@ -271,6 +262,7 @@ def create_root():
 			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
 			'elevation_joint':[0.0, 0.05, 0.25]}
     )
+    done_scene_4 = Publish(topic_name="/wait_done_scene", data="scene_4_done")
 
     arm_control.add_children(
         [wait_arm_control,
@@ -282,7 +274,7 @@ def create_root():
          wait_time1,
          move_manipulator_to_grasp,
          #move_manipulator_to_grasp_ready,
-         done_scene,
+         done_scene_4,
          ]
     )
 
@@ -299,6 +291,7 @@ def create_root():
 
     elevation_up_action = Elevation_up(target_pose=0.1)
     elevation_down_20cm_action = Elevation_up(target_pose=-0.2)
+    done_scene_5 = Publish(topic_name="/wait_done_scene", data="scene_5_done")
 
     grasp_object.add_children(
         [wait_grasp_object,
@@ -311,7 +304,7 @@ def create_root():
          publish_resume_request,
          wait_time1,
          elevation_down_20cm_action,
-         done_scene,
+         done_scene_5,
          ]
     )
 
@@ -343,12 +336,13 @@ def create_root():
         action_spec=move_base_msgs.msg.MoveBaseAction,
         action_goal=goal_tea_table
     )
+    done_scene_6 = Publish(topic_name="/wait_done_scene", data="scene_6_done")
 
     move_to_tea_table.add_children(
         [wait_move_to_tea_table,
          move_to_tea_table_mention1,
          move_to_tea_table_action,
-         done_scene,
+         done_scene_6,
          ]
     )
 
@@ -378,6 +372,7 @@ def create_root():
 
     # elevation_down_20cm_action = Elevation_up(target_pose=-0.2)
     elevation_down_action = Elevation_up(target_pose=-0.085)
+    done_scene_7 = Publish(topic_name="/wait_done_scene", data="scene_7_done")
 
     put_object.add_children(
         [wait_put_object,
@@ -393,7 +388,7 @@ def create_root():
          wait_time1,
          gripper_open,
          move_manipulator_to_home,
-         done_scene,
+         done_scene_7,
          ]
     )
 
@@ -425,6 +420,7 @@ def create_root():
         action_spec=move_base_msgs.msg.MoveBaseAction,
         action_goal=goal_home
     )
+    done_scene_8 = Publish(topic_name="/wait_done_scene", data="scene_8_done")
 
     go_home.add_children(
         [wait_go_home,
@@ -432,7 +428,7 @@ def create_root():
          arm_put_in,
          head_tilt_up,
          move_to_home,
-         done_scene,
+         done_scene_8,
          ]
     )
 
