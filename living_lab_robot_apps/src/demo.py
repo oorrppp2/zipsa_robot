@@ -76,6 +76,8 @@ def create_root():
     publish_pause_request = Publish(topic_name="/pause_request", data="pause")
     publish_resume_request = Publish(topic_name="/pause_request", data="resume")
 
+    wait_time1 = WaitForTime(name="delay_1s", time=1.0)
+    wait_time05 = WaitForTime(name="delay_0.5s", time=0.5)
     #
     # gripper_open  (gripper_open arm)
     #
@@ -115,7 +117,7 @@ def create_root():
     )
 
     #
-    # intro  (Introduce and choose the object.)
+    # Scene 1 intro  (Introduce and choose the object.)
     #
     intro = py_trees.composites.Sequence("intro")
 
@@ -129,70 +131,122 @@ def create_root():
     """
         적절한 멘트
     """
+    done_scene_1 = Publish(topic_name="/wait_done_scene", data="scene_1_done")
+    intro.add_children(
+        [wait_intro,
+         start_mention1,
+         done_scene_1,
+         ]
+    )
 
-    order_mention1 = Print_message(name="Choose cup / apple / milk")
+
+    #
+    # Scene 2 Move to user
+    #
+    move_to_user = py_trees.composites.Sequence("move_to_user")
+
+    wait_move_to_user = py_trees_ros.subscribers.CheckData(name="wait_move_to_user", topic_name="/wait_select_scene", topic_type=String,
+           variable_name="data", expected_value="move_to_user")
+
+    move_to_user_mention1 = Print_message(name="* move_to_user *")
+    goal_user = move_base_msgs.msg.MoveBaseGoal()
+    goal_user.target_pose.header.frame_id = "map"
+    goal_user.target_pose.header.stamp = rospy.Time.now()
+
+    goal_user.target_pose.pose.position.x = 3.231
+    goal_user.target_pose.pose.position.y = 3.02
+
+    goal_user.target_pose.pose.orientation.x = 0
+    goal_user.target_pose.pose.orientation.y = 0
+    goal_user.target_pose.pose.orientation.z = 0.701
+    goal_user.target_pose.pose.orientation.w = 0.713
+
+    move_to_user_action = py_trees_ros.actions.ActionClient(
+        name="move to user",
+        action_namespace="/move_base",
+        action_spec=move_base_msgs.msg.MoveBaseAction,
+        action_goal=goal_table
+    )
+
+    done_scene_2 = Publish(topic_name="/wait_done_scene", data="scene_2_done")
+    move_to_user.add_children(
+        [wait_move_to_user,
+         move_to_user_mention1,
+         arm_put_in,
+         head_tilt_up,
+         wait_time1,
+         wait_time1,
+         move_to_user_action,
+         done_scene_2,
+         ]
+    )
+
+    #
+    # Scene 3 Order the target
+    #
+    order_the_target = py_trees.composites.Sequence("order_the_target")
+
+    wait_order_the_target = py_trees_ros.subscribers.CheckData(name="wait_order_the_target", topic_name="/wait_select_scene", topic_type=String,
+           variable_name="data", expected_value="order_the_target")
+
+    order_mention1 = Print_message(name="Choose cup / bottle / milk  or go home?")
     # scene1_say2 = Say(name="say_request1", text='컵, 사과, 우류 중 어떤것을 가져다 드릴까요?')
-    order_object = OrderActionClient(
+    order_target_action = OrderActionClient(
         name="order_target",
         action_namespace="/order_received",
         action_spec=ReceiveTargetAction,
         action_goal=ReceiveTargetGoal()
     )
 
-    arm_pull_out = Fold_arm("Pull out", 0)
-    done_scene_1 = Publish(topic_name="/wait_done_scene", data="scene_1_done")
-
-    intro.add_children(
-        [wait_intro,
-         start_mention1,
+    order_the_target.add_children(
+        [wait_order_the_target,
          order_mention1,
-         # scene1_say2,
-         order_object,
-         # scene1_say2,
-         done_scene_1,
-         ]
-    )
-
-
-    move_to_table = py_trees.composites.Sequence("move_to_table")
-
-    wait_move_to_table = py_trees_ros.subscribers.CheckData(name="wait_move_to_table", topic_name="/wait_select_scene", topic_type=String,
-           variable_name="data", expected_value="move_to_table")
-
-    move_to_table_mention1 = Print_message(name="* Move_to_table *")
-    goal_table = move_base_msgs.msg.MoveBaseGoal()
-    goal_table.target_pose.header.frame_id = "map"
-    goal_table.target_pose.header.stamp = rospy.Time.now()
-
-	# kitchen table
-    goal_table.target_pose.pose.position.x = 3.231
-    goal_table.target_pose.pose.position.y = 3.02
-
-    goal_table.target_pose.pose.orientation.x = 0
-    goal_table.target_pose.pose.orientation.y = 0
-    goal_table.target_pose.pose.orientation.z = 0.701
-    goal_table.target_pose.pose.orientation.w = 0.713
-
-    move_to_table_action = py_trees_ros.actions.ActionClient(
-        name="move to table",
-        action_namespace="/move_base",
-        action_spec=move_base_msgs.msg.MoveBaseAction,
-        action_goal=goal_table
-    )
-    done_scene_2 = Publish(topic_name="/wait_done_scene", data="scene_2_done")
-
-    move_to_table.add_children(
-        [wait_move_to_table,
-         move_to_table_mention1,
-         move_to_table_action,
-         arm_pull_out,
-         head_tilt_down,
-         done_scene_2,
+         order_target_action,
          ]
     )
 
     #
-    # Find_target  (Find object.)
+    # Scene 4 Move to forward of shelf
+    #
+    move_to_shelf = py_trees.composites.Sequence("move_to_shelf")
+
+    wait_move_to_shelf = py_trees_ros.subscribers.CheckData(name="wait_move_to_shelf", topic_name="/wait_select_scene", topic_type=String,
+           variable_name="data", expected_value="move_to_shelf")
+
+    move_to_shelf_mention1 = Print_message(name="* Move_to_shelf *")
+    goal_shelf = move_base_msgs.msg.MoveBaseGoal()
+    goal_shelf.target_pose.header.frame_id = "map"
+    goal_shelf.target_pose.header.stamp = rospy.Time.now()
+
+    goal_shelf.target_pose.pose.position.x = 3.231
+    goal_shelf.target_pose.pose.position.y = 3.02
+
+    goal_shelf.target_pose.pose.orientation.x = 0
+    goal_shelf.target_pose.pose.orientation.y = 0
+    goal_shelf.target_pose.pose.orientation.z = 0.701
+    goal_shelf.target_pose.pose.orientation.w = 0.713
+
+    move_to_shelf_action = py_trees_ros.actions.ActionClient(
+        name="move to shelf",
+        action_namespace="/move_base",
+        action_spec=move_base_msgs.msg.MoveBaseAction,
+        action_goal=goal_shelf
+    )
+    arm_pull_out = Fold_arm("Pull out", 0)
+    done_scene_4 = Publish(topic_name="/wait_done_scene", data="scene_4_done")
+
+    move_to_shelf.add_children(
+        [wait_move_to_shelf,
+         move_to_shelf_mention1,
+         move_to_shelf_action,
+         arm_pull_out,
+         head_tilt_down,
+         done_scene_4,
+         ]
+    )
+
+    #
+    # Scene 5 Find_target  (Find object.)
     #
 
     find_target = py_trees.composites.Sequence("find_target")
@@ -202,8 +256,6 @@ def create_root():
 
 #    start_scene3 = Print_message(name="* Scene  *")
     find_target_mention1 = Print_message(name="Finding target ...")
-    wait_time1 = WaitForTime(name="delay_1s", time=1.0)
-    wait_time05 = WaitForTime(name="delay_0.5s", time=0.5)
 
     find_object = ObjectDetectionActionClient(
         name="find_object",
@@ -211,19 +263,19 @@ def create_root():
         action_spec=ObjectDetectAction,
         action_goal=ObjectDetectGoal()
     )
-    done_scene_3 = Publish(topic_name="/wait_done_scene", data="scene_3_done")
+    done_scene_5 = Publish(topic_name="/wait_done_scene", data="scene_5_done")
 
     find_target.add_children(
         [wait_find_target,
          find_target_mention1,
          publish_resume_request,
          find_object,
-         done_scene_3,
+         done_scene_5,
          ]
     )
 
     #
-    # Arm_control  (Move arm to the target object to grasp it.)
+    # Scene 6 Arm_control  (Move arm to the target object to grasp it.)
     # x축으로 3cm 앞, z축으로 5cm 위를 경유하여
     # x축으로 3cm 더 깊이(첫 경유보다 6cm 깊이), z축 center 기준으로 -1cm 지점으로 move.
     #
@@ -262,7 +314,7 @@ def create_root():
 			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
 			'elevation_joint':[0.0, 0.05, 0.25]}
     )
-    done_scene_4 = Publish(topic_name="/wait_done_scene", data="scene_4_done")
+    done_scene_6 = Publish(topic_name="/wait_done_scene", data="scene_6_done")
 
     arm_control.add_children(
         [wait_arm_control,
@@ -274,12 +326,12 @@ def create_root():
          wait_time1,
          move_manipulator_to_grasp,
          #move_manipulator_to_grasp_ready,
-         done_scene_4,
+         done_scene_6,
          ]
     )
 
     #
-    # Grasp the object.  (Gripper close and arm position into 'grasp_done')
+    # Scene 7 Grasp the object.  (Gripper close and arm position into 'grasp_done')
     # 물건을 잡고 10cm 들어 올림.
     #
     grasp_object = py_trees.composites.Sequence("grasp_object")
@@ -291,7 +343,7 @@ def create_root():
 
     elevation_up_action = Elevation_up(target_pose=0.1)
     elevation_down_20cm_action = Elevation_up(target_pose=-0.2)
-    done_scene_5 = Publish(topic_name="/wait_done_scene", data="scene_5_done")
+    done_scene_7 = Publish(topic_name="/wait_done_scene", data="scene_7_done")
 
     grasp_object.add_children(
         [wait_grasp_object,
@@ -304,12 +356,12 @@ def create_root():
          publish_resume_request,
          wait_time1,
          elevation_down_20cm_action,
-         done_scene_5,
+         done_scene_7,
          ]
     )
 
     #
-    # Move to tea table.
+    # Scene 8 Move to tea table.
     #
     move_to_tea_table = py_trees.composites.Sequence("move_to_tea_table")
 
@@ -336,18 +388,20 @@ def create_root():
         action_spec=move_base_msgs.msg.MoveBaseAction,
         action_goal=goal_tea_table
     )
-    done_scene_6 = Publish(topic_name="/wait_done_scene", data="scene_6_done")
+    request_nonremoval_point_cloud = Publish(topic_name="/remove_points_request", data="full_pc")
+    done_scene_8 = Publish(topic_name="/wait_done_scene", data="scene_8_done")
 
     move_to_tea_table.add_children(
         [wait_move_to_tea_table,
          move_to_tea_table_mention1,
          move_to_tea_table_action,
-         done_scene_6,
+         request_nonremoval_point_cloud,
+         done_scene_8,
          ]
     )
 
     #
-    # Put the object down.
+    # Scene 9 Put the object down.
     # 목표 지점 위 8cm 위치를 경유한 뒤 7cm elevation을 내림.
     #
     put_object = py_trees.composites.Sequence("put_object")
@@ -372,7 +426,7 @@ def create_root():
 
     # elevation_down_20cm_action = Elevation_up(target_pose=-0.2)
     elevation_down_action = Elevation_up(target_pose=-0.085)
-    done_scene_7 = Publish(topic_name="/wait_done_scene", data="scene_7_done")
+    # done_scene_9 = Publish(topic_name="/wait_done_scene", data="scene_9_done")
 
     put_object.add_children(
         [wait_put_object,
@@ -388,12 +442,12 @@ def create_root():
          wait_time1,
          gripper_open,
          move_manipulator_to_home,
-         done_scene_7,
+         done_scene_1,      # move to user
          ]
     )
 
     #
-    # Go home. (Move to home position)
+    # Scene 10 Go home. (Move to home position)
     #
 
     go_home = py_trees.composites.Sequence("go_home")
@@ -420,7 +474,7 @@ def create_root():
         action_spec=move_base_msgs.msg.MoveBaseAction,
         action_goal=goal_home
     )
-    done_scene_8 = Publish(topic_name="/wait_done_scene", data="scene_8_done")
+    done_scene_10 = Publish(topic_name="/wait_done_scene", data="scene_10_done")
 
     go_home.add_children(
         [wait_go_home,
@@ -428,7 +482,7 @@ def create_root():
          arm_put_in,
          head_tilt_up,
          move_to_home,
-         done_scene_8,
+         done_scene_10,
          ]
     )
 
@@ -479,7 +533,7 @@ def create_root():
          ]
     )
 
-    root.add_children([gripper_open_cmd, intro, move_to_table, find_target, arm_control, move_to_tea_table, grasp_object, go_home, finish_demo, put_object, elevation_up, elevation_down])
+    root.add_children([gripper_open_cmd, intro, order_the_target, move_to_user, find_target, arm_control, move_to_tea_table, grasp_object, go_home, finish_demo, put_object, elevation_up, elevation_down])
     # root.add_children([scene1, scene3, scene4, scene5, scene6, scene7])
     return root
 

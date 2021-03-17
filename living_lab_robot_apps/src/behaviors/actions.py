@@ -25,6 +25,7 @@ class OrderActionClient(py_trees.behaviour.Behaviour):
         self.blackboard = py_trees.blackboard.Blackboard()
         # self.blackboard.object_pose = PoseStamped()
         self.blackboard.target = ""
+        self.done_scene_publisher = rospy.Publisher("/wait_done_scene", String, queue_size=10)
 
     def setup(self, timeout):
         self.logger.debug("%s.setup()" % self.__class__.__name__)
@@ -61,7 +62,11 @@ class OrderActionClient(py_trees.behaviour.Behaviour):
 
         if result:
             self.blackboard.target = result.data
-            print("Yes, I will find <"+self.blackboard.target+">")
+            if result.data == "go_home":
+                self.done_scene_publisher.publish('scene_9_done')   # go home.
+            else:
+                print("Yes, I will find <"+self.blackboard.target+">")
+                self.done_scene_publisher.publish('scene_3_done')   # Move to shelf
             return py_trees.Status.SUCCESS
         else:
             self.feedback_message = self.override_feedback_message_on_running
