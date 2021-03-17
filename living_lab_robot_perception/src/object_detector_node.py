@@ -118,6 +118,10 @@ class ObjectDetectServer:
 
     def handle_request_detect(self, goal):
         print("Received goal : " + goal.target)
+        request_target_pub = rospy.Publisher("/request_target", String, queue_size=1)
+        rospy.sleep(0.4)
+        request_target_pub.publish(data=goal.target)
+        rospy.sleep(0.4)
         self.detected_pose = np.array([0.0, 0.0, 0.0])
         if goal.target == "":
                 print("Goal target is empty")
@@ -187,8 +191,8 @@ class ObjectDetectServer:
                 print("Remove target region points to clearing.")
                 pub = rospy.Publisher("/remove_points_request", String, queue_size=1)
                 rospy.sleep(0.4)
-                pub.publish(data=self.result_data)
-                rospy.sleep(2.0)
+                pub.publish(data="remove")
+                rospy.sleep(4.0)
                 # Remove added obstacle to clear the target region.
                 print("Remove added obstacle to clear the target region.")
                 pub = rospy.Publisher("/del_all_obstacles", String, queue_size=1)
