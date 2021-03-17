@@ -31,24 +31,30 @@ class DemoSceneAutoPlayer:
     def handle_scene(self, msg):
 	print(msg)
         if msg.data == "scene_1_done":
-                print("Publish : 'move_to_table'")
-                self.select_scene_pub.publish(data='move_to_table')
+                print("Publish : 'move_to_user'")
+                self.select_scene_pub.publish(data='move_to_user')
         elif msg.data == "scene_2_done":
+                print("Publish : 'order_the_target'")
+                self.select_scene_pub.publish(data='order_the_target')
+        elif msg.data == "scene_3_done":
+                print("Publish : 'move_to_shelf'")
+                self.select_scene_pub.publish(data='move_to_shelf')
+        elif msg.data == "scene_4_done":
                 print("Publish : 'find_target'")
                 self.select_scene_pub.publish(data='find_target')
-        elif msg.data == "scene_3_done":
+        elif msg.data == "scene_5_done":
                 print("Publish : 'arm_control'")
                 self.select_scene_pub.publish(data='arm_control')
-        elif msg.data == "scene_4_done":
+        elif msg.data == "scene_6_done":
                 print("Publish : 'grasp_object'")
                 self.select_scene_pub.publish(data='grasp_object')
-        elif msg.data == "scene_5_done":
+        elif msg.data == "scene_7_done":
                 print("Publish : 'move_to_tea_table'")
                 self.select_scene_pub.publish(data='move_to_tea_table')
-        elif msg.data == "scene_6_done":
+        elif msg.data == "scene_8_done":
                 print("Publish : 'put_object'")
                 self.select_scene_pub.publish(data='put_object')
-        elif msg.data == "scene_7_done":
+        elif msg.data == "scene_9_done":
                 print("Publish : 'go_home'")
                 self.select_scene_pub.publish(data='go_home')
 
