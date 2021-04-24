@@ -48,29 +48,9 @@
     <!-- ros_bridge -->
     <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
 
-    <!-- Navigation -->
-    <include file="$(find living_lab_robot_navigation)/launch/navigation.launch"/>
-
     <!-- MoveIt! -->
     <include file="$(find living_lab_robot_moveit_config)/launch/move_group.launch"/>
-<!--    <node name="moveit_client_node" type="moveit_client_node.py" pkg="living_lab_robot_moveit_client" output="screen" respawn="true"/>		-->
-<!--    <node name="moveit_client_node" type="moveit_client_node_obstacle_avoidance.py" pkg="living_lab_robot_moveit_client" output="screen" respawn="true"/>	-->
-
-    <!-- Object Detector
-    <node name="object_detector" type="object_detector_node" pkg="object_detector_ros" output="screen">
-        <remap from="image_raw" to="/camera/color/image_raw" />
-        <remap from="points" to="/camera/depth_registered/points"/>
-    </node>  -->
-    <!--node name="object_detector_action" type="object_detector_node.py" pkg="living_lab_robot_perception" output="screen"/-->
-    <!--node name="Order_target_action" type="Order_target_node.py" pkg="living_lab_robot_perception" output="screen"/-->
-    <!--node name="Get_joint_state_action" type="Get_joint_state_node.py" pkg="living_lab_robot_perception" output="screen"/-->
-
-    <!-- Head Pan/Tilt Controller -->
-    <node name="pan_tilt_controller" type="head_pan_controller.py" pkg="living_lab_robot_control" output="screen" />
-
-    <!-- Topic Throttle for Point Cloud -->
-    <!--node name="points_throttler" type="throttle" pkg="topic_tools" args="messages /camera/depth_registered/points 2.0 /throttled_depth_registered_points"/-->
-    <node name="points_throttler" type="throttle" pkg="topic_tools" args="messages /camera/depth_registered/removed_object_points 2.0 /throttled_depth_registered_points"/>
+    <node name="moveit_client_node" type="moveit_client_node_obstacle_avoidance.py" pkg="living_lab_robot_moveit_client" output="screen" respawn="true"/>
 
     <!-- Topic Relay -->
     <node name="relay_base_joint_states" pkg="topic_tools" type="relay" args="/base/joint_states /joint_states"/>

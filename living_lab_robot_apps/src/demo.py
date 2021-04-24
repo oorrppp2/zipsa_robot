@@ -165,7 +165,7 @@ def create_root():
         name="move to user",
         action_namespace="/move_base",
         action_spec=move_base_msgs.msg.MoveBaseAction,
-        action_goal=goal_table
+        action_goal=goal_user
     )
 
     done_scene_2 = Publish(topic_name="/wait_done_scene", data="scene_2_done")
