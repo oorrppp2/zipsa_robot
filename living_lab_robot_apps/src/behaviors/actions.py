@@ -10,6 +10,7 @@ from moveit_msgs.msg import JointConstraint
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from tf.transformations import *
 from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryGoal
+from behaviors.speech import *
 
 class OrderActionClient(py_trees.behaviour.Behaviour):
     def __init__(self, name="Action Client", action_spec=None, action_goal=None, action_namespace="/action",
@@ -63,9 +64,16 @@ class OrderActionClient(py_trees.behaviour.Behaviour):
         if result:
             self.blackboard.target = result.data
             if result.data == "go_home":
+                go_home_say = Say(name="go_home_say", text='네, 집으로 돌아가겠습니다.')
                 self.done_scene_publisher.publish('scene_9_done')   # go home.
             else:
                 print("Yes, I will find <"+self.blackboard.target+">")
+                if result.data == 'cup':
+                    ordered_target_say = Say(name="ordered_target_say", text='네, 컵을 가져다 드리겠습니다.')
+                elif result.data == 'bottle':
+                    ordered_target_say = Say(name="ordered_target_say", text='네, 병을 가져다 드리겠습니다.')
+                elif result.data == 'milk':
+                    ordered_target_say = Say(name="ordered_target_say", text='네, 우유를 가져다 드리겠습니다.')
                 self.done_scene_publisher.publish('scene_3_done')   # Move to shelf
             return py_trees.Status.SUCCESS
         else:

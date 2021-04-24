@@ -190,10 +190,16 @@ def create_root():
            variable_name="data", expected_value="order_the_target")
 
     order_mention1 = Print_message(name="Choose cup / bottle / milk  or go home?")
-    # scene1_say2 = Say(name="say_request1", text='컵, 사과, 우류 중 어떤것을 가져다 드릴까요?')
-    order_target_action = OrderActionClient(
-        name="order_target",
-        action_namespace="/order_received",
+    scene1_say2 = Say(name="say_request1", text='컵, 사과, 우류 중 어떤것을 가져다 드릴까요?')
+    # order_target_action = OrderActionClient(
+    #     name="order_target",
+    #     action_namespace="/order_received",
+    #     action_spec=ReceiveTargetAction,
+    #     action_goal=ReceiveTargetGoal()
+    # )
+    order_object = OrderActionClient(
+        name="order_received",
+        action_namespace="/sst_order_received",
         action_spec=ReceiveTargetAction,
         action_goal=ReceiveTargetGoal()
     )
@@ -201,6 +207,7 @@ def create_root():
     order_the_target.add_children(
         [wait_order_the_target,
          order_mention1,
+         scene1_say2,
          order_target_action,
          ]
     )
