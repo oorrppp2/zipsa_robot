@@ -1,10 +1,10 @@
-#!/home/user/anaconda3/bin/python
+#!/home/robot/anaconda3/bin/python
 #-*- encoding: utf8 -*-
 # [START speech_transcribe_streaming_mic]
 from __future__ import division
 
 import json, shlex, socket, subprocess, sys, threading
-import roslib; roslib.load_manifest('gspeech')
+#import roslib; roslib.load_manifest('gspeech')
 import rospy
 import actionlib
 from std_msgs.msg import String
@@ -159,11 +159,23 @@ class OrderTargetSSTServer:
             # some extra spaces to overwrite the previous result
             overwrite_chars = ' ' * (num_chars_printed - len(transcript))
 
+
             if not result.is_final:
                 sys.stdout.write(transcript + overwrite_chars + '\r')
                 sys.stdout.flush()
 
                 num_chars_printed = len(transcript)
+
+                stt_result = transcript + overwrite_chars
+
+                if("컵" in stt_result):
+                    return 'cup'
+                elif("병" in stt_result):
+                    return 'bottle'
+                elif("우유" in stt_result):
+                    return 'milk'
+                elif("집" in stt_result):
+                    return 'go_home'
 
             else:
                 print(transcript + overwrite_chars)
