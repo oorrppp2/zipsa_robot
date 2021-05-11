@@ -1,3 +1,4 @@
+#-*- encoding: utf8 -*-
 import actionlib
 import py_trees
 import rospy
@@ -11,11 +12,16 @@ from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from tf.transformations import *
 from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryGoal
 from behaviors.speech import *
+from polly_speech.msg import SpeechAction, SpeechGoal
 
 class OrderActionClient(py_trees.behaviour.Behaviour):
     def __init__(self, name="Action Client", action_spec=None, action_goal=None, action_namespace="/action",
                  override_feedback_message_on_running="moving"):
         super(OrderActionClient, self).__init__(name)
+        self.saying_action_client = None
+        self.saying_action_namespace = "/internal_speech"
+        self.saying_action_spec = SpeechAction
+        self.saying_action_goal = None
         self.action_client = None
         self.sent_goal = False
         self.action_spec = action_spec
@@ -37,6 +43,16 @@ class OrderActionClient(py_trees.behaviour.Behaviour):
         if not self.action_client.wait_for_server(rospy.Duration(timeout)):
             self.logger.error("{0}.setup() could not connect to the rotate action server at '{1}'".format(self.__class__.__name__, self.action_namespace))
             self.action_client = None
+            return False
+
+
+        self.saying_action_client = actionlib.SimpleActionClient(
+            self.saying_action_namespace,
+            self.saying_action_spec
+        )
+        if not self.saying_action_client.wait_for_server(rospy.Duration(timeout)):
+            self.logger.error("{0}.setup() could not connect to the rotate action server at '{1}'".format(self.__class__.__name__, self.saying_action_namespace))
+            self.saying_action_client = None
             return False
         return True
 
@@ -64,17 +80,19 @@ class OrderActionClient(py_trees.behaviour.Behaviour):
         if result:
             self.blackboard.target = result.data
             if result.data == "go_home":
-                go_home_say = Say(name="go_home_say", text='네, 집으로 돌아가겠습니다.')
+                self.saying_action_goal = SpeechGoal(text='네, 집으로 돌아가겠습니다.')
                 self.done_scene_publisher.publish('scene_9_done')   # go home.
             else:
                 print("Yes, I will find <"+self.blackboard.target+">")
                 if result.data == 'cup':
-                    ordered_target_say = Say(name="ordered_target_say", text='네, 컵을 가져다 드리겠습니다.')
+                    self.saying_action_goal = SpeechGoal(text='네, 컵을 가져다 드리겠습니다.')
                 elif result.data == 'bottle':
-                    ordered_target_say = Say(name="ordered_target_say", text='네, 병을 가져다 드리겠습니다.')
+                    self.saying_action_goal = SpeechGoal(text='네, 물병을 가져다 드리겠습니다.')
                 elif result.data == 'milk':
-                    ordered_target_say = Say(name="ordered_target_say", text='네, 우유를 가져다 드리겠습니다.')
+                    self.saying_action_goal = SpeechGoal(text='네, 우유를 가져다 드리겠습니다.')
                 self.done_scene_publisher.publish('scene_3_done')   # Move to shelf
+
+            self.saying_action_client.send_goal(self.saying_action_goal)
             return py_trees.Status.SUCCESS
         else:
             self.feedback_message = self.override_feedback_message_on_running
@@ -200,7 +218,7 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
     def initialise(self):
         self.logger.debug("{0}.initialise()".format(self.__class__.__name__))
         self.sent_goal = False
-        self.fail_count = 0	# Try 10 times. 
+        self.fail_count = 0	# Try 10 times.
 
     def update(self):
         self.logger.debug("{0}.update()".format(self.__class__.__name__))
@@ -222,7 +240,7 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
             self.action_goal.target_pose.pose.position.y = self.blackboard.object_pose.pose.position.y + self.y_offset
             self.action_goal.target_pose.pose.position.z = self.blackboard.object_pose.pose.position.z + self.z_offset
 
-            if self.blackboard.target == "bottle":
+            if self.blackboard.target == "bottle" or self.blackboard.target == "milk":
                 self.action_goal.target_pose.pose.position.z -= 0.05
 #            self.action_goal.target_pose.pose.position.x = 0.6
 #            self.action_goal.target_pose.pose.position.y = 0

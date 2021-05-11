@@ -6,7 +6,7 @@ arm base control
 rostopic pub -1 /body/arm_base_controller/command std_msgs/Float64 "data: 0"
 rostopic pub -1 /body/arm_base_controller/command std_msgs/Float64 "data: -0.15"
 
-rostopic pub -1 /head/tilt_controller/command std_msgs/Float64 "data: 0.3"
+rostopic pub -1 /head/tilt_controller/command std_msgs/Float64 "data: 0.4"
 tf_echo
 rosrun tf tf_echo /base_link /end_effector
 rosrun tf tf_echo /map /base_footprint
@@ -65,8 +65,9 @@ rosrun living_lab_robot_apps demo.py
 
 <ZipSA Demo command 순서>
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'intro'"
-rostopic pub -1 /order_target std_msgs/String "data: 'cup'"
-rostopic pub -1 /wait_select_scene std_msgs/String "data: 'move_to_table'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'move_to_user'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'order_the_target'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'move_to_shelf'"
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'find_target'"
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'arm_control'"
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'grasp_object'"

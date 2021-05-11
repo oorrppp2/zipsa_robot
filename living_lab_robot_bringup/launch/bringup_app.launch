@@ -3,7 +3,7 @@
     <!--node name="moveit_client_node" type="moveit_client_node_obstacle_avoidance.py" pkg="living_lab_robot_moveit_client" output="screen" respawn="true"/-->
 
     <node name="object_detector_action" type="object_detector_node.py" pkg="living_lab_robot_perception" output="screen"/>
-    <node name="Order_target_action" type="Order_target_node.py" pkg="living_lab_robot_perception" output="screen"/>
+    <node name="Order_target_action" type="order_sst_node.py" pkg="living_lab_robot_perception" output="screen"/>
     <node name="convert_object_coordinate" type="convert_boundingbox_node" pkg="convert_2d_to_3d" output="screen"/>
 	<!-- Darknet bringup -->
     <include file="$(find darknet_ros)/launch/living_lab_robot.launch"/>
