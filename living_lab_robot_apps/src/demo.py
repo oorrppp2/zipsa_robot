@@ -71,7 +71,7 @@ def create_root():
     )
 
     head_tilt_up = MoveJoint(name="tilt_up", controller_name="/head/tilt_controller", command=0.0)
-    head_tilt_down = MoveJoint(name="tilt_down", controller_name="/head/tilt_controller", command=0.4)
+    head_tilt_down = MoveJoint(name="tilt_down", controller_name="/head/tilt_controller", command=0.5)
 
     publish_pause_request = Publish(topic_name="/pause_request", data="pause")
     publish_resume_request = Publish(topic_name="/pause_request", data="resume")
@@ -127,7 +127,7 @@ def create_root():
 #    start_scene1 = Print_message(name="* Move to ready pose *")
     start_mention1 = Print_message(name="* Introduce *")
 
-    # scene1_say1 = Say(name="say_hello1", text='안녕하세요? 저는 리빙랩의 로봇 집사, 입니다.')
+    scene1_say1 = Say(name="say_hello1", text='안녕하세요? 저는 한국과학기술연구원에서 개발한 리빙랩의 로봇, 집사입니다.')
     """
         적절한 멘트
     """
@@ -135,6 +135,7 @@ def create_root():
     intro.add_children(
         [wait_intro,
          start_mention1,
+         scene1_say1,
          done_scene_1,
          ]
     )
@@ -153,12 +154,12 @@ def create_root():
     goal_user.target_pose.header.frame_id = "map"
     goal_user.target_pose.header.stamp = rospy.Time.now()
 
-    goal_user.target_pose.pose.position.x = 3.231
-    goal_user.target_pose.pose.position.y = 3.02
+    goal_user.target_pose.pose.position.x = 1.545
+    goal_user.target_pose.pose.position.y = -2.367
 
     goal_user.target_pose.pose.orientation.x = 0
     goal_user.target_pose.pose.orientation.y = 0
-    goal_user.target_pose.pose.orientation.z = 0.701
+    goal_user.target_pose.pose.orientation.z = -0.701
     goal_user.target_pose.pose.orientation.w = 0.713
 
     move_to_user_action = py_trees_ros.actions.ActionClient(
@@ -190,7 +191,7 @@ def create_root():
            variable_name="data", expected_value="order_the_target")
 
     order_mention1 = Print_message(name="Choose cup / bottle / milk  or go home?")
-    scene1_say2 = Say(name="say_request1", text='컵, 사과, 우류 중 어떤것을 가져다 드릴까요?')
+    scene1_say2 = Say(name="say_request1", text='어떤 물건을 가져다 드릴까요?')
     # order_target_action = OrderActionClient(
     #     name="order_target",
     #     action_namespace="/order_received",
@@ -208,7 +209,7 @@ def create_root():
         [wait_order_the_target,
          order_mention1,
          scene1_say2,
-         order_target_action,
+         order_object,
          ]
     )
 
@@ -225,13 +226,13 @@ def create_root():
     goal_shelf.target_pose.header.frame_id = "map"
     goal_shelf.target_pose.header.stamp = rospy.Time.now()
 
-    goal_shelf.target_pose.pose.position.x = 3.231
-    goal_shelf.target_pose.pose.position.y = 3.02
+    goal_shelf.target_pose.pose.position.x = 0.433
+    goal_shelf.target_pose.pose.position.y = -0.866
 
     goal_shelf.target_pose.pose.orientation.x = 0
     goal_shelf.target_pose.pose.orientation.y = 0
-    goal_shelf.target_pose.pose.orientation.z = 0.701
-    goal_shelf.target_pose.pose.orientation.w = 0.713
+    goal_shelf.target_pose.pose.orientation.z = 1.0
+    goal_shelf.target_pose.pose.orientation.w = 0.
 
     move_to_shelf_action = py_trees_ros.actions.ActionClient(
         name="move to shelf",
@@ -381,8 +382,8 @@ def create_root():
     goal_tea_table.target_pose.header.frame_id = "map"
     goal_tea_table.target_pose.header.stamp = rospy.Time.now()
 
-    goal_tea_table.target_pose.pose.position.x = 2.782
-    goal_tea_table.target_pose.pose.position.y = -1.78
+    goal_tea_table.target_pose.pose.position.x = 2.422
+    goal_tea_table.target_pose.pose.position.y = -2.4
 
     goal_tea_table.target_pose.pose.orientation.x = 0
     goal_tea_table.target_pose.pose.orientation.y = 0
@@ -432,7 +433,8 @@ def create_root():
     )
 
     # elevation_down_20cm_action = Elevation_up(target_pose=-0.2)
-    elevation_down_action = Elevation_up(target_pose=-0.085)
+    elevation_down_action = Elevation_up(target_pose=-0.086)
+    elevation_up_action = Elevation_up(target_pose=0.3)
     # done_scene_9 = Publish(topic_name="/wait_done_scene", data="scene_9_done")
 
     put_object.add_children(
@@ -448,6 +450,8 @@ def create_root():
          wait_time1,
          wait_time1,
          gripper_open,
+         elevation_up_action,
+         move_manipulator_to_grasp_done,
          move_manipulator_to_home,
          done_scene_1,      # move to user
          ]
