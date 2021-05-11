@@ -154,8 +154,8 @@ def create_root():
     goal_user.target_pose.header.frame_id = "map"
     goal_user.target_pose.header.stamp = rospy.Time.now()
 
-    goal_user.target_pose.pose.position.x = 1.545
-    goal_user.target_pose.pose.position.y = -2.367
+    goal_user.target_pose.pose.position.x = 1.575
+    goal_user.target_pose.pose.position.y = -2.36
 
     goal_user.target_pose.pose.orientation.x = 0
     goal_user.target_pose.pose.orientation.y = 0
@@ -278,6 +278,8 @@ def create_root():
          find_target_mention1,
          publish_resume_request,
          find_object,
+         publish_resume_request,
+         find_object,
          done_scene_5,
          ]
     )
@@ -363,7 +365,7 @@ def create_root():
          move_manipulator_to_grasp_done,
          publish_resume_request,
          wait_time1,
-         elevation_down_20cm_action,
+         move_manipulator_to_grasp_ready,
          done_scene_7,
          ]
     )
@@ -451,7 +453,7 @@ def create_root():
          wait_time1,
          gripper_open,
          elevation_up_action,
-         move_manipulator_to_grasp_done,
+#         move_manipulator_to_grasp_done,
          move_manipulator_to_home,
          done_scene_1,      # move to user
          ]
@@ -544,7 +546,7 @@ def create_root():
          ]
     )
 
-    root.add_children([gripper_open_cmd, intro, order_the_target, move_to_user, find_target, arm_control, move_to_tea_table, grasp_object, go_home, finish_demo, put_object, elevation_up, elevation_down])
+    root.add_children([gripper_open_cmd, intro, order_the_target, move_to_user, move_to_shelf, find_target, arm_control, move_to_tea_table, grasp_object, go_home, finish_demo, put_object, elevation_up, elevation_down])
     # root.add_children([scene1, scene3, scene4, scene5, scene6, scene7])
     return root
 

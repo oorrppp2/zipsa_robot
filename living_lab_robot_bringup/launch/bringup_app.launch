@@ -2,12 +2,15 @@
     <!-- MoveIt! -->
     <!--node name="moveit_client_node" type="moveit_client_node_obstacle_avoidance.py" pkg="living_lab_robot_moveit_client" output="screen" respawn="true"/-->
 
+    <node name="demo_auto_player" type="demo_scene_auto_playing.py" pkg="living_lab_robot_perception" output="screen"/>
     <node name="object_detector_action" type="object_detector_node.py" pkg="living_lab_robot_perception" output="screen"/>
     <node name="convert_object_coordinate" type="convert_boundingbox_node" pkg="convert_2d_to_3d" output="screen"/>
+    <!-- STT-->
+    <node name="Order_target_action" type="order_sst_node.py" pkg="living_lab_robot_perception" output="screen"/>
 	<!-- Darknet bringup -->
     <include file="$(find darknet_ros)/launch/living_lab_robot.launch"/>
 
-    <!--node name="demo_app" type="demo.py" pkg="living_lab_robot_apps" output="screen" /-->
+    <node name="demo_app" type="demo.py" pkg="living_lab_robot_apps" output="screen" />
     <!--node name="web_server" type="bringup_server" pkg="living_lab_robot_webserver" output="screen" /-->
 
     <!-- Head Pan/Tilt Controller -->

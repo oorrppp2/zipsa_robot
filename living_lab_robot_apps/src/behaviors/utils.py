@@ -83,7 +83,7 @@ class Elevation_up(py_trees.behaviour.Behaviour):
 		joint_positions = resp.position
 
 		goal = FollowJointTrajectoryGoal()
-		print(goal)
+		# print(goal)
 		goal.trajectory.joint_names = list(resp.name)
 
 		point = JointTrajectoryPoint()
@@ -101,10 +101,10 @@ class Elevation_up(py_trees.behaviour.Behaviour):
 		self.client.send_goal(goal)
 		self.client.wait_for_result()
 
-		rospy.sleep(1.0)
+		# rospy.sleep(1.0)
 
-		self.client.send_goal(goal)
-		self.client.wait_for_result()
+		# self.client.send_goal(goal)
+		# self.client.wait_for_result()
 
 		print self.client.get_result()
 

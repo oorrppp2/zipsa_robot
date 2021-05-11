@@ -16,6 +16,8 @@ from geometry_msgs.msg import PoseStamped, Quaternion, PointStamped
 from tf2_geometry_msgs import PoseStamped as TF2PoseStamped
 from living_lab_robot_perception.msg import Result
 from tf.transformations import quaternion_from_euler, quaternion_multiply
+from std_srvs.srv import Empty
+
 
 
 class ObjectDetectServer:
@@ -44,6 +46,8 @@ class ObjectDetectServer:
         self.clear_target_region = False
 
         self.clear_buffer_count = 5    # 5개 메시지 무시
+        rospy.wait_for_service('/clear_octomap') #this will stop your code until the clear octomap service starts running
+        self.clear_octomap = rospy.ServiceProxy('/clear_octomap', Empty)
 
         rospy.loginfo('[%s] initialized...'%rospy.get_name())
 
@@ -79,7 +83,7 @@ class ObjectDetectServer:
 		print("Detection succeed!!")
 		print("Result with (camera coordinate)")
 		print(msg)
-		
+
 	        self.result_frame_id = msg.data
 		self.detected_pose[0] = msg.pose.pose.position.x
 		self.detected_pose[1] = msg.pose.pose.position.y
@@ -178,27 +182,28 @@ class ObjectDetectServer:
                 self.clear_target_region = True
 
         if self.clear_target_region:
-                # Obstacle add into detected object region.
-                print("Obstacle add into detected object region.")
-                pub = rospy.Publisher("/add_obstacle", String, queue_size=1)
-                rospy.sleep(0.4)
-                pub.publish(data=str(result_pose.pose.position.x) + ' ' + \
-                                        str(result_pose.pose.position.y) + ' ' + \
-                                        str(result_pose.pose.position.z) + ' ' + \
-                                        str(self.result_data) + ' ' + ' 0.5 0.5 0.5')
                 rospy.sleep(2.0)
+                # Obstacle add into detected object region.
+                print("Clearing octomap...")
+                self.clear_octomap()
+                # pub = rospy.Publisher("/add_obstacle", String, queue_size=1)
+                # rospy.sleep(0.4)
+                # pub.publish(data=str(result_pose.pose.position.x) + ' ' + \
+                #                         str(result_pose.pose.position.y) + ' ' + \
+                #                         str(result_pose.pose.position.z) + ' ' + \
+                #                         str(self.result_data) + ' ' + ' 0.5 0.5 0.5')
+#                rospy.sleep(2.0)
                 # Remove target region points to clearing.
                 print("Remove target region points to clearing.")
                 pub = rospy.Publisher("/remove_points_request", String, queue_size=1)
                 rospy.sleep(0.4)
                 pub.publish(data="remove")
-                rospy.sleep(4.0)
-                # Remove added obstacle to clear the target region.
-                print("Remove added obstacle to clear the target region.")
-                pub = rospy.Publisher("/del_all_obstacles", String, queue_size=1)
-                rospy.sleep(0.4)
-                pub.publish(data='1')
                 # rospy.sleep(1.0)
+                # Remove added obstacle to clear the target region.
+                # print("Remove added obstacle to clear the target region.")
+                # pub = rospy.Publisher("/del_all_obstacles", String, queue_size=1)
+                # rospy.sleep(0.4)
+                # pub.publish(data='1')
 
 if __name__ == '__main__':
     rospy.init_node('object_detect_server')

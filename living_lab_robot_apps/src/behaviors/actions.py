@@ -79,9 +79,10 @@ class OrderActionClient(py_trees.behaviour.Behaviour):
 
         if result:
             self.blackboard.target = result.data
+            next_state = None
             if result.data == "go_home":
                 self.saying_action_goal = SpeechGoal(text='네, 집으로 돌아가겠습니다.')
-                self.done_scene_publisher.publish('scene_9_done')   # go home.
+                next_state = 'scene_9_done'   # go home.
             else:
                 print("Yes, I will find <"+self.blackboard.target+">")
                 if result.data == 'cup':
@@ -90,9 +91,11 @@ class OrderActionClient(py_trees.behaviour.Behaviour):
                     self.saying_action_goal = SpeechGoal(text='네, 물병을 가져다 드리겠습니다.')
                 elif result.data == 'milk':
                     self.saying_action_goal = SpeechGoal(text='네, 우유를 가져다 드리겠습니다.')
-                self.done_scene_publisher.publish('scene_3_done')   # Move to shelf
+                next_state = 'scene_3_done'   # Move to shelf
 
             self.saying_action_client.send_goal(self.saying_action_goal)
+            print("Publish : " + next_state)
+            self.done_scene_publisher.publish(next_state)   # go home.
             return py_trees.Status.SUCCESS
         else:
             self.feedback_message = self.override_feedback_message_on_running
@@ -240,18 +243,10 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
             self.action_goal.target_pose.pose.position.y = self.blackboard.object_pose.pose.position.y + self.y_offset
             self.action_goal.target_pose.pose.position.z = self.blackboard.object_pose.pose.position.z + self.z_offset
 
-            if self.blackboard.target == "bottle" or self.blackboard.target == "milk":
-                self.action_goal.target_pose.pose.position.z -= 0.05
-#            self.action_goal.target_pose.pose.position.x = 0.6
-#            self.action_goal.target_pose.pose.position.y = 0
-#            self.action_goal.target_pose.pose.position.z = 0.8
-#            if self.x_offset != 0:
-#	            self.action_goal.target_pose.pose.position.x = self.blackboard.object_pose.pose.position.x - (self.blackboard.object_pose.pose.position.x/8.0)
-#	            self.action_goal.target_pose.pose.position.y = self.blackboard.object_pose.pose.position.y - (self.blackboard.object_pose.pose.position.y/8.0)
-#	            self.action_goal.target_pose.pose.position.x = self.blackboard.object_pose.pose.position.x + 0.04
-#	            self.action_goal.target_pose.pose.position.y = self.blackboard.object_pose.pose.position.y
-#	            self.action_goal.target_pose.pose.position.z = self.blackboard.object_pose.pose.position.z - 0.02
-
+            if self.blackboard.target == "bottle":
+                self.action_goal.target_pose.pose.position.z -= 0.03
+            elif self.blackboard.target == "milk":
+                self.action_goal.target_pose.pose.position.z -= 0.06
             if self.mode == "put":
 #	            self.action_goal.target_pose.pose.position.x = self.blackboard.object_pose.pose.position.x
 #	            self.action_goal.target_pose.pose.position.z = self.blackboard.object_pose.pose.position.z + 0.1
@@ -268,10 +263,6 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
             self.action_goal.target_pose.pose.orientation.y = quat[1]
             self.action_goal.target_pose.pose.orientation.z = quat[2]
             self.action_goal.target_pose.pose.orientation.w = quat[3]
-#            self.action_goal.target_pose.pose.orientation.x = 0
-#            self.action_goal.target_pose.pose.orientation.y = 0
-#            self.action_goal.target_pose.pose.orientation.z = 0
-#            self.action_goal.target_pose.pose.orientation.w = 1.0
 
             if self.constraint:
                 if len(self.joint) == 0:
@@ -310,15 +301,16 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
         # Failure case
         if self.action_client.get_state() in [actionlib_msgs.GoalStatus.ABORTED,
                                               actionlib_msgs.GoalStatus.PREEMPTED]:
-            if self.fail_count < 5:
-                self.sent_goal = False
-                self.fail_count += 1
-                print("Action failed. Retry :: " + str(self.fail_count) + " try")
-                return py_trees.Status.RUNNING
-            else:
-                print("Tried ",self.fail_count, " times. Action failed.")
-                self.fail_count = 0
-                return py_trees.Status.FAILURE
+#            if self.fail_count < 5:
+#                self.sent_goal = False
+#                self.fail_count += 1
+#                print("Action failed. Retry :: " + str(self.fail_count) + " try")
+#                return py_trees.Status.RUNNING
+#            else:
+#                print("Tried ",self.fail_count, " times. Action failed.")
+#                self.fail_count = 0
+#                return py_trees.Status.FAILURE
+            return py_trees.Status.FAILURE
 
         result = self.action_client.get_result()
 

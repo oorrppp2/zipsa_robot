@@ -33,13 +33,13 @@ class ConvertBoundingBoxNode
     public:
         ConvertBoundingBoxNode()
         {
-			pointcloud_sub_ = nh_.subscribe<sensor_msgs::PointCloud2>("/camera/depth_registered/points", 1, &ConvertBoundingBoxNode::pointcloud_callback, this);
-			boundingboxes_sub_ = nh_.subscribe<darknet_ros_msgs::BoundingBoxes>("/darknet_ros/bounding_boxes", 1, &ConvertBoundingBoxNode::boundingbox_callback, this);
-			remove_request_sub_ = nh_.subscribe<std_msgs::String>("/remove_points_request", 1, &ConvertBoundingBoxNode::remove_request_callback, this);
-			target_id_sub_ = nh_.subscribe<std_msgs::String>("/request_target", 1, &ConvertBoundingBoxNode::target_id_callback, this);
-			pause_sub_ = nh_.subscribe<std_msgs::String>("/pause_request", 1, &ConvertBoundingBoxNode::pause_sub_callback, this);
-			pub_result_ = nh_.advertise<convert_2d_to_3d::Result>("detected_object", 1);
-			pointcloud_pub = nh_.advertise<sensor_msgs::PointCloud2>("/camera/depth_registered/removed_object_points", 1);
+			pointcloud_sub_ = nh_.subscribe<sensor_msgs::PointCloud2>("/camera/depth_registered/points", 10, &ConvertBoundingBoxNode::pointcloud_callback, this);
+			boundingboxes_sub_ = nh_.subscribe<darknet_ros_msgs::BoundingBoxes>("/darknet_ros/bounding_boxes", 10, &ConvertBoundingBoxNode::boundingbox_callback, this);
+			remove_request_sub_ = nh_.subscribe<std_msgs::String>("/remove_points_request", 10, &ConvertBoundingBoxNode::remove_request_callback, this);
+			target_id_sub_ = nh_.subscribe<std_msgs::String>("/request_target", 10, &ConvertBoundingBoxNode::target_id_callback, this);
+			pause_sub_ = nh_.subscribe<std_msgs::String>("/pause_request", 10, &ConvertBoundingBoxNode::pause_sub_callback, this);
+			pub_result_ = nh_.advertise<convert_2d_to_3d::Result>("detected_object", 10);
+			pointcloud_pub = nh_.advertise<sensor_msgs::PointCloud2>("/camera/depth_registered/removed_object_points", 10);
 
 			last_boundingbox_xmin = 0;
 			last_boundingbox_xmax = 0;
@@ -83,6 +83,7 @@ class ConvertBoundingBoxNode
 	{
 		if(pause_state) {
 			pointcloud_pub.publish(paused_pcl_cloud);
+			ros::Duration(0.1).sleep();
 			return;
 		}
 //	    printf("Bounding boxes size : %d\n", gBoundingboxes.bounding_boxes.size());
@@ -164,6 +165,7 @@ class ConvertBoundingBoxNode
 			ros::Duration(0.01).sleep();
 			gBoundingboxes.bounding_boxes.clear();
 		}
+		ros::Duration(0.1).sleep();
 	}
 
     private:
