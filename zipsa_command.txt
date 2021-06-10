@@ -82,4 +82,4 @@ rosrun living_lab_robot_moveit_client test_pose_xyz.py base_footprint 0.7 -0.126
 rosrun tf tf_echo /base_footprint /camera_link
 
 rostopic pub -1 /remove_object std_msgs/String "data: 'request'"
-
+delete json
