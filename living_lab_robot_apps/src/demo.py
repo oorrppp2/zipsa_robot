@@ -286,6 +286,7 @@ def create_root():
 
     #
     # Scene 6 Arm_control  (Move arm to the target object to grasp it.)
+    # 팔을 움직이기 전에 body_rotate_joint를 target을 향하도록 회전.
     # x축으로 3cm 앞, z축으로 5cm 위를 경유하여
     # x축으로 3cm 더 깊이(첫 경유보다 6cm 깊이), z축 center 기준으로 -1cm 지점으로 move.
     #
@@ -295,6 +296,7 @@ def create_root():
            variable_name="data", expected_value="arm_control")
     arm_control_mention1 = Print_message(name="* Arm_control *")
 
+    rotate_body_joint_to_heading_target = Body_Rotate()
     move_manipulator_to_grasp_add_offset = GraspActionClient(
         name="move_manipulator_to_grasp",
         action_namespace="/plan_and_execute_pose_w_joint_constraints",
@@ -330,7 +332,7 @@ def create_root():
         [wait_arm_control,
          arm_control_mention1,
          publish_pause_request,
-         # find_object,
+        #  rotate_body_joint_to_heading_target,
          move_manipulator_to_grasp_add_offset,
          wait_time1,
          wait_time1,

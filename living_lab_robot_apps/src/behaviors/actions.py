@@ -332,3 +332,54 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
                 self.action_client.cancel_goal()
         self.sent_goal = False
 
+
+class Body_Rotate(py_trees.behaviour.Behaviour):
+#class Elevation_up(py_trees_ros.actions.ActionClient):
+    def __init__(self, name="Body_rotation"):
+        super(Body_Rotate, self).__init__(name=name)
+        self.name = name
+        self.client = actionlib.SimpleActionClient('/arm_controller/follow_joint_trajectory', FollowJointTrajectoryAction)
+        self.client.wait_for_server()
+        self.blackboard = py_trees.blackboard.Blackboard()
+
+    def setup(self, timeout):
+        return True
+
+
+    def update(self):
+        rospy.wait_for_service('/arm_controller/query_state')
+        try:
+            query_state = rospy.ServiceProxy('/arm_controller/query_state', QueryTrajectoryState)
+            resp = query_state(rospy.Time.now())
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e
+
+        joint_names = resp.name
+        joint_positions = resp.position
+
+        goal = FollowJointTrajectoryGoal()
+        print(goal)
+        goal.trajectory.joint_names = list(resp.name)
+
+        point = JointTrajectoryPoint()
+        point.positions = list(resp.position)
+
+        theta = math.atan2(self.blackboard.object_pose.pose.position.y, self.blackboard.object_pose.pose.position.x)
+        point.positions[goal.trajectory.joint_names.index('body_rotate_joint')] = theta
+		# if point.positions[goal.trajectory.joint_names.index('elevation_joint')] > 0:
+		# 	point.positions[goal.trajectory.joint_names.index('elevation_joint')] = 0
+        goal.trajectory.points.append(point)
+        print(goal)
+        point.time_from_start = rospy.Duration(1.0)
+
+        self.client.send_goal(goal)
+        self.client.wait_for_result()
+
+        rospy.sleep(1.0)
+
+        self.client.send_goal(goal)
+        self.client.wait_for_result()
+
+        print self.client.get_result()
+
+        return py_trees.common.Status.SUCCESS
