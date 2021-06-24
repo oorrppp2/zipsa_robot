@@ -198,7 +198,8 @@ def create_root():
     # )
     order_object = OrderActionClient(
         name="order_received",
-        action_namespace="/sst_order_received",
+    #    action_namespace="/sst_order_received",
+         action_namespace="/order_received",
         action_spec=ReceiveTargetAction,
         action_goal=ReceiveTargetGoal()
     )
