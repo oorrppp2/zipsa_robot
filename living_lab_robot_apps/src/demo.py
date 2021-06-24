@@ -124,13 +124,11 @@ def create_root():
     wait_intro = py_trees_ros.subscribers.CheckData(name="wait_intro_demo", topic_name="/wait_select_scene", topic_type=String,
         variable_name="data", expected_value="intro")
 
-#    start_scene1 = Print_message(name="* Move to ready pose *")
+    # start_scene1 = Print_message(name="* Move to ready pose *")
     start_mention1 = Print_message(name="* Introduce *")
 
-    scene1_say1 = Say(name="say_hello1", text='안녕하세요? 저는 한국과학기술연구원에서 개발한 리빙랩의 로봇, 집사입니다.')
-    """
-        적절한 멘트
-    """
+    scene1_say1 = Say(name="say_hello1", text='안녕하세요? 저는 한국과학기술연구원의 로봇, 집사입니다.')
+
     done_scene_1 = Publish(topic_name="/wait_done_scene", data="scene_1_done")
     intro.add_children(
         [wait_intro,
@@ -286,7 +284,6 @@ def create_root():
 
     #
     # Scene 6 Arm_control  (Move arm to the target object to grasp it.)
-    # 팔을 움직이기 전에 body_rotate_joint를 target을 향하도록 회전.
     # x축으로 3cm 앞, z축으로 5cm 위를 경유하여
     # x축으로 3cm 더 깊이(첫 경유보다 6cm 깊이), z축 center 기준으로 -1cm 지점으로 move.
     #
@@ -296,7 +293,6 @@ def create_root():
            variable_name="data", expected_value="arm_control")
     arm_control_mention1 = Print_message(name="* Arm_control *")
 
-    rotate_body_joint_to_heading_target = Body_Rotate()
     move_manipulator_to_grasp_add_offset = GraspActionClient(
         name="move_manipulator_to_grasp",
         action_namespace="/plan_and_execute_pose_w_joint_constraints",
@@ -332,7 +328,7 @@ def create_root():
         [wait_arm_control,
          arm_control_mention1,
          publish_pause_request,
-        #  rotate_body_joint_to_heading_target,
+         # find_object,
          move_manipulator_to_grasp_add_offset,
          wait_time1,
          wait_time1,
@@ -501,6 +497,251 @@ def create_root():
          ]
     )
 
+
+    #
+    # Scene 11 Speech1 (Speech Case1)
+    #
+    speech1 = py_trees.composites.Sequence("speech1")
+
+    wait_speech1 = py_trees_ros.subscribers.CheckData(name="wait_speech1", topic_name="/wait_select_scene", topic_type=String,
+        variable_name="data", expected_value="speech1")
+
+    start_speech1 = Print_message(name="* Speech1 *")
+
+    scene11_speech1 = Say(name="say_speech1", text='첫번째 케이스에 대한 문장을 출력합니다.')
+
+    done_speech1 = Publish(topic_name="/wait_done_scene", data="scene_speech1_done")
+
+    speech1.add_children(
+        [wait_speech1,
+         start_speech1,
+         scene11_speech1,
+         done_speech1,
+         ]
+    )
+
+
+    #
+    # Scene 12 Speech2 (Speech Case2)
+    #
+    speech2 = py_trees.composites.Sequence("speech2")
+
+    wait_speech2 = py_trees_ros.subscribers.CheckData(name="wait_speech2", topic_name="/wait_select_scene", topic_type=String,
+        variable_name="data", expected_value="speech2")
+
+    start_speech2 = Print_message(name="* Speech2 *")
+
+    scene12_speech2 = Say(name="say_speech2", text='두번째 케이스에 대한 문장을 출력합니다.')
+
+    done_speech2 = Publish(topic_name="/wait_done_scene", data="scene_speech2_done")
+
+    speech2.add_children(
+        [wait_speech2,
+         start_speech2,
+         scene12_speech2,
+         done_speech2,
+         ]
+    )
+
+
+    #
+    # Scene 13 Speech3 (Speech Case3)
+    #
+    speech3 = py_trees.composites.Sequence("speech3")
+
+    wait_speech3 = py_trees_ros.subscribers.CheckData(name="wait_speech3", topic_name="/wait_select_scene", topic_type=String,
+        variable_name="data", expected_value="speech3")
+
+    start_speech3 = Print_message(name="* Speech3 *")
+
+    scene13_speech3 = Say(name="say_speech3", text='세번째 케이스에 대한 문장을 출력합니다.')
+
+    done_speech3 = Publish(topic_name="/wait_done_scene", data="scene_speech3_done")
+
+    speech3.add_children(
+        [wait_speech3,
+         start_speech3,
+         scene13_speech3,
+         done_speech3,
+         ]
+    )
+
+
+    #
+    # Scene 14 Question1 (Question Case1)
+    #
+    question1 = py_trees.composites.Sequence("question1")
+
+    wait_question1 = py_trees_ros.subscribers.CheckData(name="wait_question1", topic_name="/wait_select_scene", topic_type=String,
+        variable_name="data", expected_value="question1")
+
+    start_question1 = Print_message(name="* Question1 *")
+
+    scene14_question1 = Say(name="say_question1", text='사용자에게 물어볼 첫번째 질문을 출력합니다.')
+
+    done_question1 = Publish(topic_name="/wait_done_scene", data="scene_question1_done")
+
+    question1.add_children(
+        [wait_question1,
+         start_question1,
+         scene14_question1,
+         done_question1,
+         ]
+    )
+
+
+    #
+    # Scene 15 Question2 (Question Case2)
+    #
+    question2 = py_trees.composites.Sequence("question2")
+
+    wait_question2 = py_trees_ros.subscribers.CheckData(name="wait_question2", topic_name="/wait_select_scene", topic_type=String,
+        variable_name="data", expected_value="question2")
+
+    start_question2 = Print_message(name="* Question2 *")
+
+    scene15_question2 = Say(name="say_question2", text='사용자에게 물어볼 두번째 질문을 출력합니다.')
+
+    done_question2 = Publish(topic_name="/wait_done_scene", data="scene_question2_done")
+
+    question2.add_children(
+        [wait_question2,
+         start_question2,
+         scene15_question2,
+         done_question2,
+         ]
+    )
+
+
+    #
+    # Scene 16 Question3 (Question Case3)
+    #
+    question3 = py_trees.composites.Sequence("question3")
+
+    wait_question3 = py_trees_ros.subscribers.CheckData(name="wait_question3", topic_name="/wait_select_scene", topic_type=String,
+        variable_name="data", expected_value="question3")
+
+    start_question3 = Print_message(name="* Question3 *")
+
+    scene16_question3 = Say(name="say_question3", text='사용자에게 물어볼 세번째 질문을 출력합니다.')
+
+    done_question3 = Publish(topic_name="/wait_done_scene", data="scene_question3_done")
+
+    question3.add_children(
+        [wait_question3,
+         start_question3,
+         scene16_question3,
+         done_question3,
+         ]
+    )
+
+
+    #
+    # Scene 17 Speech Test (Speech Test)
+    #
+    speech_test = py_trees.composites.Sequence("speech_test")
+
+    wait_speech_test = py_trees_ros.subscribers.CheckData(name="wait_speech_test", topic_name="/wait_select_scene", topic_type=String,
+        variable_name="data", expected_value="speech_test")
+
+    start_speech_test = Print_message(name="* Speech Test *")
+
+    scene17_speech_test = Say(name="say_speech_test", text='집에 가서 유튜브 보며 치맥하고 싶어요. 퇴근시켜 주세요.')
+
+    done_speech_test = Publish(topic_name="/wait_done_scene", data="scene_speech_test_done")
+
+    speech_test.add_children(
+        [wait_speech_test,
+         start_speech_test,
+         scene17_speech_test,
+         done_speech_test,
+         ]
+    )
+
+
+    #
+    # Scene 18 Move to Living Room
+    #
+
+    move_to_living_room = py_trees.composites.Sequence("move_to_living_room")
+
+    wait_move_to_living_room = py_trees_ros.subscribers.CheckData(name="wait_move_to_living_room", topic_name="/wait_select_scene", topic_type=String,
+        variable_name="data", expected_value="move_to_living_room")
+
+    start_move_to_living_room = Print_message(name="* Move to Living Room *")
+
+    goal_living_room = move_base_msgs.msg.MoveBaseGoal()
+    goal_living_room.target_pose.header.frame_id = "map"
+    goal_living_room.target_pose.header.stamp = rospy.Time.now()
+    goal_living_room.target_pose.pose.position.x = 3.7
+    goal_living_room.target_pose.pose.position.y = -2.56
+
+    quat1 = quaternion_from_euler(0, 0, 2.0)
+    goal_living_room.target_pose.pose.orientation.x = quat1[0]
+    goal_living_room.target_pose.pose.orientation.y = quat1[1]
+    goal_living_room.target_pose.pose.orientation.z = quat1[2]
+    goal_living_room.target_pose.pose.orientation.w = quat1[3]
+
+    move_to_living_room_order = py_trees_ros.actions.ActionClient(
+        name="move to living room",
+        action_namespace="/move_base",
+        action_spec=move_base_msgs.msg.MoveBaseAction,
+        action_goal=goal_living_room
+    )
+
+    done_move_to_living_room = Publish(topic_name="/wait_done_scene", data="scene_move_to_living_room_done")
+
+    move_to_living_room.add_children(
+        [ wait_move_to_living_room,
+          start_move_to_living_room,
+          move_to_living_room_order,
+          done_move_to_living_room]
+    )
+
+
+    #
+    # Scene 19 Move to Kitchen
+    #
+
+    move_to_kitchen = py_trees.composites.Sequence("move_to_kitchen")
+
+    wait_move_to_kitchen = py_trees_ros.subscribers.CheckData(name="wait_move_to_kitchen", topic_name="/wait_select_scene", topic_type=String,
+        variable_name="data", expected_value="move_to_kitchen")
+
+    start_move_to_kitchen = Print_message(name="* Move to Kitchen *")
+
+    goal_kitchen = move_base_msgs.msg.MoveBaseGoal()
+    goal_kitchen.target_pose.header.frame_id = "map"
+    goal_kitchen.target_pose.header.stamp = rospy.Time.now()
+    goal_kitchen.target_pose.pose.position.x = 4.2
+    goal_kitchen.target_pose.pose.position.y = 2.2
+
+    quat1 = quaternion_from_euler(0, 0, -2.4)
+    goal_kitchen.target_pose.pose.orientation.x = quat1[0]
+    goal_kitchen.target_pose.pose.orientation.y = quat1[1]
+    goal_kitchen.target_pose.pose.orientation.z = quat1[2]
+    goal_kitchen.target_pose.pose.orientation.w = quat1[3]
+
+    move_to_kitchen_order = py_trees_ros.actions.ActionClient(
+        name="move to kitchen",
+        action_namespace="/move_base",
+        action_spec=move_base_msgs.msg.MoveBaseAction,
+        action_goal=goal_kitchen
+    )
+
+    done_move_to_kitchen = Publish(topic_name="/wait_done_scene", data="scene_move_to_kitchen")
+
+    move_to_kitchen.add_children(
+        [ wait_move_to_kitchen,
+          start_move_to_kitchen,
+          move_to_kitchen_order,
+          done_move_to_kitchen ]
+    )
+
+
+    ###
+    ### finish demo
+    ###
     finish_demo = py_trees.composites.Sequence("finish_demo")
     wait_finish_demo = py_trees_ros.subscribers.CheckData(name="wait_finish_demo", topic_name="/wait_select_scene", topic_type=String,
            variable_name="data", expected_value="finish_demo")
@@ -548,9 +789,16 @@ def create_root():
          ]
     )
 
-    root.add_children([gripper_open_cmd, intro, order_the_target, move_to_user, move_to_shelf, find_target, arm_control, move_to_tea_table, grasp_object, go_home, finish_demo, put_object, elevation_up, elevation_down])
+
+
+    ###
+    ### add childern
+    ###
+    root.add_children([gripper_open_cmd, intro, order_the_target, move_to_user, move_to_shelf, find_target, arm_control, move_to_tea_table, grasp_object, go_home, finish_demo, put_object, elevation_up, elevation_down, speech1, speech2, speech3, question1, question2, question3, speech_test, move_to_living_room, move_to_kitchen])
     # root.add_children([scene1, scene3, scene4, scene5, scene6, scene7])
     return root
+
+
 
 def shutdown(behaviour_tree):
     behaviour_tree.interrupt()

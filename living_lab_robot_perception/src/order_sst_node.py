@@ -168,26 +168,28 @@ class OrderTargetSSTServer:
 
                 stt_result = transcript + overwrite_chars
 
-                if("컵" in stt_result):
+                if("컵" in stt_result or "cup" in stt_result):
                     return 'cup'
-                elif("병" in stt_result):
+                elif("텀블러" in stt_result or "병" in stt_result or "bottle" in stt_result or "물" in stt_result):
                     return 'bottle'
-                elif("우유" in stt_result):
+                elif("우유" in stt_result or "milk" in stt_result):
                     return 'milk'
-                elif("집" in stt_result):
+                elif("집사" in stt_result):
+                    pass
+                elif("집" in stt_result or "home" in stt_result):
                     return 'go_home'
 
             else:
                 print(transcript + overwrite_chars)
                 stt_result = transcript + overwrite_chars
 
-                if("컵" in stt_result):
+                if("컵" in stt_result or "cup" in stt_result):
                     return 'cup'
-                elif("병" in stt_result):
+                elif("병" in stt_result or "bottle" in stt_result):
                     return 'bottle'
-                elif("우유" in stt_result):
+                elif("우유" in stt_result or "milk" in stt_result):
                     return 'milk'
-                elif("집" in stt_result):
+                elif("집" in stt_result or "home" in stt_result):
                     return 'go_home'
 
                 # Exit recognition if any of the transcribed phrases could be
