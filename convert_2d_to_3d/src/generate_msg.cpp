@@ -97,7 +97,7 @@ class ConvertBoundingBoxNode
 			double z = 0.0;
 			std::string id = "";
 			pcl::PointXYZRGB mClosestPoint;
-			bool isFistPoint = true;
+			bool isFirstObject = true;
 			// std::cout << "======================================" << std::endl;
 
 			for(int i = 0; i < gBoundingboxes.bounding_boxes.size(); i++) {
@@ -111,13 +111,13 @@ class ConvertBoundingBoxNode
 				y = p.y;
 				z = p.z;
 				// std::cout << "id : " << id << " / " << p << std::endl;
-				if(isFistPoint) {
+				if(isFirstObject) {
 					mClosestPoint = p;
 					last_boundingbox_xmin = gBoundingboxes.bounding_boxes[i].xmin - remove_padding;
 					last_boundingbox_xmax = gBoundingboxes.bounding_boxes[i].xmax + remove_padding;
 					last_boundingbox_ymin = gBoundingboxes.bounding_boxes[i].ymin - remove_padding;
 					last_boundingbox_ymax = gBoundingboxes.bounding_boxes[i].ymax + remove_padding;
-					isFistPoint = false;
+					isFirstObject = false;
 				} else if(z < mClosestPoint.z) {
 					mClosestPoint = p;
 					last_boundingbox_xmin = gBoundingboxes.bounding_boxes[i].xmin - remove_padding;
@@ -128,7 +128,7 @@ class ConvertBoundingBoxNode
 
 			}
 
-			if(!isFistPoint) {
+			if(!isFirstObject) {
 				x = mClosestPoint.x;
 				y = mClosestPoint.y;
 				z = mClosestPoint.z;
@@ -140,6 +140,24 @@ class ConvertBoundingBoxNode
 						}
 					}
 				}
+
+                // create static tf
+                geometry_msgs::TransformStamped transformStamped;
+                transformStamped.header.frame_id = "camera_color_optical_frame";
+                transformStamped.child_frame_id = "object_coordinate";
+
+                transformStamped.transform.translation.x = x;
+                transformStamped.transform.translation.y = y;
+                transformStamped.transform.translation.z = z;
+
+                transformStamped.transform.rotation.x = 0;
+                transformStamped.transform.rotation.y = 0;
+                transformStamped.transform.rotation.z = 0;
+                transformStamped.transform.rotation.w = 1;
+
+                transformStamped.header.stamp = ros::Time::now();
+                tfb_.sendTransform(transformStamped);
+
 				// Publish result
 				convert_2d_to_3d::Result msg;
 				msg.type = "detected_object";
