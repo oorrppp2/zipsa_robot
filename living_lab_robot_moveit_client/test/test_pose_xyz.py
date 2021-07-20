@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 import rospy
@@ -22,7 +22,7 @@ def main(argv):
 
         theta = math.atan2(goal.target_pose.pose.position.y, goal.target_pose.pose.position.x)
         quat = quaternion_from_euler(0.0, 0.0, theta)
-        print quat
+        print(quat)
 
         goal.target_pose.pose.orientation.x = quat[0]
         goal.target_pose.pose.orientation.y = quat[1]
@@ -36,6 +36,13 @@ def main(argv):
         joint_constraint_arm1_joint.tolerance_below = float(30) * math.pi / 180.0
         joint_constraint_arm1_joint.weight = 1.0
 
+        joint_constraint_arm4_joint = JointConstraint()
+        joint_constraint_arm4_joint.joint_name = "arm4_joint"
+        joint_constraint_arm4_joint.position = float(0.0)
+        joint_constraint_arm4_joint.tolerance_above = float(30) * math.pi / 180.0
+        joint_constraint_arm4_joint.tolerance_below = float(30) * math.pi / 180.0
+        joint_constraint_arm4_joint.weight = 1.0
+
         joint_constraint_arm6_joint = JointConstraint()
         joint_constraint_arm6_joint.joint_name = "arm6_joint"
         joint_constraint_arm6_joint.position = float(0.0)
@@ -45,12 +52,13 @@ def main(argv):
 
         joint_constraint_elevation_joint = JointConstraint()
         joint_constraint_elevation_joint.joint_name = "elevation_joint"
-        joint_constraint_elevation_joint.position = float(-0.05)
+        joint_constraint_elevation_joint.position = float(0.0)
         joint_constraint_elevation_joint.tolerance_above = 0
-        joint_constraint_elevation_joint.tolerance_below = 0.3
+        joint_constraint_elevation_joint.tolerance_below = 0.25
         joint_constraint_elevation_joint.weight = 1.0
 
         goal.joint_constraints.append(joint_constraint_arm1_joint)
+        goal.joint_constraints.append(joint_constraint_arm4_joint)
         goal.joint_constraints.append(joint_constraint_arm6_joint)
         goal.joint_constraints.append(joint_constraint_elevation_joint)
 
@@ -60,13 +68,13 @@ def main(argv):
     client.send_goal(goal)
     client.wait_for_result()
 
-    print client.get_result()
+    print(client.get_result())
 
 if __name__ == '__main__':
     rospy.init_node('test_pose', anonymous=False)
 
     if len(sys.argv) != 5:
-        print "Usage: rosrun living_lab_robot_moveit_client test_pose <reference_link> <x> <y> <z>"
+        print("Usage: rosrun living_lab_robot_moveit_client test_pose <reference_link> <x> <y> <z>")
         exit(-1)
 
     m = main(sys.argv[1:])

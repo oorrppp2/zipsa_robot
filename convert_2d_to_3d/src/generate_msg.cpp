@@ -81,6 +81,7 @@ class ConvertBoundingBoxNode
 
 	void pointcloud_callback(const sensor_msgs::PointCloud2ConstPtr& pointcloud)
 	{
+		// std::cout << "pause state : " << pause_state << " / target_id : " << target_id << std::endl;
 		if(pause_state) {
 			pointcloud_pub.publish(paused_pcl_cloud);
 			ros::Duration(0.1).sleep();

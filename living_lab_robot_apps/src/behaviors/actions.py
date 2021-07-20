@@ -13,6 +13,8 @@ from tf.transformations import *
 from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryGoal
 from behaviors.speech import *
 from polly_speech.msg import SpeechAction, SpeechGoal
+from control_msgs.srv import QueryTrajectoryState
+
 
 class OrderActionClient(py_trees.behaviour.Behaviour):
     def __init__(self, name="Action Client", action_spec=None, action_goal=None, action_namespace="/action",
@@ -79,6 +81,7 @@ class OrderActionClient(py_trees.behaviour.Behaviour):
 
         if result:
             self.blackboard.target = result.data
+            print(result)
             next_state = None
             if result.data == "go_home":
                 self.saying_action_goal = SpeechGoal(text='네, 집으로 돌아가겠습니다.')
@@ -332,3 +335,54 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
                 self.action_client.cancel_goal()
         self.sent_goal = False
 
+
+class Body_Rotate(py_trees.behaviour.Behaviour):
+    def __init__(self, name="Body_rotation"):
+        super(Body_Rotate, self).__init__(name=name)
+        self.name = name
+        self.client = actionlib.SimpleActionClient('/body/arm_controller/follow_joint_trajectory', FollowJointTrajectoryAction)
+        self.client.wait_for_server()
+        self.blackboard = py_trees.blackboard.Blackboard()
+        # print("\n", self.name, "\n")
+
+    def setup(self, timeout):
+        return True
+
+
+    def update(self):
+        rospy.wait_for_service('/body/arm_controller/query_state')
+        try:
+            query_state = rospy.ServiceProxy('/body/arm_controller/query_state', QueryTrajectoryState)
+            resp = query_state(rospy.Time.now())
+        except rospy.ServiceException, e:
+            print "Service call failed: %s"%e
+
+        joint_names = resp.name
+        joint_positions = resp.position
+
+        goal = FollowJointTrajectoryGoal()
+        print(goal)
+        goal.trajectory.joint_names = list(resp.name)
+
+        point = JointTrajectoryPoint()
+        point.positions = list(resp.position)
+
+        theta = math.atan2(self.blackboard.object_pose.pose.position.y, self.blackboard.object_pose.pose.position.x)
+        point.positions[goal.trajectory.joint_names.index('body_rotate_joint')] = theta
+		# if point.positions[goal.trajectory.joint_names.index('elevation_joint')] > 0:
+		# 	point.positions[goal.trajectory.joint_names.index('elevation_joint')] = 0
+        goal.trajectory.points.append(point)
+        print(goal)
+        point.time_from_start = rospy.Duration(1.0)
+
+        self.client.send_goal(goal)
+        self.client.wait_for_result()
+
+        rospy.sleep(1.0)
+
+        self.client.send_goal(goal)
+        self.client.wait_for_result()
+
+        print self.client.get_result()
+
+        return py_trees.common.Status.SUCCESS

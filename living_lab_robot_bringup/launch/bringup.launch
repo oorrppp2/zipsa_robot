@@ -50,7 +50,7 @@
 
     <!-- MoveIt! -->
     <include file="$(find living_lab_robot_moveit_config)/launch/move_group.launch"/>
-    <node name="moveit_client_node" type="moveit_client_node_obstacle_avoidance.py" pkg="living_lab_robot_moveit_client" output="screen" respawn="true"/>
+    <!--node name="moveit_client_node" type="moveit_client_node_obstacle_avoidance.py" pkg="living_lab_robot_moveit_client" output="screen" respawn="true"/-->
 
 
     <!-- Topic Relay -->

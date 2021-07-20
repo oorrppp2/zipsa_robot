@@ -198,7 +198,7 @@ def create_root():
     # )
     order_object = OrderActionClient(
         name="order_received",
-    #    action_namespace="/sst_order_received",
+        # action_namespace="/sst_order_received",
          action_namespace="/order_received",
         action_spec=ReceiveTargetAction,
         action_goal=ReceiveTargetGoal()
@@ -209,6 +209,7 @@ def create_root():
          order_mention1,
          scene1_say2,
          order_object,
+        #  order_target_action
          ]
     )
 
@@ -294,6 +295,8 @@ def create_root():
            variable_name="data", expected_value="arm_control")
     arm_control_mention1 = Print_message(name="* Arm_control *")
 
+    rotate_body_joint_to_heading_target = Body_Rotate()
+
     move_manipulator_to_grasp_add_offset = GraspActionClient(
         name="move_manipulator_to_grasp",
         action_namespace="/plan_and_execute_pose_w_joint_constraints",
@@ -329,7 +332,7 @@ def create_root():
         [wait_arm_control,
          arm_control_mention1,
          publish_pause_request,
-         # find_object,
+         rotate_body_joint_to_heading_target,
          move_manipulator_to_grasp_add_offset,
          wait_time1,
          wait_time1,
@@ -427,8 +430,9 @@ def create_root():
         action_goal=PlanExecutePoseConstraintsGoal(),
         constraint=True,
         joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
-			'arm4_joint':[0.0, 90 * math.pi / 180.0, 90 * math.pi / 180.0],
+			'arm4_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
 			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
+			'body_rotate_joint':[0.0, 0.1, 0.1],
 			'elevation_joint':[0.0, 0.0, 0.25]},
         mode="put"
     )

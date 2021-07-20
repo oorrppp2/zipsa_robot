@@ -102,7 +102,7 @@ class MoveitClientNode:
 			self.scene.remove_world_object(self.box_names_arr[i])
 			print("Remove " + str(self.box_names_arr[i]) + " result : " + str(self.wait_for_state_update(box_is_attached=False, box_is_known=False, timeout=2, box_name=self.box_names_arr[i])))
 		self.box_names_arr = []
-		
+
 
 	def plan_execute_pose_cb(self, goal):
 		feedback = PlanExecutePoseFeedback()
@@ -229,8 +229,6 @@ class MoveitClientNode:
 		rospy.loginfo('Planning goal pose...')
 		plan1 = self.group.plan()
 
-		print(plan1)
-
 		if len(plan1.joint_trajectory.points) == 0:
 			result.result = False
 			return
@@ -292,7 +290,7 @@ class MoveitClientNode:
 		return False
 		## END_SUB_TUTORIAL
 
-	
+
 
 if __name__ == '__main__':
     rospy.init_node('moveit_client_node', anonymous=False)

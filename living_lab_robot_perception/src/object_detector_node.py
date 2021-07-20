@@ -52,23 +52,24 @@ class ObjectDetectServer:
                         print("Clearing buffer ...")
                         self.clear_buffer_count -= 1
                         return
+                else:
+                    self.start_detect = False
+                    self.clear_buffer_count = 5
+                    self.result_frame_id = msg.data
+                    self.detected_object.point.x = 0
+                    self.detected_object.point.y = 0
+                    self.detected_object.point.z = 0
+                    self.result_orientation = np.array(
+                        [msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, msg.pose.pose.orientation.z,
+                        msg.pose.pose.orientation.w])
 
-        self.start_detect = False
-        self.clear_buffer_count = 5
-
-        self.detected_object.point.x = 0
-        self.detected_object.point.y = 0
-        self.detected_object.point.z = 0
-        self.result_orientation = np.array(
-            [msg.pose.pose.orientation.x, msg.pose.pose.orientation.y, msg.pose.pose.orientation.z,
-             msg.pose.pose.orientation.w])
-
-        self.detect_done = True
+                    self.detect_done = True
 
     def handle_request_detect(self, goal):
         print("Received goal : " + goal.target)
+        success = False
         request_target_pub = rospy.Publisher("/request_target", String, queue_size=1)
-        # rospy.sleep(0.4)
+        rospy.sleep(0.4)
         request_target_pub.publish(data=goal.target)
         rospy.sleep(0.4)
         self.detected_pose = np.array([0.0, 0.0, 0.0])
@@ -87,6 +88,8 @@ class ObjectDetectServer:
             rospy.sleep(0.1)
         self.detect_done = False
 
+        print("detect_done : ", self.detect_done)
+
         detect_pose = TF2PoseStamped()
         #print("type : ", detect_pose)
         detect_pose.header.frame_id = "object_coordinate"
@@ -104,7 +107,8 @@ class ObjectDetectServer:
         detect_pose.pose.orientation.w = quat_result[3]
 
         # convert detect_pose with reference base_footprint
-        target_detect_pose = self.tf_buffer.transform(detect_pose, "base_footprint")
+        target_detect_pose = self.tf_buffer.transform(detect_pose, "base_footprint", timeout=rospy.Duration(10.0))
+
         # target_detect_pose.pose.position.z -= 0.090
 
         result_pose = PoseStamped()
@@ -127,15 +131,26 @@ class ObjectDetectServer:
                 self.clear_target_region = True
 
         if self.clear_target_region:
-                rospy.sleep(2.0)
-                # Obstacle add into detected object region.
-                print("Clearing octomap...")
-                self.clear_octomap()
                 # Remove target region points to clearing.
                 print("Remove target region points to clearing.")
                 pub = rospy.Publisher("/remove_points_request", String, queue_size=1)
                 rospy.sleep(0.4)
                 pub.publish(data="remove")
+                # rospy.sleep(0.4)
+                rospy.sleep(2.0)
+                # Obstacle add into detected object region.
+                print("Clearing octomap...")
+                self.clear_octomap()
+
+                # rospy.sleep(2.0)
+                # # Obstacle add into detected object region.
+                # print("Clearing octomap...")
+                # self.clear_octomap()
+                # # Remove target region points to clearing.
+                # print("Remove target region points to clearing.")
+                # pub = rospy.Publisher("/remove_points_request", String, queue_size=1)
+                # rospy.sleep(0.4)
+                # pub.publish(data="remove")
                 # rospy.sleep(1.0)
                 # Remove added obstacle to clear the target region.
                 # print("Remove added obstacle to clear the target region.")
@@ -145,8 +160,5 @@ class ObjectDetectServer:
 
 if __name__ == '__main__':
     rospy.init_node('object_detect_server')
-    detect_pose_check = TF2PoseStamped()
-    print("type : ",type(detect_pose_check))
-    # rospy.Subscriber("/clicked_point", PointStamped, callback_point)
     server = ObjectDetectServer()
     rospy.spin()
