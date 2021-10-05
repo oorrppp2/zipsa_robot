@@ -69,6 +69,7 @@ class ConvertBoundingBoxNode
 
 	void target_id_callback(const std_msgs::StringConstPtr& msg) {
 		target_id = msg->data;
+		init = true;
 	}
 
 	void pause_sub_callback(const std_msgs::StringConstPtr& msg) {
@@ -81,16 +82,21 @@ class ConvertBoundingBoxNode
 
 	void pointcloud_callback(const sensor_msgs::PointCloud2ConstPtr& pointcloud)
 	{
+		pcl::PointCloud<pcl::PointXYZRGB> pcl_cloud;
+		// pcl::PointCloud<pcl::PointXYZRGB>::iterator it;
+		pcl::fromROSMsg(*pointcloud, pcl_cloud);
+
+		if(!init) {
+			pointcloud_pub.publish(pcl_cloud);
+		}
 		// std::cout << "pause state : " << pause_state << " / target_id : " << target_id << std::endl;
 		if(pause_state) {
 			pointcloud_pub.publish(paused_pcl_cloud);
+			target_id = "";
 			ros::Duration(0.1).sleep();
 			return;
 		}
 //	    printf("Bounding boxes size : %d\n", gBoundingboxes.bounding_boxes.size());
-		pcl::PointCloud<pcl::PointXYZRGB> pcl_cloud;
-		// pcl::PointCloud<pcl::PointXYZRGB>::iterator it;
-		pcl::fromROSMsg(*pointcloud, pcl_cloud);
 		if(!gBoundingboxes.bounding_boxes.empty()) {
 
 			double x = 0.0;
@@ -111,20 +117,21 @@ class ConvertBoundingBoxNode
 				x = p.x;
 				y = p.y;
 				z = p.z;
+
 				// std::cout << "id : " << id << " / " << p << std::endl;
 				if(isFirstObject) {
 					mClosestPoint = p;
 					last_boundingbox_xmin = gBoundingboxes.bounding_boxes[i].xmin - remove_padding;
 					last_boundingbox_xmax = gBoundingboxes.bounding_boxes[i].xmax + remove_padding;
 					last_boundingbox_ymin = gBoundingboxes.bounding_boxes[i].ymin - remove_padding;
-					last_boundingbox_ymax = gBoundingboxes.bounding_boxes[i].ymax + remove_padding;
+					last_boundingbox_ymax = gBoundingboxes.bounding_boxes[i].ymax + remove_padding+400;
 					isFirstObject = false;
 				} else if(z < mClosestPoint.z) {
 					mClosestPoint = p;
 					last_boundingbox_xmin = gBoundingboxes.bounding_boxes[i].xmin - remove_padding;
 					last_boundingbox_xmax = gBoundingboxes.bounding_boxes[i].xmax + remove_padding;
 					last_boundingbox_ymin = gBoundingboxes.bounding_boxes[i].ymin - remove_padding;
-					last_boundingbox_ymax = gBoundingboxes.bounding_boxes[i].ymax + remove_padding;
+					last_boundingbox_ymax = gBoundingboxes.bounding_boxes[i].ymax + remove_padding+400;
 				}
 
 			}
@@ -134,10 +141,18 @@ class ConvertBoundingBoxNode
 				y = mClosestPoint.y;
 				z = mClosestPoint.z;
 				if(remove_request == "remove") {
-					for(int x = last_boundingbox_xmin; x < last_boundingbox_xmax; x++) {
-						for(int y = last_boundingbox_ymin; y < last_boundingbox_ymax; y++) {
-							pcl_cloud(x, y).x, pcl_cloud(x, y).y = INFINITY;
-							pcl_cloud(x, y).z = INFINITY;
+					// std::cout << "Remove requested" << std::endl;
+					// std::cout << "(xmin, xmax, ymin, ymax) : (" << last_boundingbox_xmin <<
+					// ", " << last_boundingbox_xmax << ", " << last_boundingbox_ymin << ", " <<
+					// last_boundingbox_ymax << ")" << std::endl;
+					last_boundingbox_xmin = (last_boundingbox_xmin >= 0) ? last_boundingbox_xmin : 0;
+					last_boundingbox_ymin = (last_boundingbox_ymin >= 0) ? last_boundingbox_ymin : 0;
+					last_boundingbox_xmax = (last_boundingbox_xmax < 640) ? last_boundingbox_xmax : 640;
+					last_boundingbox_ymax = (last_boundingbox_ymax < 480) ? last_boundingbox_ymax : 480;
+					for(int pc_x = last_boundingbox_xmin; pc_x < last_boundingbox_xmax; pc_x++) {
+						for(int pc_y = last_boundingbox_ymin; pc_y < last_boundingbox_ymax; pc_y++) {
+							pcl_cloud(pc_x, pc_y).x, pcl_cloud(pc_x, pc_y).y = INFINITY;
+							pcl_cloud(pc_x, pc_y).z = INFINITY;
 						}
 					}
 				}
@@ -207,8 +222,9 @@ class ConvertBoundingBoxNode
 	int last_boundingbox_ymin;
 	int last_boundingbox_ymax;
 
-	int remove_padding = 20;
+	int remove_padding = 40;
 	bool pause_state = false;
+	bool init = false;
 };
 
 int main(int argc, char** argv)

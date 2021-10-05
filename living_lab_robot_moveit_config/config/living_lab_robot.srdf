@@ -57,6 +57,72 @@
         <joint name="body_rotate_joint" value="0" />
         <joint name="elevation_joint" value="0" />
     </group_state>
+    <group_state name="grasp_handbag_ready" group="arm">
+        <joint name="arm1_joint" value="0" />
+        <joint name="arm2_joint" value="1.5707" />
+        <joint name="arm3_joint" value="-3.1415" />
+        <joint name="arm4_joint" value="0" />
+        <joint name="arm5_joint" value="1.5707" />
+        <joint name="arm6_joint" value="1.5707" />
+        <joint name="arm_base_joint" value="0" />
+        <joint name="body_rotate_joint" value="0" />
+        <joint name="elevation_joint" value="0" />
+    </group_state>
+    <group_state name="shake_arm_left" group="arm">
+        <joint name="arm1_joint" value="0.35" />
+        <joint name="arm2_joint" value="-0.73" />
+        <joint name="arm3_joint" value="-0.73" />
+        <joint name="arm4_joint" value="0" />
+        <joint name="arm5_joint" value="-0.16" />
+        <joint name="arm6_joint" value="0" />
+        <joint name="arm_base_joint" value="0" />
+        <joint name="body_rotate_joint" value="0" />
+        <joint name="elevation_joint" value="-0.155" />
+    </group_state>
+    <group_state name="shake_arm_right" group="arm">
+        <joint name="arm1_joint" value="-0.35" />
+        <joint name="arm2_joint" value="-0.73" />
+        <joint name="arm3_joint" value="-0.73" />
+        <joint name="arm4_joint" value="0" />
+        <joint name="arm5_joint" value="-0.16" />
+        <joint name="arm6_joint" value="0" />
+        <joint name="arm_base_joint" value="0" />
+        <joint name="body_rotate_joint" value="0" />
+        <joint name="elevation_joint" value="-0.155" />
+    </group_state>
+    <group_state name="pour_juice_ready" group="arm">
+        <joint name="arm1_joint" value="-2.01" />
+        <joint name="arm2_joint" value="1.05" />
+        <joint name="arm3_joint" value="-1.31" />
+        <joint name="arm4_joint" value="2.01" />
+        <joint name="arm5_joint" value="-0.1" />
+        <joint name="arm6_joint" value="0" />
+        <joint name="arm_base_joint" value="0" />
+        <joint name="body_rotate_joint" value="0" />
+        <joint name="elevation_joint" value="0" />
+    </group_state>
+    <group_state name="pour_juice_into_cup" group="arm">
+        <joint name="arm1_joint" value="-2.01" />
+        <joint name="arm2_joint" value="1.05" />
+        <joint name="arm3_joint" value="-1.31" />
+        <joint name="arm4_joint" value="1.48" />
+        <joint name="arm5_joint" value="-0.1" />
+        <joint name="arm6_joint" value="-1.05" />
+        <joint name="arm_base_joint" value="0" />
+        <joint name="body_rotate_joint" value="0" />
+        <joint name="elevation_joint" value="0" />
+    </group_state>
+    <group_state name="grasp_bowl_ready" group="arm">
+        <joint name="arm1_joint" value="-2.79" />
+        <joint name="arm2_joint" value="1.05" />
+        <joint name="arm3_joint" value="-0.785" />
+        <joint name="arm4_joint" value="-0.35" />
+        <joint name="arm5_joint" value="-1.2213" />
+        <joint name="arm6_joint" value="1.05" />
+        <joint name="arm_base_joint" value="0" />
+        <joint name="body_rotate_joint" value="0" />
+        <joint name="elevation_joint" value="-0.01" />
+    </group_state>
     <!--PASSIVE JOINT: Purpose: this element is used to mark joints that are not actuated-->
     <passive_joint name="arm_base_joint" />
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->

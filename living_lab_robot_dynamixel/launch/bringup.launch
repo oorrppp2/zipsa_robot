@@ -1,7 +1,7 @@
 <launch>
-    <arg name="base_port" default="/dev/ttyUSB0"/>
+    <arg name="base_port" default="/dev/ttyUSB1"/>
     <arg name="body_port" default="/dev/ttyUSB2"/>
-    <arg name="head_port" default="/dev/ttyUSB1"/>
+    <arg name="head_port" default="/dev/ttyUSB0"/>
     <arg name="baudrate" default="1000000"/>
     <arg name="rate" default="25"/>
 

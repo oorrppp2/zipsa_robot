@@ -40,6 +40,13 @@ def create_root():
     root = py_trees.composites.Parallel("demo")
     done_scene = DonePlayScene(name="done_scene")
 
+    lamp_mode0 = LampControl(name="lamp_mode_0", mode=0, args="{}")
+    lamp_mode1 = LampControl(name="lamp_mode_1", mode=1, args="{}")
+    lamp_mode2 = LampControl(name="lamp_mode_2", mode=2, args="{}")
+    lamp_mode3r = LampControl(name="lamp_mode_3r", mode=3, args="{\"color\": \"r\"}")
+    lamp_mode3g = LampControl(name="lamp_mode_3g", mode=3, args="{\"color\": \"g\"}")
+    lamp_mode3b = LampControl(name="lamp_mode_3b", mode=3, args="{\"color\": \"b\"}")
+
     gripper_close = MoveJoint(name="gripper_close", controller_name="/body/gripper_controller", command=0.0)
     gripper_open = MoveJoint(name="gripper_open", controller_name="/body/gripper_controller", command=1.0)
 
@@ -75,9 +82,39 @@ def create_root():
 
     publish_pause_request = Publish(topic_name="/pause_request", data="pause")
     publish_resume_request = Publish(topic_name="/pause_request", data="resume")
+    publish_putting_down_request = Publish(topic_name="/pause_request", data="putting_down")
 
     wait_time1 = WaitForTime(name="delay_1s", time=1.0)
     wait_time05 = WaitForTime(name="delay_0.5s", time=0.5)
+
+    arm_pull_out = Fold_arm("Pull out", 0)
+    #
+    # lamp_test  (Testing lamp)
+    #
+    lamp_test_scene = py_trees.composites.Sequence("lamp_test_scene")
+
+    wait_lamp_test_scene = py_trees_ros.subscribers.CheckData(name="wait_lamp_test_scene", topic_name="/wait_select_scene", topic_type=String,
+        variable_name="data", expected_value="lamp_test_scene")
+
+    start_lamp_test = Print_message(name="* Start testing lamp *")
+
+    lamp_test_scene.add_children(
+        [wait_lamp_test_scene,
+        start_lamp_test,
+        lamp_mode0,
+        wait_time05,
+         lamp_mode1,
+        wait_time05,
+         lamp_mode2,
+        wait_time05,
+         lamp_mode3r,
+        wait_time05,
+         lamp_mode3g,
+        wait_time05,
+         lamp_mode3b,
+         ]
+    )
+
     #
     # gripper_open  (gripper_open arm)
     #
@@ -199,7 +236,7 @@ def create_root():
     order_object = OrderActionClient(
         name="order_received",
         # action_namespace="/sst_order_received",
-         action_namespace="/order_received",
+        action_namespace="/order_received",
         action_spec=ReceiveTargetAction,
         action_goal=ReceiveTargetGoal()
     )
@@ -240,7 +277,6 @@ def create_root():
         action_spec=move_base_msgs.msg.MoveBaseAction,
         action_goal=goal_shelf
     )
-    arm_pull_out = Fold_arm("Pull out", 0)
     done_scene_4 = Publish(topic_name="/wait_done_scene", data="scene_4_done")
 
     move_to_shelf.add_children(
@@ -332,9 +368,11 @@ def create_root():
         [wait_arm_control,
          arm_control_mention1,
          publish_pause_request,
+         wait_time1,
+         wait_time05,
          rotate_body_joint_to_heading_target,
          move_manipulator_to_grasp_add_offset,
-         wait_time1,
+        #  wait_time1,
          wait_time1,
          move_manipulator_to_grasp,
          #move_manipulator_to_grasp_ready,
@@ -360,14 +398,14 @@ def create_root():
     grasp_object.add_children(
         [wait_grasp_object,
          grasp_object_mention1,
+         wait_time05,
          gripper_close,
-         wait_time1,
          elevation_up_action,
-         wait_time1,
+        #  wait_time1,
          move_manipulator_to_grasp_done,
-         publish_resume_request,
-         wait_time1,
+        #  wait_time1,
          move_manipulator_to_grasp_ready,
+         publish_resume_request,
          done_scene_7,
          ]
     )
@@ -387,7 +425,7 @@ def create_root():
     goal_tea_table.target_pose.header.stamp = rospy.Time.now()
 
     goal_tea_table.target_pose.pose.position.x = 2.422
-    goal_tea_table.target_pose.pose.position.y = -2.4
+    goal_tea_table.target_pose.pose.position.y = -2.3
 
     goal_tea_table.target_pose.pose.orientation.x = 0
     goal_tea_table.target_pose.pose.orientation.y = 0
@@ -429,13 +467,17 @@ def create_root():
         action_spec=PlanExecutePoseConstraintsAction,
         action_goal=PlanExecutePoseConstraintsGoal(),
         constraint=True,
-        joint={'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
-			'arm4_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
-			'arm6_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
-			'body_rotate_joint':[0.0, 0.1, 0.1],
-			'elevation_joint':[0.0, 0.0, 0.25]},
+        joint={
+            'arm1_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
+			'arm4_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
+			'arm6_joint':[0.0, 30 * math.pi / 180.0, 30 * math.pi / 180.0],
+			'body_rotate_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
+			'elevation_joint':[0.0, 0.0, 0.25]
+            },
         mode="put"
     )
+
+    octomap_clear = Clear_octomap()
 
     # elevation_down_20cm_action = Elevation_up(target_pose=-0.2)
     elevation_down_action = Elevation_up(target_pose=-0.086)
@@ -445,19 +487,20 @@ def create_root():
     put_object.add_children(
         [wait_put_object,
          put_object_mention1,
-        #  elevation_down_20cm_action,
-        #  wait_time1,
-        #  wait_time1,
+         octomap_clear,
+         wait_time1,
          move_manipulator_to_put_down,
-         wait_time1,
-         wait_time1,
+        #  wait_time1,
          elevation_down_action,
          wait_time1,
-         wait_time1,
+         wait_time05,
          gripper_open,
          elevation_up_action,
-#         move_manipulator_to_grasp_done,
+         wait_time1,
+         wait_time1,
+        #  move_manipulator_to_grasp_ready,
          move_manipulator_to_home,
+         wait_time05,
          done_scene_1,      # move to user
          ]
     )
@@ -799,8 +842,9 @@ def create_root():
     ###
     ### add childern
     ###
-    root.add_children([gripper_open_cmd, intro, order_the_target, move_to_user, move_to_shelf, find_target, arm_control, move_to_tea_table, grasp_object, go_home, finish_demo, put_object, elevation_up, elevation_down, speech1, speech2, speech3, question1, question2, question3, speech_test, move_to_living_room, move_to_kitchen])
+    root.add_children([lamp_test_scene,gripper_open_cmd, intro, order_the_target, move_to_user, move_to_shelf, find_target, arm_control, move_to_tea_table, grasp_object, go_home, finish_demo, put_object, elevation_up, elevation_down, speech1, speech2, speech3, question1, question2, question3, speech_test, move_to_living_room, move_to_kitchen])
     # root.add_children([scene1, scene3, scene4, scene5, scene6, scene7])
+    # root.add_children([lamp_test_scene])
     return root
 
 

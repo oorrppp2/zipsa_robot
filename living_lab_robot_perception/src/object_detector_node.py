@@ -35,6 +35,8 @@ class ObjectDetectServer:
 
         self.detected_object = PointStamped()
 
+        self.remove_pub = rospy.Publisher("/remove_points_request", String, queue_size=1)
+        self.request_target_pub = rospy.Publisher("/request_target", String, queue_size=1)
         self.sub_detect = rospy.Subscriber('detected_object', Result, self.handle_detector_result)
         self.server = actionlib.SimpleActionServer('object_detect', ObjectDetectAction, self.handle_request_detect, False)
         self.server.start()
@@ -68,10 +70,7 @@ class ObjectDetectServer:
     def handle_request_detect(self, goal):
         print("Received goal : " + goal.target)
         success = False
-        request_target_pub = rospy.Publisher("/request_target", String, queue_size=1)
-        rospy.sleep(0.4)
-        request_target_pub.publish(data=goal.target)
-        rospy.sleep(0.4)
+        self.request_target_pub.publish(data=goal.target)
         self.detected_pose = np.array([0.0, 0.0, 0.0])
         if goal.target == "":
                 print("Goal target is empty")
@@ -88,7 +87,7 @@ class ObjectDetectServer:
             rospy.sleep(0.1)
         self.detect_done = False
 
-        print("detect_done : ", self.detect_done)
+        # print("detect_done : ", self.detect_done)
 
         detect_pose = TF2PoseStamped()
         #print("type : ", detect_pose)
@@ -122,6 +121,16 @@ class ObjectDetectServer:
         result_pose.pose.orientation.w = target_detect_pose.pose.orientation.w
 
         self.result_data = self.result_frame_id
+
+        # Remove target region points to clearing.
+        print("Remove target region points to clearing.")
+        self.remove_pub.publish(data="remove")
+        # rospy.sleep(0.4)
+        rospy.sleep(2.0)
+        # Obstacle add into detected object region.
+        print("Clearing octomap...")
+        self.clear_octomap()
+
         if success:
                 result.result = True
                 result.data = self.result_data
@@ -129,34 +138,6 @@ class ObjectDetectServer:
                 print(result)
                 self.server.set_succeeded(result)
                 self.clear_target_region = True
-
-        if self.clear_target_region:
-                # Remove target region points to clearing.
-                print("Remove target region points to clearing.")
-                pub = rospy.Publisher("/remove_points_request", String, queue_size=1)
-                rospy.sleep(0.4)
-                pub.publish(data="remove")
-                # rospy.sleep(0.4)
-                rospy.sleep(2.0)
-                # Obstacle add into detected object region.
-                print("Clearing octomap...")
-                self.clear_octomap()
-
-                # rospy.sleep(2.0)
-                # # Obstacle add into detected object region.
-                # print("Clearing octomap...")
-                # self.clear_octomap()
-                # # Remove target region points to clearing.
-                # print("Remove target region points to clearing.")
-                # pub = rospy.Publisher("/remove_points_request", String, queue_size=1)
-                # rospy.sleep(0.4)
-                # pub.publish(data="remove")
-                # rospy.sleep(1.0)
-                # Remove added obstacle to clear the target region.
-                # print("Remove added obstacle to clear the target region.")
-                # pub = rospy.Publisher("/del_all_obstacles", String, queue_size=1)
-                # rospy.sleep(0.4)
-                # pub.publish(data='1')
 
 if __name__ == '__main__':
     rospy.init_node('object_detect_server')

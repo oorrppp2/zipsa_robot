@@ -20,7 +20,7 @@ rostopic echo /move_group/goal/goal/request/goal_constraints
 gripper close/open
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'gripper_close'"
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'gripper_open'"
-rostopic pub -1 /gripper_controller/command std_msgs/Float64 "data: 0"
+rostopic pub -1 /body/gripper_controller/command std_msgs/Float64 "data: 0"
 
 joint constraint
 rosrun living_lab_robot_moveit_client test_pose_constraints.py base_link 0.8 0.0 0.45 0 0 0 arm1_joint 0.0 30 30
@@ -75,6 +75,7 @@ rostopic pub -1 /wait_select_scene std_msgs/String "data: 'move_to_tea_table'"
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'put_object'"
 rostopic pub -1 /wait_select_scene std_msgs/String "data: 'go_home'"
 
+rostopic pub -1 /order_target std_msgs/String "data: 'bottle'"
 
 
 rosrun living_lab_robot_moveit_client test_pose_xyz.py base_footprint 1.04 -0.1266 1.012
@@ -83,3 +84,49 @@ rosrun tf tf_echo /base_footprint /camera_link
 
 rostopic pub -1 /remove_object std_msgs/String "data: 'request'"
 delete json
+
+
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'lamp_test_scene'"
+
+
+rosrun living_lab_robot_moveit_client test_named_pose.py homerosrun living_lab_robot_moveit_client test_named_pose.py home
+rostopic pub -1 /body/arm_base_controller/command std_msgs/Float64 "data: 0"
+rostopic pub -1 /body/arm_base_controller/command std_msgs/Float64 "data: -0.15"
+
+
+# Shake hand
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'shake_arm'"
+
+
+# Hand over a umbrella
+rosrun living_lab_robot_moveit_client test_named_pose.py grasp_done
+rostopic pub -1 /body/gripper_controller/command std_msgs/Float64 "data: 0"
+rostopic pub -1 /body/gripper_controller/command std_msgs/Float64 "data: 1"
+
+
+# Pour juice
+rosrun living_lab_robot_moveit_client test_named_pose.py pour_juice_ready
+rostopic pub -1 /body/gripper_controller/command std_msgs/Float64 "data: 0.4"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'pour_juice'"
+
+
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'order_the_target'"
+rostopic pub -1 /order_target std_msgs/String "data: 'cup'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'grab_target'"
+
+
+# Grasp bowl
+rosrun living_lab_robot_moveit_client test_named_pose.py grasp_bowl_ready
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'grasp_bowl_ready'"
+
+# Elevation up & down 10cm
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'elevation_up'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'elevation_down'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'put_bowl'"
+
+# rosbag record -a
+
+
+rosrun living_lab_robot_moveit_client test_named_pose.py pour_juice_ready
+rostopic pub -1 /body/gripper_controller/command std_msgs/Float64 "data: 0"
+rosrun living_lab_robot_moveit_client test_named_pose.py pour_juice_into_cup

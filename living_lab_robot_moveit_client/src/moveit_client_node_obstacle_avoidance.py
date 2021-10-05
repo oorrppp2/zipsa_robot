@@ -142,11 +142,11 @@ class MoveitClientNode:
 		display_trajectory.trajectory.append(plan1)
 		self.traj_publisher.publish(display_trajectory)
 
-		rospy.sleep(0.5)
+		# rospy.sleep(0.5)
 
 		rospy.loginfo('Start moving...')
 		self.group.go(wait=True)
-		rospy.sleep(2.0)
+		# rospy.sleep(2.0)
 
 		rospy.loginfo('Planning goal pose succeeded.')
 		self.action_plan_execute_pose.set_succeeded(result)
@@ -167,6 +167,16 @@ class MoveitClientNode:
 		js_base.tolerance_below = 0.001
 		js_base.weight = 1.0
 
+		# if goal.target_name == "home":
+		# 	print("Planning name : ", goal.target_name)
+		# 	js_body = JointConstraint()
+		# 	js_body.joint_name = "body_rotate_joint"
+		# 	js_body.position = 0.0
+		# 	js_body.tolerance_above = 0.1
+		# 	js_body.tolerance_below = 0.1
+		# 	js_body.weight = 1.0
+		# 	self.contraints.joint_constraints.append(js_body)
+
 		self.contraints.name = "constraints"
 		self.contraints.joint_constraints.append(js_base)
 		self.group.set_path_constraints(self.contraints)
@@ -186,7 +196,7 @@ class MoveitClientNode:
 		display_trajectory.trajectory.append(plan1)
 		self.traj_publisher.publish(display_trajectory)
 
-		rospy.sleep(0.5)
+		# rospy.sleep(0.5)
 
 		rospy.loginfo('Start moving...')
 		self.group.go(wait=True)
@@ -238,11 +248,11 @@ class MoveitClientNode:
 		display_trajectory.trajectory.append(plan1)
 		self.traj_publisher.publish(display_trajectory)
 
-		rospy.sleep(0.5)
+		# rospy.sleep(0.5)
 
 		rospy.loginfo('Start moving...')
 		self.group.go(wait=True)
-		rospy.sleep(2.0)
+		rospy.sleep(1.0)
 		self.group.set_path_constraints(None)
 		self.contraints.joint_constraints = []
 

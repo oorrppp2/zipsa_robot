@@ -4,13 +4,15 @@ import rospy
 import threading
 import actionlib
 from geometry_msgs.msg import PointStamped
-from std_msgs.msg import Empty, String, Bool, Header, Float64
+from std_msgs.msg import String, Bool, Header, Float64
 from moveit_msgs.msg import Constraints
 from sensor_msgs.msg import JointState
 from behaviors.move_arm_controller import *
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
 from tf.transformations import *
 from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryGoal
+
+from std_srvs.srv import Empty
 
 class Print_message(py_trees.behaviour.Behaviour):
     def __init__(self, name="Print_message"):
@@ -44,16 +46,29 @@ class Publish(py_trees.behaviour.Behaviour):
         super(Publish, self).__init__(name=name)
         self.data = data
         self.topic_name = topic_name
+        self.pub = rospy.Publisher(self.topic_name, String, queue_size=1)
 
     def setup(self, timeout):
         return True
 
     def update(self):
         print(self.name + " : " + str(self.data))
-        pub = rospy.Publisher(self.topic_name, String, queue_size=1)
-        rospy.sleep(0.4)
-        pub.publish(data=self.data)
-        rospy.sleep(1.0)
+        self.pub.publish(data=self.data)
+        # rospy.sleep(1.0)
+        return py_trees.common.Status.SUCCESS
+
+class Clear_octomap(py_trees.behaviour.Behaviour):
+    def __init__(self, name="Clear_octomap"):
+        super(Clear_octomap, self).__init__(name=name)
+        rospy.wait_for_service('/clear_octomap') #this will stop your code until the clear octomap service starts running
+        self.clear_octomap = rospy.ServiceProxy('/clear_octomap', Empty)
+
+    def setup(self, timeout):
+        return True
+
+    def update(self):
+        print("Clearing octomap...")
+        self.clear_octomap()
         return py_trees.common.Status.SUCCESS
 
 class Elevation_up(py_trees.behaviour.Behaviour):
@@ -95,13 +110,13 @@ class Elevation_up(py_trees.behaviour.Behaviour):
 		if point.positions[goal.trajectory.joint_names.index('elevation_joint')] > 0:
 			point.positions[goal.trajectory.joint_names.index('elevation_joint')] = 0
 		goal.trajectory.points.append(point)
-		print(goal)
+		# print(goal)
 		point.time_from_start = rospy.Duration(1.0)
 
 		self.client.send_goal(goal)
 		self.client.wait_for_result()
 
-		# rospy.sleep(1.0)
+		rospy.sleep(0.5)
 
 		# self.client.send_goal(goal)
 		# self.client.wait_for_result()
