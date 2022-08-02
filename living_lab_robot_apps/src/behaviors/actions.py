@@ -92,12 +92,13 @@ class OrderActionClient(py_trees.behaviour.Behaviour):
                 if result.data == 'cup':
                     self.saying_action_goal = SpeechGoal(text='네, 컵을 가져다 드리겠습니다.')
                 elif result.data == 'bottle':
-                    self.saying_action_goal = SpeechGoal(text='네, tumbler를 가져다 드리겠습니다.')
+                    self.saying_action_goal = SpeechGoal(text='네, 물병를 가져다 드리겠습니다.')
+                    # self.saying_action_goal = SpeechGoal(text='네, tumbler를 가져다 드리겠습니다.')
                 elif result.data == 'milk':
                     self.saying_action_goal = SpeechGoal(text='네, 우유를 가져다 드리겠습니다.')
                 next_state = 'scene_3_done'   # Move to shelf
 
-            # self.saying_action_client.send_goal(self.saying_action_goal)
+            self.saying_action_client.send_goal(self.saying_action_goal)
             print("Publish : " + next_state)
             self.done_scene_publisher.publish(next_state)   # go home.
             return py_trees.Status.SUCCESS
@@ -239,6 +240,8 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
             #     print("Detected fail!")
             #     return py_trees.Status.FAILURE
 
+            self.action_goal.target_object = self.blackboard.target
+            self.action_goal.mode = "grasp"
             #update goal data from blackboard
             self.action_goal.target_pose.header.frame_id = "base_footprint"
 #            self.action_goal.target_pose.pose.position.x = self.blackboard.object_pose.pose.position.x
@@ -252,13 +255,18 @@ class GraspActionClient(py_trees.behaviour.Behaviour):
                 self.action_goal.target_pose.pose.position.z -= 0.03
             elif self.blackboard.target == "milk":
                 self.action_goal.target_pose.pose.position.z -= 0.06
-            if self.mode == "put":
+            elif self.blackboard.target == "cup":
+                self.action_goal.target_pose.pose.position.x += 0.01
+            if self.mode == "put_down":
+                self.action_goal.mode = "put_down"
 #	            self.action_goal.target_pose.pose.position.x = self.blackboard.object_pose.pose.position.x
 #	            self.action_goal.target_pose.pose.position.z = self.blackboard.object_pose.pose.position.z + 0.1
 #	            self.action_goal.target_pose.pose.position.y = -self.blackboard.object_pose.pose.position.y
-	            self.action_goal.target_pose.pose.position.x = 0.85
-	            self.action_goal.target_pose.pose.position.z = 0.55
-	            self.action_goal.target_pose.pose.position.y = 0.0
+                self.action_goal.target_pose.pose.position.x = 0.85
+                self.action_goal.target_pose.pose.position.z = 0.55
+                self.action_goal.target_pose.pose.position.y = 0.0
+                if self.blackboard.target == "cup":
+                    self.action_goal.target_pose.pose.position.z -= 0.015
 
             theta = math.atan2(self.action_goal.target_pose.pose.position.y, self.action_goal.target_pose.pose.position.x)
 

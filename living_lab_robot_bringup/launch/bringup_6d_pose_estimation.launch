@@ -1,0 +1,14 @@
+<launch>
+    <!-- MoveIt! -->
+    <node name="moveit_client_node" type="moveit_client_node_obstacle_avoidance.py" pkg="living_lab_robot_moveit_client" output="screen" respawn="true"/>
+
+    <!-- Head Pan/Tilt Controller -->
+    <node name="pan_tilt_controller" type="head_pan_controller.py" pkg="living_lab_robot_control" output="screen" />
+
+    <!-- Topic Throttle for Point Cloud -->
+    <!-- <node name="points_throttler" type="throttle" pkg="topic_tools" args="messages /camera/depth_registered/points 2.0 /throttled_depth_registered_points"/> -->
+    <node name="points_throttler" type="throttle" pkg="topic_tools" args="messages /camera/depth_registered/removed_object_points 2.0 /throttled_depth_registered_points"/>
+
+    <!-- Navigation -->
+    <!-- <include file="$(find living_lab_robot_navigation)/launch/navigation.launch"/> -->
+</launch>

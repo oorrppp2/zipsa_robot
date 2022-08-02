@@ -64,7 +64,8 @@ add_action_files(
   FILES
   ObjectDetect.action
   ReceiveTarget.action
-#  GetJointState.action
+  PoseEstimation.action
+#  QRCodeDetect.action
 )
 
 ## Generate added messages and services with any dependencies listed here

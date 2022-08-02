@@ -16,12 +16,20 @@ from tf.transformations import quaternion_from_euler
 from geometry_msgs.msg import PoseStamped, Quaternion
 from tf2_geometry_msgs import PoseStamped as TF2PoseStamped
 
+from behaviors.speech import *
+from behaviors.move_arm_controller import *
+from behaviors.move_joint import *
 from behaviors.lamp_control import *
-from behaviors.utils import *
 from behaviors.wait_time import *
+from behaviors.actions import *
+from behaviors.gaze_sync_control import *
+from behaviors.app_control import *
+from behaviors.utils import *
 
 global Point_data
 global Point_flag
+
+
 
 def create_root():
 
@@ -36,31 +44,38 @@ def create_root():
     lamp_mode3b = LampControl(name="lamp_mode_3b", mode=3, args="{\"color\": \"b\"}")
 
     wait_time1 = WaitForTime(name="delay_1s", time=1.0)
-    wait_time05 = WaitForTime(name="delay_0.5s", time=0.5)
-    #
-    # lamp_test  (Testing lamp)
-    #
+    
+    
+    
     lamp_test_scene = py_trees.composites.Sequence("lamp_test_scene")
 
     wait_lamp_test_scene = py_trees_ros.subscribers.CheckData(name="wait_lamp_test_scene", topic_name="/wait_select_scene", topic_type=String,
         variable_name="data", expected_value="lamp_test_scene")
 
     start_lamp_test = Print_message(name="* Start testing lamp *")
+    intro_say_start = Say(name="say_intro_start_sentence", text='LED 기능을 테스트합니다.')
+    intro_say_finish = Say(name="say_intro_finish_sentence", text='LED 기능 테스트를 종료합니다.')
+#   intro_say_question = Say(name="say_intro_question_sentence", text='뭐지 뭐지 왜 안돼는지 알 수가 없습니다.')
     done_lamp_test = Print_message(name="* Testing lamp done *")
 
     lamp_test_scene.add_children(
-        [wait_lamp_test_scene,
-        start_lamp_test,
-        lamp_mode0,
-        wait_time1,
-        wait_time1,
-         lamp_mode1,
-        wait_time1,
-        wait_time1,
-         lamp_mode2,
-        wait_time1,
-        wait_time1,
-         done_lamp_test,
+        [ wait_lamp_test_scene,
+          intro_say_start,
+          start_lamp_test,
+          lamp_mode0,
+          wait_time1,
+          lamp_mode1,
+          wait_time1,
+          lamp_mode2,
+          wait_time1,
+          lamp_mode3r,
+          wait_time1,
+          lamp_mode3g,
+          wait_time1,
+          lamp_mode3b,
+          wait_time1,
+          intro_say_finish,
+          done_lamp_test
          ]
     )
 

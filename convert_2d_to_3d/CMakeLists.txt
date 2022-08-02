@@ -141,6 +141,7 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(convert_boundingbox_node src/generate_msg.cpp)
+add_executable(remove_segmentation_region_node src/remove_segmented_region_pcl.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -159,6 +160,10 @@ target_link_libraries(convert_boundingbox_node
   ${catkin_LIBRARIES}
 )
 
+target_link_libraries(remove_segmentation_region_node
+  ${OpenCV_LIBS}
+  ${catkin_LIBRARIES}
+)
 #############
 ## Install ##
 #############

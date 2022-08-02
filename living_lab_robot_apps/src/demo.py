@@ -235,8 +235,8 @@ def create_root():
     # )
     order_object = OrderActionClient(
         name="order_received",
-        # action_namespace="/sst_order_received",
-        action_namespace="/order_received",
+        action_namespace="/sst_order_received",
+        # action_namespace="/order_received",
         action_spec=ReceiveTargetAction,
         action_goal=ReceiveTargetGoal()
     )
@@ -263,7 +263,7 @@ def create_root():
     goal_shelf.target_pose.header.frame_id = "map"
     goal_shelf.target_pose.header.stamp = rospy.Time.now()
 
-    goal_shelf.target_pose.pose.position.x = 0.433
+    goal_shelf.target_pose.pose.position.x = 0.5
     goal_shelf.target_pose.pose.position.y = -0.866
 
     goal_shelf.target_pose.pose.orientation.x = 0
@@ -353,7 +353,7 @@ def create_root():
         action_namespace="/plan_and_execute_pose_w_joint_constraints",
         action_spec=PlanExecutePoseConstraintsAction,
         action_goal=PlanExecutePoseConstraintsGoal(),
-        x_offset=0.03,
+        x_offset=0.015,
         y_offset=0,
 #        z_offset=-0.01,
         constraint=True,
@@ -474,7 +474,7 @@ def create_root():
 			'body_rotate_joint':[0.0, 10 * math.pi / 180.0, 10 * math.pi / 180.0],
 			'elevation_joint':[0.0, 0.0, 0.25]
             },
-        mode="put"
+        mode="put_down"
     )
 
     octomap_clear = Clear_octomap()
@@ -487,17 +487,18 @@ def create_root():
     put_object.add_children(
         [wait_put_object,
          put_object_mention1,
-         octomap_clear,
+        #  octomap_clear,
          wait_time1,
          move_manipulator_to_put_down,
+
+        #  elevation_down_action,
         #  wait_time1,
-         elevation_down_action,
-         wait_time1,
-         wait_time05,
-         gripper_open,
-         elevation_up_action,
-         wait_time1,
-         wait_time1,
+        #  wait_time05,
+        #  gripper_open,
+        #  elevation_up_action,
+        #  wait_time1,
+        #  wait_time1,
+
         #  move_manipulator_to_grasp_ready,
          move_manipulator_to_home,
          wait_time05,
@@ -519,7 +520,7 @@ def create_root():
     goal_home = move_base_msgs.msg.MoveBaseGoal()
     goal_home.target_pose.header.frame_id = "map"
     goal_home.target_pose.header.stamp = rospy.Time.now()
-    goal_home.target_pose.pose.position.x = 0
+    goal_home.target_pose.pose.position.x = 0.1
     goal_home.target_pose.pose.position.y = 0
 
     goal_home.target_pose.pose.orientation.x = 0

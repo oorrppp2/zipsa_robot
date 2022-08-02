@@ -96,6 +96,11 @@ class OrderTargetSSTServer:
     def __init__(self):
 
         self.order_server = actionlib.SimpleActionServer('sst_order_received', ReceiveTargetAction, self.handle_request_order, False)
+        self.sub_order = rospy.Subscriber('order_target', String, self.handle_order)
+
+        self.start_detect = False
+        self.detect_done = False
+        self.received_order = ""
         # self.sub_detect = rospy.Subscriber('detected_object', Result, self.handle_detector_result)
         # self.server = actionlib.SimpleActionServer('qrcode_detect', ReceiveTargetAction, self.handle_request_detect, False)
         language_code = 'ko-KR'  # a BCP-47 language tag
@@ -104,7 +109,10 @@ class OrderTargetSSTServer:
         config = speech.RecognitionConfig(
             encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
             sample_rate_hertz=RATE,
-            language_code=language_code)
+            language_code=language_code,
+            speech_contexts=[speech.SpeechContext(
+                phrases=['컵', '컵좀', '물병', '물병좀', '우유', '우유좀', '텀블러']
+            )])
         self.streaming_config = speech.StreamingRecognitionConfig(
             config=config,
             interim_results=True)
@@ -114,9 +122,22 @@ class OrderTargetSSTServer:
 
         # print(self.result_orientation)
 
+    def handle_order(self, msg):
+        # print("Detector result!!!")
+        if not self.start_detect:
+            return
+
+        self.received_order = msg.data
+        self.start_detect = False
+        self.detect_done = True
+
+        # print(self.result_orientation)
+
     def handle_request_order(self, goal):
         print("Request!!!")
 
+        self.start_detect = True
+        stt_result = ""
         with MicrophoneStream(RATE, CHUNK) as stream:
             audio_generator = stream.generator()
             requests = (speech.StreamingRecognizeRequest(audio_content=content)
@@ -124,21 +145,35 @@ class OrderTargetSSTServer:
 
             responses = self.client.streaming_recognize(self.streaming_config, requests)
 
+            # Listen the order command from rostopic message. Google STT often fails to translate the user speech.
+
             # Now, put the transcription responses to use.
-            received_order = self.listen_print_loop(responses)
+            stt_result = self.listen_print_loop(responses)
 
-            result = ReceiveTargetResult()
-            success = True
+        if stt_result == "failed":
+            received_order = self.received_order
+        else:
+            received_order = stt_result
 
-            if success:
-                result.result = True
-                result.data = received_order
-                self.order_server.set_succeeded(result)
+        print("received_order : ", received_order)
+
+        result = ReceiveTargetResult()
+        success = True
+
+        if success:
+            result.result = True
+            result.data = received_order
+            self.order_server.set_succeeded(result)
+            success = False
+            self.detect_done = False
 
 
     def listen_print_loop(self, responses):
         num_chars_printed = 0
+        if self.detect_done == True:
+            return "failed"
         for response in responses:
+
             if not response.results:
                 continue
 
@@ -176,7 +211,7 @@ class OrderTargetSSTServer:
                     return 'milk'
                 elif("집사" in stt_result):
                     pass
-                elif("집" in stt_result or "home" in stt_result):
+                elif("집으로" in stt_result or "home" in stt_result):
                     return 'go_home'
 
             else:
@@ -189,7 +224,7 @@ class OrderTargetSSTServer:
                     return 'bottle'
                 elif("우유" in stt_result or "milk" in stt_result):
                     return 'milk'
-                elif("집" in stt_result or "home" in stt_result):
+                elif("집으로" in stt_result or "home" in stt_result):
                     return 'go_home'
 
                 # Exit recognition if any of the transcribed phrases could be

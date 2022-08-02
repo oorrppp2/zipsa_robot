@@ -24,6 +24,8 @@ import rospy
 import time
 from random import *
 
+import pickle
+
 COLLISION_OBJECT_TOPIC = "/collision_object"
 OBJECT_INFORMATION_TOPIC = "/get_object_info"
 
@@ -43,6 +45,7 @@ class MoveitClientNode:
 				is_initialized = False
 				rospy.sleep(0.5)
 
+		self.group.set_planning_time(1)	# Limit the planning time to a second. (Default : 5 seconds)
 		rospy.loginfo("Initialized...")
 		self.traj_publisher = rospy.Publisher('/move_group/display_planned_path', moveit_msgs.msg.DisplayTrajectory, queue_size=1)
 
@@ -145,10 +148,10 @@ class MoveitClientNode:
 		# rospy.sleep(0.5)
 
 		rospy.loginfo('Start moving...')
-		self.group.go(wait=True)
-		# rospy.sleep(2.0)
+		result.result &= self.group.go(wait=True)
+		rospy.sleep(1.0)
 
-		rospy.loginfo('Planning goal pose succeeded.')
+		rospy.loginfo('Planning goal pose succeeded ' + str(result.result))
 		self.action_plan_execute_pose.set_succeeded(result)
 
 	def plan_execute_named_pose_cb(self, goal):
@@ -156,6 +159,8 @@ class MoveitClientNode:
 		result = PlanExecuteNamedPoseResult()
 		result.result = True
 
+		self.group.set_path_constraints(None)
+		self.contraints.joint_constraints = []
 		self.group.clear_pose_targets()
 		#self.group.set_start_state_to_current_state()
 
@@ -199,9 +204,10 @@ class MoveitClientNode:
 		# rospy.sleep(0.5)
 
 		rospy.loginfo('Start moving...')
-		self.group.go(wait=True)
+		result.result &= self.group.go(wait=True)
 
-		rospy.loginfo('Planning named pose succeeded.')
+		rospy.sleep(1.0)
+		rospy.loginfo('Planning named pose succeeded ' + str(result.result))
 		self.action_plan_execute_named_pose.set_succeeded(result)
 
 	def plan_execute_pose_constraints_cb(self, goal):
@@ -219,12 +225,12 @@ class MoveitClientNode:
 
 		self.contraints.name = "constraints"
 		self.contraints.joint_constraints.append(js_base)
-		print("==================== Joint Constraints ====================")
+		# print("==================== Joint Constraints ====================")
 		for js in goal.joint_constraints:
 			self.contraints.joint_constraints.append(js)
-			print(js)
+			# print(js)
 		self.group.set_path_constraints(self.contraints)
-		print("============================================================")
+		# print("============================================================")
 
 
 		self.group.clear_pose_targets()
@@ -236,8 +242,18 @@ class MoveitClientNode:
 			result.result = False
 			return
 
+		print("target object : ", goal.target_object)
 		rospy.loginfo('Planning goal pose...')
+
+		# plan1 = None
 		plan1 = self.group.plan()
+
+		# Generating trajectory plan is often delayed too much. So when the robot put the object down into table, we read the plan from the predifined pickle file.
+		# if goal.mode == "put_down":
+		# 	with open('/home/robot/catkin_ws/src/zipsa_robot/living_lab_robot_moveit_client/plan/{0}_plan.pkl'.format(goal.target_object), 'rb') as file:
+		# 		plan1 = pickle.load(file)
+		# else:
+		# 	plan1 = self.group.plan()
 
 		if len(plan1.joint_trajectory.points) == 0:
 			result.result = False
@@ -251,12 +267,14 @@ class MoveitClientNode:
 		# rospy.sleep(0.5)
 
 		rospy.loginfo('Start moving...')
-		self.group.go(wait=True)
+		# self.group.go(wait=True)
+		result.result &= self.group.go(wait=True)
+
 		rospy.sleep(1.0)
 		self.group.set_path_constraints(None)
 		self.contraints.joint_constraints = []
 
-		rospy.loginfo('Planning goal pose succeeded.')
+		rospy.loginfo('Planning goal pose succeeded ' + str(result.result))
 		self.action_plan_execute_pose_w_constraints.set_succeeded(result)
 
 	def wait_for_state_update(self, box_is_known=False, box_is_attached=False, timeout=4, box_name=""):

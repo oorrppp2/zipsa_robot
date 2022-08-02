@@ -1,0 +1,7 @@
+# goal
+int8 target_id
+---
+# result
+float32[] estimated_pose
+bool result
+---

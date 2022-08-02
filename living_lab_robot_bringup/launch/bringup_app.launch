@@ -6,13 +6,14 @@
     <node name="object_detector_action" type="object_detector_node.py" pkg="living_lab_robot_perception" output="screen"/>
     <node name="convert_object_coordinate" type="convert_boundingbox_node" pkg="convert_2d_to_3d" output="screen"/>
     <!-- <node name="Order_target_action" type="Order_target_node_bottle.py" pkg="living_lab_robot_perception" output="screen"/> -->
-    <node name="Order_target_action" type="Order_target_node.py" pkg="living_lab_robot_perception" output="screen"/>
+    <!-- <node name="Order_target_action" type="Order_target_node.py" pkg="living_lab_robot_perception" output="screen"/> -->
     <!-- STT-->
-    <!-- <node name="Order_target_action" type="order_sst_node.py" pkg="living_lab_robot_perception" output="screen"/> -->
+    <node name="Order_target_action" type="order_sst_node.py" pkg="living_lab_robot_perception" output="screen"/>
 	<!-- Darknet bringup -->
     <include file="$(find darknet_ros)/launch/living_lab_robot.launch"/>
 
-    <node name="demo_app" type="demo.py" pkg="living_lab_robot_apps" output="screen" />
+    <!-- <node name="demo_app" type="demo.py" pkg="living_lab_robot_apps" output="screen" /> -->
+    <!-- <node name="demo_app" type="demo_for_lamp_controll.py" pkg="living_lab_robot_apps" output="screen" /> -->
     <!--node name="web_server" type="bringup_server" pkg="living_lab_robot_webserver" output="screen" /-->
 
     <!-- Head Pan/Tilt Controller -->

@@ -52,7 +52,6 @@
     <include file="$(find living_lab_robot_moveit_config)/launch/move_group.launch"/>
     <!--node name="moveit_client_node" type="moveit_client_node_obstacle_avoidance.py" pkg="living_lab_robot_moveit_client" output="screen" respawn="true"/-->
 
-
     <!-- Topic Relay -->
     <node name="relay_base_joint_states" pkg="topic_tools" type="relay" args="/base/joint_states /joint_states"/>
     <node name="relay_body_joint_states" pkg="topic_tools" type="relay" args="/body/joint_states /joint_states"/>

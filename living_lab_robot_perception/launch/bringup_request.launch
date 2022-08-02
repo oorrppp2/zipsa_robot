@@ -1,0 +1,4 @@
+<launch>
+	<param name="root_dir" value="$(find living_lab_robot_perception)"/>
+	<node name="request_pose_estimation" type="request_pose_estimation_node.py" pkg="living_lab_robot_perception" output="screen" respawn="true"/>
+</launch>

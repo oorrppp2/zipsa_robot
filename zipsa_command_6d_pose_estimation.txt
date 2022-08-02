@@ -1,0 +1,182 @@
+arm base control
+rostopic pub -1 /body/arm_base_controller/command std_msgs/Float64 "data: 0"
+rostopic pub -1 /body/arm_base_controller/command std_msgs/Float64 "data: -0.15"
+
+rostopic pub -1 /head/tilt_controller/command std_msgs/Float64 "data: 0.7"
+
+tf_echo
+rosrun tf tf_echo /base_link /end_effector
+rosrun tf tf_echo /map /base_footprint
+
+goal move_base
+rostopic echo /move_base/goal 
+
+goal end_effector
+rostopic echo /move_group/goal/goal/request/goal_constraints
+
+gripper close/open
+rostopic pub -1 /body/gripper_controller/command std_msgs/Float64 "data: 0"
+rostopic pub -1 /body/gripper_controller/command std_msgs/Float64 "data: 1"
+
+
+
+rosrun living_lab_robot_moveit_client test_named_pose.py home
+
+
+roslaunch living_lab_robot_bringup bringup_6d_pose_estimation.launch
+roslaunch pose_estimation bringup.launch
+roslaunch living_lab_robot_perception bringup_seg.launch
+rosrun convert_2d_to_3d remove_segmentation_region_node
+rosrun living_lab_robot_perception request_pose_estimation_node.py
+
+(roslaunch living_lab_robot_perception bringup_request.launch)
+
+
+joint constraint
+rosrun living_lab_robot_moveit_client test_pose_constraints.py base_link 0.8 0.0 0.45 0 0 0 arm1_joint 0.0 30 30
+
+make arm home position
+rosrun living_lab_robot_moveit_client test_named_pose.py home
+rosrun living_lab_robot_moveit_client test_named_pose.py grasp_ready
+
+
+* Obstacle add/del
+rostopic pub -1 /add_obstacle std_msgs/String "data: '1.0 0.0 0.2 table 0.5 2.0 0.4'"
+rostopic pub -1 /del_obstacle std_msgs/String "data: 'table'"
+rostopic pub -1 /del_all_obstacles std_msgs/String "data: '1'"
+
+* YOLO detector on/off
+rostopic pub -1 /request_detection std_msgs/String "data: 'request'"
+rostopic pub -1 /request_detection std_msgs/String "data: 'done'"
+
+ZipSA eef control test 실행 순서
+roslaunch living_lab_robot_bringup bringup_gazebo.launch
+rosrun living_lab_robot_perception Order_target_node.py
+rosrun living_lab_robot_perception object_detector_node.py
+rosrun living_lab_robot_moveit_client moveit_client_node_obstacle_avoidance.py
+
+rosrun living_lab_robot_moveit_client test_pose_xyz.py base_footprint 0.94 0.0623 1.012
+(Arguments : <reference_link> <x> <y> <z> )
+
+rosrun living_lab_robot_moveit_client test_named_pose.py home
+(Make arm to home pose.)
+
+
+<ZipSA Demo 실행 순서>
+
+roslaunch living_lab_robot_bringup bringup_gazebo.launch
+rosrun living_lab_robot_perception Order_target_node.py
+rosrun living_lab_robot_perception object_detector_node.py
+rosrun living_lab_robot_moveit_client moveit_client_node_obstacle_avoidance.py
+roslaunch darknet_ros hyundai.launch
+rosrun convert_2d_to_3d convert_boundingbox_node
+rosrun living_lab_robot_apps demo.py
+
+
+<ZipSA Demo command 순서>
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'intro'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'move_to_user'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'order_the_target'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'move_to_shelf'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'find_target'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'arm_control'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'grasp_object'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'move_to_tea_table'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'put_object'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'go_home'"
+
+rostopic pub -1 /order_target std_msgs/String "data: 'bottle'"
+
+
+rosrun living_lab_robot_moveit_client test_pose_xyz.py base_footprint 1.04 -0.1266 1.012
+rosrun living_lab_robot_moveit_client test_pose_xyz.py base_footprint 0.7 -0.1266 0.9
+rosrun tf tf_echo /base_footprint /camera_link
+
+rostopic pub -1 /remove_object std_msgs/String "data: 'request'"
+delete json
+
+
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'lamp_test_scene'"
+
+
+rosrun living_lab_robot_moveit_client test_named_pose.py homerosrun living_lab_robot_moveit_client test_named_pose.py home
+rostopic pub -1 /body/arm_base_controller/command std_msgs/Float64 "data: 0"
+rostopic pub -1 /body/arm_base_controller/command std_msgs/Float64 "data: -0.15"
+
+
+# Shake hand
+option 1.
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'shake_arm'"
+
+option 2.
+rosrun living_lab_robot_moveit_client test_named_pose.py shake_arm_left
+rosrun living_lab_robot_moveit_client test_named_pose.py shake_arm_right
+
+
+# Hand over a umbrella
+rosrun living_lab_robot_moveit_client test_named_pose.py grasp_done
+rostopic pub -1 /body/gripper_controller/command std_msgs/Float64 "data: 0"
+rostopic pub -1 /body/gripper_controller/command std_msgs/Float64 "data: 1"
+
+
+# Pour juice
+rosrun living_lab_robot_moveit_client test_named_pose.py pour_juice_ready
+rostopic pub -1 /body/gripper_controller/command std_msgs/Float64 "data: 0.4"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'pour_juice'"
+
+
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'order_the_target'"
+rostopic pub -1 /order_target std_msgs/String "data: 'cup'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'grab_target'"
+
+
+# Grasp bowl
+rosrun living_lab_robot_moveit_client test_named_pose.py grasp_bowl_ready
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'grasp_bowl_ready'"
+
+# Elevation up & down 10cm
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'elevation_up'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'elevation_down'"
+rostopic pub -1 /wait_select_scene std_msgs/String "data: 'put_bowl'"
+
+# rosbag record -a
+
+
+rosrun living_lab_robot_moveit_client test_named_pose.py pour_juice_ready
+rostopic pub -1 /body/gripper_controller/command std_msgs/Float64 "data: 0"
+rosrun living_lab_robot_moveit_client test_named_pose.py pour_juice_into_cup
+
+
+# TTS
+rostopic pub -1 /tts_request std_msgs/String "data: '얘들아 안녕? 나는 KIST 로봇 집사라고 해'"
+rostopic pub -1 /tts_request std_msgs/String "data: '리빙랩에 놀러온걸 환영해'"
+rostopic pub -1 /tts_request std_msgs/String "data: '얘들아 안녀엉 다음에 또 보자'"
+
+192.168.9.7
+
+# 애기들 시연
+bringup & homing
+roslaunch polly_speech brinup_subscrier.launch
+rosrun living_lab_robot_moveit_client moveit_client_node_obstacle_avoidance.py
+rosrun living_lab_robot_teleop_joy joy_control.py
+
+# Joystick command
+"""
+        X : msg.buttons == (1,0,0,0,0,0,0,0,0,0,0,0,0)  ---->  pull out arm
+        X + R2 : msg.buttons == (1,0,0,0,0,0,0,1,0,0,0,0,0)  ---->  push in arm
+
+        O : msg.buttons == (0,1,0,0,0,0,0,0,0,0,0,0,0)  ---->  gripper close
+        O + R2 : msg.buttons == (0,1,0,0,0,0,0,1,0,0,0,0,0)  ---->  gripper open
+
+        △ : msg.buttons == (0,0,1,0,0,0,0,0,0,0,0,0,0)  ---->  grasp_ready
+        △ + R2 : msg.buttons == (0,0,1,0,0,0,0,1,0,0,0,0,0)  ---->  home
+
+        □ : msg.buttons == (0,0,0,1,0,0,0,0,0,0,0,0,0)  ---->  shake hand
+
+
+        X + R1 : msg.buttons == (1,0,0,0,0,1,0,0,0,0,0,0,0)  ---->  얘들아 안녕? 나는 KIST 로봇 집사라고 해
+        O + R1 : msg.buttons == (0,1,0,0,0,1,0,0,0,0,0,0,0)  ---->  얘들아 안녕?
+        △ + R1 : msg.buttons == (0,0,1,0,0,1,0,0,0,0,0,0,0)  ---->  리빙랩에 놀러온걸 환영해
+        □ + R1 : msg.buttons == (0,0,0,1,0,1,0,0,0,0,0,0,0)  ---->  얘들아 안녀엉 다음에 또 보자
+"""
+
